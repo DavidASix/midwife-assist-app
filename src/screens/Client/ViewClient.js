@@ -9,7 +9,8 @@ import {
   ScrollView,
   Image,
   TextInput,
-  Linking
+  Linking,
+  Animated
 } from 'react-native';
 import DatePicker from 'react-native-date-picker'
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -23,13 +24,14 @@ const c = require('../../assets/constants');
 class ViewClient extends Component {
   constructor(props) {
     super(props);
+    this.pageScroll = null;
+    this.scrollPosition = new Animated.ValueXY();
     this.state = {
       babyId: false
     };
   }
 
   componentDidMount() {
-    console.log(this.props.route.params.client);
     this.setState({
       ...this.state,
       client: this.props.route.params.client
@@ -60,7 +62,6 @@ class ViewClient extends Component {
   onPressAddBaby = () => {
     let { theme, route } = this.props;
     const client = route.params.client;
-    // console.log(client);
     this.props.navigation.navigate('addBaby', { motherId: client.id })
   }
 
@@ -155,49 +156,30 @@ class ViewClient extends Component {
       }
     }
 
-  render() {
+  renderDetails() {
 
-    let { theme, route } = this.props;
-    // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
-    // With the IF we use a copy of client created on mount
-    const reduxRefreshedClient = this.props.clients.find((cl, i) => (cl.id === route.params.client.id));
-    let client = undefined;
-    if (!reduxRefreshedClient) {
-      client = this.state.client;
-    } else { client = reduxRefreshedClient; }
-    const { first, last, preferred } = client.name;
-    const { street, city, province, country } = client.address
-    const { dob, edd, notes, rh, phones, gbs } = client;
-    // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
-    let scrubbedGbs = gbs || 'unknown';
-    // Formatting of the address string is done here to avoid blank spaces created from extra \n
-    let adrStr = street ? `${street},` : '';
-    adrStr && city ? adrStr += `\n${city},` : adrStr += city;
-    adrStr && province ? adrStr += `\n${province},` : adrStr += province;
-    adrStr && country ? adrStr += `\n${country}` : adrStr += country;
-    return (
-      <View style={[styles.container, { backgroundColor: c.themes[theme].background, borderColor: c.themes[theme].border }]}>
-        <View style={[styles.header, { backgroundColor: c.themes[theme].accent }]}>
-          <View style={{ flex: 1, width: '100%', justifyContent: 'center' }}>
-            <Text style={[{ color: c.themes[theme].lightText, fontSize: 25, marginLeft: 20 }, c.titleFont]}>
-              {first}{last ? ` ${last}` : ''}
-            </Text>
-            <Text style={[{ color: c.themes[theme].lightText, fontSize: 16, marginLeft: 20 }, c.titleFont]}>
-              {client.name.preferred}
-            </Text>
-            {/* NAME EDIT */}
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('editClient', { edit: 'name', client })}
-              style={{ position: 'absolute', right: 10, height: 40, width: 40, borderRadius: 20, ...c.center }}>
-              <FFIcons
-                name='edit'
-                size={20}
-                color={c.themes[theme].lightText} />
-            </TouchableOpacity>
+      let { theme, route } = this.props;
+      // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
+      // With the IF we use a copy of client created on mount
+      const reduxRefreshedClient = this.props.clients.find((cl, i) => (cl.id === route.params.client.id));
+      let client = undefined;
+      if (!reduxRefreshedClient) {
+        client = this.state.client;
+      } else { client = reduxRefreshedClient; }
+      const { first, last, preferred } = client.name;
+      const { street, city, province, country } = client.address
+      const { dob, edd, rh, phones, gbs } = client;
+      // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
+      let scrubbedGbs = gbs || 'unknown';
+      // Formatting of the address string is done here to avoid blank spaces created from extra \n
+      let adrStr = street ? `${street},` : '';
+      adrStr && city ? adrStr += `\n${city},` : adrStr += city;
+      adrStr && province ? adrStr += `\n${province},` : adrStr += province;
+      adrStr && country ? adrStr += `\n${country}` : adrStr += country;
 
-          </View>
-        </View>
-        <ScrollView style={styles.body}>
+      return (
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
+
           <View style={[styles.sectionContainer, { backgroundColor: c.themes[theme].modal, borderColor: c.themes[theme].border }]}>
             {/* Address */}
             <View style={[styles.row, styles.subHeaderRow, { borderColor: c.themes[theme].border }]}>
@@ -359,33 +341,6 @@ class ViewClient extends Component {
               </View>
             </>
 
-            {/* NOTES */}
-            <>
-              <View style={[styles.row, styles.subHeaderRow]}>
-                <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
-                  Notes
-                </Text>
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('editClient', { edit: 'notes', client })}
-                  style={{ height: 40, width: 40, borderRadius: 20, ...c.center }}>
-                  <FFIcons
-                    name='edit'
-                    size={20}
-                    color={c.themes[theme].text} />
-                </TouchableOpacity>
-              </View>
-              <View style={[styles.row, { justifyContent: 'center' }]}>
-                <FFIcons
-                  name='sticky-note'
-                  size={23}
-                  color={c.themes[theme].accent} />
-                <View style={[styles.textInput, { minHeight: 40, paddingVertical: 5, borderBottomWidth: 0 }]}>
-                  <Text style={[{ fontSize: 16, color: c.themes[theme].text }]}>
-                    {notes}
-                  </Text>
-                </View>
-              </View>
-            </>
           </View>
 
           {false && this.renderBabies()}
@@ -409,6 +364,148 @@ class ViewClient extends Component {
                 <MCIcons style={{ marginHorizontal: 10 }} name='account-remove' size={40} color={c.themes[theme].text} />
             </View>
           </TouchableOpacity>
+        </ScrollView>
+      );
+    }
+
+  renderNotes() {
+    let { theme, route } = this.props;
+    // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
+    // With the IF we use a copy of client created on mount
+    const reduxRefreshedClient = this.props.clients.find((cl, i) => (cl.id === route.params.client.id));
+    let client = undefined;
+    if (!reduxRefreshedClient) {
+      client = this.state.client;
+    } else {
+      client = reduxRefreshedClient;
+    }
+    const { notes } = client;
+    return (
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
+
+        <View style={[styles.sectionContainer, { backgroundColor: c.themes[theme].modal, borderColor: c.themes[theme].border }]}>
+          {/* NOTES */}
+          <>
+            <View style={[styles.row, styles.subHeaderRow]}>
+              <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
+                Notes
+              </Text>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('editClient', { edit: 'notes', client })}
+                style={{ height: 40, width: 40, borderRadius: 20, ...c.center }}>
+                <FFIcons
+                  name='edit'
+                  size={20}
+                  color={c.themes[theme].text} />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.row, { justifyContent: 'center' }]}>
+              <FFIcons
+                name='sticky-note'
+                size={23}
+                color={c.themes[theme].accent} />
+              <View style={[styles.textInput, { minHeight: 40, paddingVertical: 5, borderBottomWidth: 0 }]}>
+                <Text style={[{ fontSize: 16, color: c.themes[theme].text }]}>
+                  {notes}
+                </Text>
+              </View>
+            </View>
+          </>
+        </View>
+      </ScrollView>
+    );
+  }
+
+  render() {
+    let { theme, route } = this.props;
+    // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
+    // With the IF we use a copy of client created on mount
+    const reduxRefreshedClient = this.props.clients.find((cl, i) => (cl.id === route.params.client.id));
+    let client = undefined;
+    if (!reduxRefreshedClient) {
+      client = this.state.client;
+    } else { client = reduxRefreshedClient; }
+    const { first, last, preferred } = client.name;
+    const { street, city, province, country } = client.address
+    const { dob, edd, notes, rh, phones, gbs } = client;
+    // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
+    let scrubbedGbs = gbs || 'unknown';
+    // Formatting of the address string is done here to avoid blank spaces created from extra \n
+    let adrStr = street ? `${street},` : '';
+    adrStr && city ? adrStr += `\n${city},` : adrStr += city;
+    adrStr && province ? adrStr += `\n${province},` : adrStr += province;
+    adrStr && country ? adrStr += `\n${country}` : adrStr += country;
+
+    return (
+      <View style={[styles.container, { backgroundColor: c.themes[theme].background, borderColor: c.themes[theme].border }]}>
+        <View style={[styles.header, { backgroundColor: c.themes[theme].accent }]}>
+          <View style={{ flex: 2, width: '90%', justifyContent: 'center', paddingLeft: 0, borderBottomWidth: 0.5, borderColor: c.themes[theme].border }}>
+            <Text style={[{ color: c.themes[theme].lightText, fontSize: 25 }, c.titleFont]}>
+              {first}{last ? ` ${last}` : ''}
+            </Text>
+            <Text style={[{ color: c.themes[theme].lightText, fontSize: 16 }, c.titleFont]}>
+              {client.name.preferred}
+            </Text>
+            {/* NAME EDIT */}
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('editClient', { edit: 'name', client })}
+              style={{ position: 'absolute', right: 10, height: 40, width: 40, borderRadius: 20, ...c.center }}>
+              <FFIcons
+                name='edit'
+                size={20}
+                color={c.themes[theme].lightText} />
+            </TouchableOpacity>
+
+          </View>
+
+          <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+            <TouchableOpacity
+              onPress={() => this.pageScroll.scrollTo({ x: 0, y: 0, animated: true })}
+              style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={[styles.subHeaderText, { color: c.themes[theme].lightText }]}>
+                Client Details
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.pageScroll.scrollTo({ x: c.device.width , y: 0, animated: true })}
+              style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={[styles.subHeaderText, { color: c.themes[theme].lightText }]}>
+                Notes
+              </Text>
+            </TouchableOpacity>
+            <Animated.View style={{
+              position: 'absolute',
+              width: '50%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: 4,
+              bottom: 2,
+              transform: this.scrollPosition.getTranslateTransform() }}>
+              <View
+              style={{
+                width: '80%',
+                height: 1.5,
+                backgroundColor: c.themes[theme].lightText }} />
+            </Animated.View>
+          </View>
+
+        </View>
+        <ScrollView
+          ref={(sv) => this.pageScroll = sv}
+          showsHorizontalScrollIndicator={false}
+          onScroll={(evt) => {
+            Animated.spring(this.scrollPosition, { toValue: { x: evt.nativeEvent.contentOffset.x / 2, y: 0 }, useNativeDriver: false }).start();
+            //this.setState({ scroll: evt.nativeEvent.contentOffset })
+          }}
+          horizontal={true}
+          onLayout={(ref) => console.log(ref.nativeEvent.layout)}
+          pagingEnabled={true}>
+        <View style={styles.pageContainer}>
+          {this.renderDetails()}
+        </View>
+        <View style={styles.pageContainer}>
+          {this.renderNotes()}
+        </View>
         </ScrollView>
       </View>
     );
@@ -439,13 +536,18 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  pageContainer: {
+    flex: 1,
+    width: c.device.width * 0.9725,
+  },
   body: {
     flex: 1,
-    width: '100%',
+    width: '98%',
+    alignSelf: 'center'
   },
   sectionContainer: {
     flex: 0,
-    width: '96%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'flex-start',
     alignSelf: 'center',

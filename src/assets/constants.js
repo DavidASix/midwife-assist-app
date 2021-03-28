@@ -1,4 +1,12 @@
+import {
+  Dimensions
+} from 'react-native';
 c = module.exports;
+
+c.device = {
+  width: Dimensions.get('window').width,
+  height: Dimensions.get('window').height,
+}
 
 c.colors = {
   backgroundColor: '#303030',
