@@ -9,12 +9,12 @@ this.sortingOptions = [
 ];
 */
 const INITIAL_STATE = {
-  clients: [], //[], //c.clients
+  clients: c.clients, //[], //c.clients
   babies: [],
   sortType: 'lastAlpha'
 };
 
-const auth = (state = INITIAL_STATE, action) => {
+const notes = (state = INITIAL_STATE, action) => {
   let newState = Object.assign({}, state);
   switch (action.type) {
     case types.STORE_CLIENT:
@@ -33,4 +33,4 @@ const auth = (state = INITIAL_STATE, action) => {
   }
 }
 
-export default auth;
+export default notes;

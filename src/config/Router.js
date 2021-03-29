@@ -21,7 +21,7 @@ import { createStackNavigator, TransitionPresets  } from '@react-navigation/stac
 import c from '../assets/constants';
 
 import Auth from '../screens/Auth/';
-import { Client, AddBaby, AddClient, ViewClient, EditClient } from '../screens/Client/';
+import { Client, AddBaby, AddClient, ViewClient, EditClient, AddNote } from '../screens/Client/';
 import { Calculator, CalculatorInfo } from '../screens/Calculator/';
 import { Tutorial } from '../screens/Tutorial/';
 import Settings from '../screens/Settings/';
@@ -75,6 +75,10 @@ const ClientStack = () => {
       <Stack.Screen
         name="editClient"
         component={EditClient}
+        options={{ cardStyle: { backgroundColor: 'transparent' }}}/>
+      <Stack.Screen
+        name="addNote"
+        component={AddNote}
         options={{ cardStyle: { backgroundColor: 'transparent' }}}/>
       <Stack.Screen
         name="addBaby"

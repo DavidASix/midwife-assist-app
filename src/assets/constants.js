@@ -76,6 +76,19 @@ c.themes = {
   }
 }
 
+c.notes = [
+  { id: '113', clientId: 'C8Y8R31L99', title: 'note 1', body: 'asdfasdfasdf', time: 1616957870104 },
+  { id: '123', clientId: 'C8Y8R31L99', title: 'note 2', body: 'asdfasdfasdfasdfasdfasdf', time: 1615957870104 },
+  { id: '133', clientId: 'C8Y8R31L99', title: 'note 3', body: 'asdfasdfasdfasdfasdfasdasdfasdfasdasdfasdfasdasdfasdfasdfasdfasdfasdf', time: 1616957070104 },
+  { id: '213', clientId: 'C8Y8R31L99', title: 'note 1', body: 'asdfasdfasdf', time: 1616977870104 },
+  { id: '323', clientId: 'C8Y8R31L99', title: 'note 2', body: 'asdfasdfasdfasdfasdfasdf', time: 1616057870104 },
+  { id: '433', clientId: 'C8Y8R31L99', title: 'note 3', body: 'asdfasdfasdfasdfasdfasdasdfasdfasdasdfasdfasdasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdasdfasdfasdasdfasdfasdasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdasdfasdfasdasdfasdfasdasdfasdfasdfasdfasdfasdf', time: 1616957870104 },
+  { id: '513', clientId: 'C8Y8R31L99', title: 'note 1', body: 'asdfasdfasdf', time: 1616957870104 },
+  { id: '623', clientId: 'C8Y8R31L99', title: 'note 2', body: 'asdfasdfasdfasdfasdfasdf', time: 1616957870104 },
+  { id: '733', clientId: 'C8Y8R31L99', title: 'note 3', body: 'asdfasdfasdfasdfasdfasdasdfasdfasdasdfasdfasdasdfasdfasdfasdfasdfasdf', time: 1616957870104 },
+  { id: '143', clientId: 'C8Y8RF4L99', title: 'note 4', body: 'asdfasdfasdfasdfasdfasdf', time: 1616957870104 },
+  { id: '153', clientId: 'C8Y8RF4L99', title: 'note 5', body: 'asdfasdfasdf', time: 1616957870104 },
+]
 
 // Clients is for testing purposes
 c.clients = [
@@ -93,6 +106,13 @@ c.clients = [
     name: { first: 'David', last: 'Anderson', preferred: 'JD' },
     phones: ["123456789", "5195706511", "654987321"],
     notes: 'This patient is a pregnant person who has not given birth',
+    noteArray: [
+      { id: '113', title: 'note 1', body: 'asdfasdfasdf', time: 1616957870104 },
+      { id: '123', title: 'note 2', body: 'asdfasdfasdfasdfasdfasdf', time: 1616957870104 },
+      { id: '133', title: 'note 3', body: 'asdfasdfasdfasdfasdfasdasdfasdfasdasdfasdfasdasdfasdfasdfasdfasdfasdf', time: 1616957870104 },
+      { id: '143', title: 'note 4', body: 'asdfasdfasdfasdfasdfasdf', time: 1616957870104 },
+      { id: '153', title: 'note 5', body: 'asdfasdfasdf', time: 1616957870104 },
+    ],
     rh: 'negative',
     gbs: 'positive'
   },

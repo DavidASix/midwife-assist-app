@@ -13,6 +13,11 @@ export const UPDATE_CLIENT = 'updateClient';
 export const STORE_BABY = 'storeBaby';
 export const CHANGE_SORT_TYPE = 'change_sort_type';
 
+//Notes
+
+export const STORE_NOTE = 'storeNote';
+export const DELETE_NOTE = 'deleteNote';
+
 //Settings
 export const CHANGE_THEME = 'changeTheme';
 export const FIRST_LOGIN = 'firstLogin';

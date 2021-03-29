@@ -25,7 +25,7 @@ class EditClient extends Component {
       name: { title: 'Name' },
       address: { title: 'Address' },
       rh: { title: 'Rh Status' },
-      notes: { title: 'Add New Note' },
+      notes: { title: 'Notes' },
       dob: { title: 'Date of Birth' },
       edd: { title: 'Estimated Delivery Date' },
       gbs: { title: 'Group B Streptococcus' },
