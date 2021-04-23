@@ -33,4 +33,4 @@ export const store = createStore(
 
 export const persistor = persistStore(store);
 // purge persisted data on reload
-persistor.purge();
+//persistor.purge();

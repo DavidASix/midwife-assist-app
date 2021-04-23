@@ -34,6 +34,7 @@ class ViewClient extends Component {
   }
 
   componentDidMount() {
+    console.log('view client');
     this.setState({
       ...this.state,
       client: this.props.route.params.client,
@@ -577,12 +578,8 @@ class ViewClient extends Component {
         <ScrollView
           ref={(sv) => this.pageScroll = sv}
           showsHorizontalScrollIndicator={false}
-          onScroll={(evt) => {
-            Animated.spring(this.scrollPosition, { toValue: { x: evt.nativeEvent.contentOffset.x / 2, y: 0 }, useNativeDriver: false }).start();
-            //this.setState({ scroll: evt.nativeEvent.contentOffset })
-          }}
+          onScroll={(evt) => Animated.spring(this.scrollPosition, { toValue: { x: evt.nativeEvent.contentOffset.x / 2, y: 0 }, useNativeDriver: false }).start()}
           horizontal={true}
-          onLayout={(ref) => console.log(ref.nativeEvent.layout)}
           pagingEnabled={true}>
         <View style={styles.pageContainer}>
           {this.renderDetails()}

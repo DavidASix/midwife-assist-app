@@ -32,6 +32,7 @@ class Client extends Component {
   }
 
   componentDidMount() {
+    console.log('client');
     AppState.addEventListener("change", this.onAppStateChange);
   }
 

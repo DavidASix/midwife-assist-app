@@ -9,14 +9,16 @@ this.sortingOptions = [
 ];
 */
 const INITIAL_STATE = {
-  clients: c.clients, //[], //c.clients
+  clients: [], //[], //c.clients
   babies: [],
   sortType: 'lastAlpha'
 };
 
 const notes = (state = INITIAL_STATE, action) => {
-  let newState = Object.assign({}, state);
+  let newState = Object.assign(INITIAL_STATE, state);
   switch (action.type) {
+    case types.REFRESH_STORE:
+      return newState;
     case types.STORE_CLIENT:
       return Object.assign(newState, { clients: [...newState.clients, action.payload] });
     case types.DELETE_CLIENT:

@@ -11,7 +11,7 @@ const reducers = combineReducers({
   settings,
   auth,
   client,
-  notes,
+  notes
 });
 
 export default reducers;

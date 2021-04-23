@@ -332,7 +332,7 @@ class Calculator extends Component {
         <View style={[styles.header, { backgroundColor: c.themes[theme].accent }]}>
           <View style={{ flex: 1, width: '100%', justifyContent: 'center' }}>
             <Text style={[{ color: c.themes[theme].lightText, fontSize: 36, marginLeft: 20 }, c.titleFont]}>
-              Calculate
+              Calculate, all set initial
             </Text>
             <MCIcons
               name='information-outline'

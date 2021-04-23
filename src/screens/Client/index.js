@@ -16,7 +16,7 @@ function mapStateToProps ({ settings, client, auth, notes }) {
     babies: client.babies,
     sortType: client.sortType,
     authType: auth.authType,
-    lastLogTime: auth.lastLogTime
+    lastLogTime: auth.lastLogTime,
   };
 };
 

@@ -1,6 +1,9 @@
 // Action types are constants used to connection redux actions to redux reducers
 // We use action types to have a clear list of the connections between actions and reducers, and to make any spelling mistakes between connecting the two are obvious
 
+//refresh
+export const REFRESH_STORE = 'refresh_store';
+
 // Auth
 export const LOGIN = 'login';
 export const LOGOUT = 'logout';

@@ -28,8 +28,8 @@ android {
         applicationId "com.dave6.www.midwifeassist"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "1.3"
+        versionCode 13
+        versionName "1.7"
     }
     splits {
         abi {

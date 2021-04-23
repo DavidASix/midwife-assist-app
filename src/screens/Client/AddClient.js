@@ -466,7 +466,6 @@ renderPhoneInputs() {
             {this.renderEdd()}
             {this.renderRh()}
             {this.renderGbs()}
-            {this.renderNotes()}
             {this.renderSubmit()}
           </View>
         </ScrollView>

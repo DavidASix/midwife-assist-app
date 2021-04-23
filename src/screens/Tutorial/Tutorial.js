@@ -56,7 +56,8 @@ class Tutorial extends Component {
   }
 
   componentDidMount() {
-    console.log({ firsLogibn: this.props.firstLogin});
+    //console.log('tutorial');
+    //this.props.refreshStore();
     if (!this.props.firstLogin) {
       this.props.navigation.navigate('auth');
     } else {

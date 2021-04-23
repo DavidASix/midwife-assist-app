@@ -95,27 +95,27 @@ const TabStateless = (props) => {
   }, []);
   return (
     <Tab.Navigator
-    initialRouteName="calcStack"
-    screenOptions={({ route }) => ({
-      tabBarIcon: ({ focused, color, size }) => {
-        switch (route.name) {
-          case 'calcStack': return <MCIcons name='calculator-variant' size={size} color={color} />;
-          case 'clientStack': return <MCIcons name='contacts' size={size} color={color} />;
-          case 'settings': return <MCIcons name='settings' size={size} color={color} />;
-          default: return null;
-        }
-      },
-    })}
-    tabBarOptions={{
-      activeTintColor: c.themes[props.theme].accent,
-      inactiveTintColor: c.themes[props.theme].foreground,
-      style: {
-        backgroundColor: c.themes[props.theme].background,
-        borderColor: c.themes[props.theme].border,
-        elevation: 10,
-        height: 60
-       }
-    }}>
+      initialRouteName="calcStack"
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          switch (route.name) {
+            case 'calcStack': return <MCIcons name='calculator-variant' size={size} color={color} />;
+            case 'clientStack': return <MCIcons name='contacts' size={size} color={color} />;
+            case 'settings': return <MCIcons name='settings' size={size} color={color} />;
+            default: return null;
+          }
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: c.themes[props.theme].accent,
+        inactiveTintColor: c.themes[props.theme].foreground,
+        style: {
+          backgroundColor: c.themes[props.theme].background,
+          borderColor: c.themes[props.theme].border,
+          elevation: 10,
+          height: 60
+         }
+      }}>
       <Tab.Screen name="calcStack" component={CalcStack} options={{ title: 'Calculator' }} />
       <Tab.Screen name="clientStack" component={ClientStack} options={{ title: 'Clients' }} />
       <Tab.Screen name="settings" component={Settings} options={{ title: 'Settings' }} />
@@ -129,7 +129,7 @@ const AuthStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false, gestureEnabled: false, ...TransitionPresets.ModalSlideFromBottomIOS  }}
-      initialRouteName="tabs" >
+      initialRouteName="tutorial" >
       <Stack.Screen
         name="tutorial"
         component={Tutorial}
