@@ -7,6 +7,5 @@ export const changeTheme = (theme) => dispatch => {
 };
 
 export const markFirstLogin = () => dispatch => {
-  console.log('mark first login called');
   dispatch({ type: types.FIRST_LOGIN });
 };

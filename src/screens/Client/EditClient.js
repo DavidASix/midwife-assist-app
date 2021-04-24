@@ -40,7 +40,6 @@ class EditClient extends Component {
     const { params } = this.props.route;
     let phones = {};
     params.client.phones.forEach((phone, i) => phones[`phone${i}`] = phone );
-    // console.log(phones);
     this.setState({
       ...this.state,
       ...params.client,
@@ -78,7 +77,6 @@ class EditClient extends Component {
       phones: formattedPhones,
       notes
     };
-    // console.log('UPDATED CLIENT: ', updatedClient);
     this.props.updateClient(updatedClient);
     this.props.navigation.pop();
   }
@@ -106,7 +104,6 @@ class EditClient extends Component {
     const { edit, first, last, preferred, notes, rh, gbs, street, city, province, country, phones } = this.state;
     // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
     let scrubbedGbs = gbs || 'unknown';
-    // console.log('Phones: ', phones);
     const size = 31;
     switch(this.state.edit) {
       case 'dob': {
@@ -383,7 +380,6 @@ class EditClient extends Component {
         });
       }
       default: {
-        // console.log('default case');
         break;
       }
     }
@@ -409,7 +405,6 @@ class EditClient extends Component {
     const { theme } = this.props;
     const { edit } = this.state;
     const textColor = { color: c.themes[theme].text };
-    // console.log(edit);
     if (!edit) return null;
     return (
       <View style={styles.container}>

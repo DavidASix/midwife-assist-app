@@ -90,7 +90,7 @@ const ClientStack = () => {
 
 const TabStateless = (props) => {
   React.useEffect(() => {
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => { console.log('back pressed tabs'); return true; });
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => { return true; });
     return () => backHandler.remove();
   }, []);
   return (

@@ -41,8 +41,6 @@ class Client extends Component {
 
   onAppStateChange = (newState) => {
     let { authType, lastLogTime, navigation } = this.props;
-    // console.log({ lastLogTime });
-    // console.log('on app state change called, to ', newState);
     if (newState === 'active') {
       if (lastLogTime < (Date.now() - (60000 * 10)) && authType !== 'none') {
         navigation.navigate('auth');

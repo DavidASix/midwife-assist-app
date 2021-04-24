@@ -81,7 +81,6 @@ class ViewClient extends Component {
         { text: 'Delete', onPress: () => {
           // if the note is a legacy note we overwrite the client object and remove the notes field
           if (noteId === 'legacy') {
-            console.log('legacy note');
             this.props.updateClient({ ...this.state.client, notes: "" });
           } else {
             this.props.deleteNote(noteId);
@@ -410,7 +409,6 @@ class ViewClient extends Component {
       client = reduxRefreshedClient;
     }
     // take the notes array from redux state and check if there is a legacy note from the previous schema available. if there is, add that to the array
-    //console.log('notes state', this.props.notes);
     let formattedNoteArray =  this.props.notes.filter((note, i) => (note.clientId === this.props.route.params.client.id));
     formattedNoteArray = client.notes ? [
       ...formattedNoteArray,

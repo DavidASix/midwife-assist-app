@@ -47,12 +47,10 @@ class Auth extends Component {
       this.props.navigation.navigate('tabs')
     } else {
       try {
-        // console.log('trying isSensorAvailable');
         let sensor = await FingerprintScanner.isSensorAvailable();
         this.setState({ bio: sensor });
       } catch (err) {
         this.setState({ bio: false });
-        // console.log({ err });
       }
     }
   }
@@ -64,7 +62,6 @@ class Auth extends Component {
         fallbackEnabled: false
       });
       let sensor = await FingerprintScanner.isSensorAvailable();
-      // console.log({ auth });
       // Fingerprint scanner must be released or the process does not end when user presses cancel or scans fingerprint
       // If process is not over on next bio press the modal will show but promise will not resolve
       FingerprintScanner.release();
@@ -75,7 +72,6 @@ class Auth extends Component {
       }
     } catch (err) {
       FingerprintScanner.release();
-      // console.log({ err });
     }
   }
 
@@ -123,7 +119,6 @@ class Auth extends Component {
 
   renderNullAuth() {
     let { theme, pin } = this.props;
-    // console.log(this.state);
       return (
         <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
 
@@ -284,7 +279,6 @@ class Auth extends Component {
 
   renderSwitch() {
     let { theme, pin, authType } = this.props;
-    // console.log({ authType });
     switch (authType) {
       case null: return (<>{this.renderNullAuth()}</>);
       case 'none': return (<>{this.renderNullAuth()}</>);
@@ -294,8 +288,7 @@ class Auth extends Component {
   }
 
   render() {
-    let { theme } = this.props
-    // console.log(theme);
+    let { theme } = this.props;
     return (
       <View style={[styles.container, { backgroundColor: c.themes[theme].background }]}>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>

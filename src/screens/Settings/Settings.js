@@ -40,7 +40,6 @@ class Settings extends Component {
   }
 
   onPressStar(num) {
-    console.log('Star selected: ', num);
     LayoutAnimation.configureNext({
       duration: 700,
       create: { type: 'spring', springDamping: 0.4, property: 'scaleY' },

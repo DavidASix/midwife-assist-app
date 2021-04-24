@@ -37,7 +37,6 @@ class AddBaby extends Component {
   }
 
   componentDidMount() {
-    // console.log('comp mount');
     const mom = this.props.clients.find((client, i) => (client.id === this.props.route.params.motherId));
     let name = 'Baby ' + (mom.name.last || mom.name.first || mom.name.preferred);
     let ga = 0;
@@ -46,7 +45,6 @@ class AddBaby extends Component {
         weeks: String(Math.floor(gams / (c.t.day * 7))),
         days: String(Math.round((gams % (c.t.day * 7)) / c.t.day))
       }
-      // console.log(ga);
     this.setState({ mom, name, ...ga });
   }
 
@@ -54,7 +52,6 @@ class AddBaby extends Component {
     const { name, dob, sex, weeks, days, g, lb, oz, weightType, mom } = this.state;
     const birthWeight = weightType === 'g' ? parseInt(g || 0) :
       ((parseInt(lb || 0) * 16) + parseInt(oz || 0)) * 28.3495;
-    console.log({ birthWeight });
     if (!birthWeight) return ToastAndroid.show('Enter Birth Weight', ToastAndroid.LONG);
     let baby = {
       motherId: mom.id,
