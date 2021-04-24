@@ -34,7 +34,6 @@ class ViewClient extends Component {
   }
 
   componentDidMount() {
-    console.log('view client');
     this.setState({
       ...this.state,
       client: this.props.route.params.client,

@@ -9,7 +9,7 @@ const INITIAL_STATE = {
 };
 
 const auth = (state = INITIAL_STATE, action) => {
-  let newState = Object.assign(INITIAL_STATE, state);
+  let newState = Object.assign({}, INITIAL_STATE, state);
   switch (action.type) {
     case types.REFRESH_STORE:
       return newState;
