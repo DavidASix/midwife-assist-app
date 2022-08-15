@@ -1,55 +1,58 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StatusBar,
-  BackHandler,
-  Alert,
-  Linking,
-  TouchableOpacity
-} from 'react-native';
+import {BackHandler} from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../actions';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator, TransitionPresets  } from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 
 import c from '../assets/constants';
 
 import Auth from '../screens/Auth/';
-import { Client, AddBaby, AddClient, ViewClient, EditClient, AddNote } from '../screens/Client/';
-import { Calculator, CalculatorInfo } from '../screens/Calculator/';
-import { Tutorial } from '../screens/Tutorial/';
+import {
+  Client,
+  AddBaby,
+  AddClient,
+  ViewClient,
+  EditClient,
+  AddNote,
+} from '../screens/Client/';
+import {Calculator, CalculatorInfo} from '../screens/Calculator/';
+import {Tutorial} from '../screens/Tutorial/';
 import Settings from '../screens/Settings/';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function mapStateToProps ({ settings }) {
-  return { theme: settings.theme };
-};
-
+function mapStateToProps({settings}) {
+  return {theme: settings.theme};
+}
 
 const CalcStack = () => {
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false, gestureEnabled: true, ...TransitionPresets.ModalSlideFromBottomIOS  }}
-      initialRouteName="calc" >
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: true,
+        ...TransitionPresets.ModalSlideFromBottomIOS,
+      }}
+      initialRouteName="calc">
       <Stack.Screen
         name="calc"
         component={Calculator}
-        options={({ navigation, route }) => ({ title: 'Calculator' })} />
+        options={({navigation, route}) => ({title: 'Calculator'})}
+      />
       <Stack.Screen
         name="calcInfo"
         component={CalculatorInfo}
-        options={{ cardStyle: { backgroundColor: 'transparent' }}}/>
+        options={{cardStyle: {backgroundColor: 'transparent'}}}
+      />
     </Stack.Navigator>
   );
-}
+};
 
 const ClientStack = () => {
   return (
@@ -57,55 +60,72 @@ const ClientStack = () => {
       screenOptions={{
         headerShown: false,
         gestureEnabled: true,
-        ...TransitionPresets.ModalSlideFromBottomIOS
+        ...TransitionPresets.ModalSlideFromBottomIOS,
       }}
-      initialRouteName="clients" >
+      initialRouteName="clients">
       <Stack.Screen
         name="clients"
         component={Client}
-        options={{ title: 'Clients' }} />
+        options={{title: 'Clients'}}
+      />
       <Stack.Screen
         name="addClient"
         component={AddClient}
-        options={{ cardStyle: { backgroundColor: 'transparent' }}}/>
+        options={{cardStyle: {backgroundColor: 'transparent'}}}
+      />
       <Stack.Screen
         name="viewClient"
         component={ViewClient}
-        options={{ cardStyle: { backgroundColor: 'transparent' }}}/>
+        options={{cardStyle: {backgroundColor: 'transparent'}}}
+      />
       <Stack.Screen
         name="editClient"
         component={EditClient}
-        options={{ cardStyle: { backgroundColor: 'transparent' }}}/>
+        options={{cardStyle: {backgroundColor: 'transparent'}}}
+      />
       <Stack.Screen
         name="addNote"
         component={AddNote}
-        options={{ cardStyle: { backgroundColor: 'transparent' }}}/>
+        options={{cardStyle: {backgroundColor: 'transparent'}}}
+      />
       <Stack.Screen
         name="addBaby"
         component={AddBaby}
-        options={{ cardStyle: { backgroundColor: 'transparent' }}}/>
+        options={{cardStyle: {backgroundColor: 'transparent'}}}
+      />
     </Stack.Navigator>
   );
-}
+};
 
-const TabStateless = (props) => {
+const TabStateless = props => {
   React.useEffect(() => {
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => { return true; });
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        return true;
+      },
+    );
     return () => backHandler.remove();
   }, []);
   return (
     <Tab.Navigator
       initialRouteName="calcStack"
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
           switch (route.name) {
-            case 'calcStack': return <MCIcons name='calculator-variant' size={size} color={color} />;
-            case 'clientStack': return <MCIcons name='contacts' size={size} color={color} />;
-            case 'settings': return <MCIcons name='settings' size={size} color={color} />;
-            default: return null;
+            case 'calcStack':
+              return (
+                <MCIcons name="calculator-variant" size={size} color={color} />
+              );
+            case 'clientStack':
+              return <MCIcons name="contacts" size={size} color={color} />;
+            case 'settings':
+              return <MCIcons name="settings" size={size} color={color} />;
+            default:
+              return null;
           }
         },
-        headerShown: false
+        headerShown: false,
       })}
       tabBarOptions={{
         activeTintColor: c.themes[props.theme].accent,
@@ -114,12 +134,24 @@ const TabStateless = (props) => {
           backgroundColor: c.themes[props.theme].background,
           borderColor: c.themes[props.theme].border,
           elevation: 10,
-          height: 60
-         }
+          height: 60,
+        },
       }}>
-      <Tab.Screen name="calcStack" component={CalcStack} options={{ title: 'Calculator' }} />
-      <Tab.Screen name="clientStack" component={ClientStack} options={{ title: 'Clients' }} />
-      <Tab.Screen name="settings" component={Settings} options={{ title: 'Settings' }} />
+      <Tab.Screen
+        name="calcStack"
+        component={CalcStack}
+        options={{title: 'Calculator'}}
+      />
+      <Tab.Screen
+        name="clientStack"
+        component={ClientStack}
+        options={{title: 'Clients'}}
+      />
+      <Tab.Screen
+        name="settings"
+        component={Settings}
+        options={{title: 'Settings'}}
+      />
     </Tab.Navigator>
   );
 };
@@ -129,22 +161,26 @@ const TabNav = connect(mapStateToProps, actions)(TabStateless);
 const AuthStack = () => {
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false, gestureEnabled: false, ...TransitionPresets.ModalSlideFromBottomIOS  }}
-      initialRouteName="tutorial" >
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: false,
+        ...TransitionPresets.ModalSlideFromBottomIOS,
+      }}
+      initialRouteName="tutorial">
       <Stack.Screen
         name="tutorial"
         component={Tutorial}
-        options={({ navigation, route }) => ({ title: 'Tutorial' })} />
+        options={({navigation, route}) => ({title: 'Tutorial'})}
+      />
       <Stack.Screen
         name="auth"
         component={Auth}
-        options={({ navigation, route }) => ({ title: 'Authentication' })} />
-      <Stack.Screen
-        name="tabs"
-        component={TabNav} />
+        options={({navigation, route}) => ({title: 'Authentication'})}
+      />
+      <Stack.Screen name="tabs" component={TabNav} />
     </Stack.Navigator>
   );
-}
+};
 
 const Router = () => {
   return (
@@ -152,8 +188,6 @@ const Router = () => {
       <AuthStack />
     </NavigationContainer>
   );
-}
-
-
+};
 
 export default Router;
