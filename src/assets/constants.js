@@ -75,7 +75,7 @@ c.themes = {
     border: '#555',
   },
   light: {
-    background: '#FDFDFD',
+    background: '#e8e8e8',
     foreground: '#161616',
     modal: '#FFF',
     //modal: '#E0E0E0',

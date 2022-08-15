@@ -72,7 +72,7 @@ const BottomTabBar = props => {
           onLongPress={onLongPress}
           style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
           key={index}>
-          {icons(route, isFocused, 25)}
+          {icons(route, isFocused, 20)}
           <Text
             style={{
               fontSize: 10,
@@ -92,12 +92,23 @@ const BottomTabBar = props => {
     <View
       style={[
         styles.outerContainer,
-        {backgroundColor: c.themes[theme].accent},
+        {backgroundColor: c.themes[theme].background},
       ]}>
       <Image
         source={require('../assets/images/tabBarDivider.png')}
-        style={{height: 8, width: '100%', position: 'absolute', top: -8}}
+        style={{height: 40, width: '100%', position: 'absolute', top: 0}}
       />
+      <View
+        source={require('../assets/images/tabBarDivider.png')}
+        style={{
+          height: 11,
+          width: '100%',
+          position: 'absolute',
+          bottom: 0,
+          backgroundColor: c.themes[theme].accent,
+        }}
+      />
+
       <Animated.View style={[styles.mainContainer, {}]}>
         <Animated.View style={styles.indicatorContainer}>
           <View
@@ -119,12 +130,13 @@ const styles = {
     alignItems: 'center',
     width: '100%',
     flex: 0,
+    height: 50,
   },
   mainContainer: {
     flexDirection: 'row',
     padding: 0,
     width: containerWidth,
-    height: 50,
+    height: 40,
     paddingBottom: 3,
     opacity: opacityAnimation,
     transform: scrollAnimation.getTranslateTransform(),
@@ -139,7 +151,7 @@ const styles = {
   },
   indicator: {
     backgroundColor: 'white',
-    height: 45,
+    height: 40,
     width: 50,
     elevation: 5,
     borderRadius: 10,
