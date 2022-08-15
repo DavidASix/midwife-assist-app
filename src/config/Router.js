@@ -105,6 +105,7 @@ const TabStateless = (props) => {
             default: return null;
           }
         },
+        headerShown: false
       })}
       tabBarOptions={{
         activeTintColor: c.themes[props.theme].accent,

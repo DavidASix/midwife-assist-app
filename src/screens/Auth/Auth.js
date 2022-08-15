@@ -19,7 +19,7 @@ import DatePicker from 'react-native-date-picker'
 import { Dropdown } from 'react-native-material-dropdown';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcons from 'react-native-vector-icons/Ionicons';
-import FingerprintScanner from 'react-native-fingerprint-scanner';
+//import FingerprintScanner from 'react-native-fingerprint-scanner';
 import axios from 'axios';
 
 if (Platform.OS === 'android') {
@@ -46,16 +46,16 @@ class Auth extends Component {
     if (authType === 'none') {
       this.props.navigation.navigate('tabs')
     } else {
-      try {
+      try {/*
         let sensor = await FingerprintScanner.isSensorAvailable();
-        this.setState({ bio: sensor });
+        this.setState({ bio: sensor });*/
       } catch (err) {
         this.setState({ bio: false });
       }
     }
   }
 
-  onPressBiometric = async () => {
+  onPressBiometric = async () => {/*
     try {
       let auth = await FingerprintScanner.authenticate({
         description: 'Scan your finger to enable biometric security.',
@@ -72,7 +72,7 @@ class Auth extends Component {
       }
     } catch (err) {
       FingerprintScanner.release();
-    }
+    }*/
   }
 
   onPressNoSecurity = () => {

@@ -248,7 +248,7 @@ class Client extends Component {
               Clients
             </Text>
           </View>
-          <Dropdown
+          {/*<Dropdown
             containerStyle={{ flex: 1 }}
             textColor={c.themes[theme].lightText}
             selectedItemColor={'#222222'}
@@ -257,7 +257,7 @@ class Client extends Component {
             dropdownPosition={0}
             data={this.sortingOptions}
             value={this.sortingOptions.find((option, i) => option.slug === this.props.sortType).value}
-            onChangeText={(value, index, data) => this.props.changeSortType(data[index].slug)}/>
+            onChangeText={(value, index, data) => this.props.changeSortType(data[index].slug)}/>*/}
         </View>
         <View style={styles.body}>
           {this.renderComingSoonSwitch()}
