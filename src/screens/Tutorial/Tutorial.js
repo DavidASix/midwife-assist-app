@@ -27,25 +27,25 @@ class Tutorial extends Component {
       {
         title: 'Midwife Assist',
         description: 'Welcome to Midwife Assist, an app dedicated to assisting midwives in their day to day.',
-        image: require('../../assets/phone.png'),
+        image: require('../../assets/images/phone.png'),
         iconName: 'mother-nurse',
       },
       {
         title: 'Do calculations',
         description: 'Say goodbye to OB wheels! You can easily convert estimated delivery date, gestational age, and last menstrual periods.',
-        image: require('../../assets/calc.png'),
+        image: require('../../assets/images/calc.png'),
         iconName: 'calculator-variant',
       },
       {
         title: 'Store client information',
         description: 'Safely store your client information for later, locking it behind a pin or bio-metric scan.',
-        image: require('../../assets/lock.png'),
+        image: require('../../assets/images/lock.png'),
         iconName: 'account-group',
       },
       {
         title: 'Never connect to a network',
         description: 'You can rest assured that your patients data is safe, as this app does not connect to the internet at all.',
-        image: require('../../assets/nosignal.png'),
+        image: require('../../assets/images/nosignal.png'),
         iconName: 'access-point-network-off',
       }
     ]

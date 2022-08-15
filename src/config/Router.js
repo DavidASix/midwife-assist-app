@@ -1,7 +1,5 @@
 import React from 'react';
 import {BackHandler} from 'react-native';
-import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {connect} from 'react-redux';
 import * as actions from '../actions';
 
@@ -9,7 +7,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 
-import c from '../assets/constants';
+import BottomTabBar from './BottomTabBar';
 
 import Auth from '../screens/Auth/';
 import {
@@ -110,33 +108,8 @@ const TabStateless = props => {
   return (
     <Tab.Navigator
       initialRouteName="calcStack"
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
-          switch (route.name) {
-            case 'calcStack':
-              return (
-                <MCIcons name="calculator-variant" size={size} color={color} />
-              );
-            case 'clientStack':
-              return <MCIcons name="contacts" size={size} color={color} />;
-            case 'settings':
-              return <MCIcons name="settings" size={size} color={color} />;
-            default:
-              return null;
-          }
-        },
-        headerShown: false,
-      })}
-      tabBarOptions={{
-        activeTintColor: c.themes[props.theme].accent,
-        inactiveTintColor: c.themes[props.theme].foreground,
-        style: {
-          backgroundColor: c.themes[props.theme].background,
-          borderColor: c.themes[props.theme].border,
-          elevation: 10,
-          height: 60,
-        },
-      }}>
+      tabBar={navProps => <BottomTabBar {...props} {...navProps} />}
+      screenOptions={{headerShown: false}}>
       <Tab.Screen
         name="calcStack"
         component={CalcStack}

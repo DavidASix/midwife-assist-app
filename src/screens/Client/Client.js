@@ -52,7 +52,7 @@ class Client extends Component {
 
   renderClient(i, client) {
     let { theme, clients } = this.props;
-    const icon = client.delivered ? require('../../assets/unknown.png') : require('../../assets/pregnant.png');
+    const icon = client.delivered ? require('../../assets/images/unknown.png') : require('../../assets/images/pregnant.png');
     const row1 = client.delivered ? { label: 'Baby\'s Date of Birth', data: new Date(client.edd).toDateString() }  :
       { label: 'Estimated Delivery Date', data: new Date(client.edd).toDateString() };
     const row2 = client.address.street ? { label: 'Street Address', data: client.address.street } :

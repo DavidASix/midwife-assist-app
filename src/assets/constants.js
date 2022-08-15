@@ -59,7 +59,7 @@ c.themes = {
     foreground: '#FFFFFF',
     //modal: '#363636',
     modal: '#161616',
-    accent: '#BD7BFF',
+    accent: '#82B983',
     lightText: '#F0F0F0',
     text: '#E0E0E0',
     border: '#555'
@@ -69,7 +69,7 @@ c.themes = {
     foreground: '#161616',
     modal: '#FFF',
     //modal: '#E0E0E0',
-    accent: '#BD7BFF', //accent: '#BD7BFF',
+    accent: '#82B983', //accent: '#BD7BFF',
     lightText: '#F0F0F0',
     text: '#161616',
     border: '#DDD'
