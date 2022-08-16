@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Animated, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Animated} from 'react-native';
 import SIcon from 'react-native-vector-icons/SimpleLineIcons';
+import SVGIcon from '../components/SVGIcon/';
 import c from '../assets/constants';
 
 // Animated values used in the TabBar Component
@@ -92,13 +93,14 @@ const BottomTabBar = props => {
         styles.outerContainer,
         {backgroundColor: c.themes[theme].background},
       ]}>
-      <Image
-        source={require('../assets/images/tabBarDivider.png')}
-        style={{height: 40, width: '100%', position: 'absolute', top: 0}}
+      <SVGIcon
+        name="tabBarDivider"
+        style={{position: 'absolute', top: 1, height: 7, width: '100%'}}
+        color={c.themes[theme].accent}
       />
       <View
         style={{
-          height: 11,
+          height: 43,
           width: '100%',
           position: 'absolute',
           bottom: 0,

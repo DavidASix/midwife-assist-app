@@ -15,6 +15,8 @@ function StackedWaves(props) {
     <Svg
       width={props.size || props?.style?.width || '100%'}
       height={props.size || props?.style?.height || '100%'}
+      preserveAspectRatio="none"
+      viewBox="0 0 500 60"
       xmlns="http://www.w3.org/2000/svg"
       {...props}>
       <Path

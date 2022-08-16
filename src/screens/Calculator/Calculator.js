@@ -425,7 +425,6 @@ class Calculator extends Component {
     let {theme} = this.props;
     const {from} = this.state;
     let calc = this.calc();
-    console.log(calc);
     return (
       <>
         <View
@@ -474,6 +473,7 @@ class Calculator extends Component {
               style={{
                 transform: [{rotate: '180deg'}],
                 position: 'absolute',
+                width: '100%',
                 height: '200%',
                 top: 0,
               }}
