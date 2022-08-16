@@ -398,13 +398,14 @@ class Calculator extends Component {
     let offset = e.nativeEvent.contentOffset.x;
     let calculatedOffset = (offset * indicatorWidth) / 3;
     let index = Math.round(offset / c.device.width);
+    // If the scroll bar has crossed closer to the next item, switch the highlighted from
     let activeIndex = this.from.indexOf(this.state.from);
     if (index !== activeIndex) this.setState({from: this.from[index]});
 
-    Animated.timing(this.scrollPosition, {
+    Animated.spring(this.scrollPosition, {
       toValue: {x: calculatedOffset, y: 0},
       useNativeDriver: false,
-      duration: 10,
+      speed: 35,
     }).start();
   };
 
@@ -504,7 +505,7 @@ class Calculator extends Component {
               <TouchableOpacity
                 key={i}
                 style={{flex: 1, alignItems: 'center'}}
-                onPress={() => this.onPressFrom(type, i)}>
+                onPress={() => this.onPressFrom(type)}>
                 <Text
                   style={[
                     styles.indText,
@@ -527,29 +528,23 @@ class Calculator extends Component {
             onScroll={evt => this.onScroll(evt)}
             horizontal
             pagingEnabled>
-            <View
-              style={{
-                width: c.device.width,
-                borderWidth: 1,
-                height: c.device.width,
-              }}>
-              <Text>Blah Blah Blah Blah </Text>
+            <View style={styles.cardContainer}>
+              <View
+                style={[styles.card, {backgroundColor: c.themes[theme].modal}]}>
+                <Text>Clients Estimated Due Date is...</Text>
+              </View>
             </View>
-            <View
-              style={{
-                width: c.device.width,
-                borderWidth: 1,
-                height: c.device.width,
-              }}>
-              <Text>Blah Blah Blah Blah </Text>
+            <View style={styles.cardContainer}>
+              <View
+                style={[styles.card, {backgroundColor: c.themes[theme].modal}]}>
+                <Text>Blah Blah Blah Blah </Text>
+              </View>
             </View>
-            <View
-              style={{
-                width: c.device.width,
-                borderWidth: 1,
-                height: c.device.width,
-              }}>
-              <Text>Blah Blah Blah Blah </Text>
+            <View style={styles.cardContainer}>
+              <View
+                style={[styles.card, {backgroundColor: c.themes[theme].modal}]}>
+                <Text>Blah Blah Blah Blah </Text>
+              </View>
             </View>
           </ScrollView>
           {/**}
@@ -630,6 +625,28 @@ const styles = {
     height: '100%',
     borderRadius: 50,
     position: 'absolute',
+  },
+  cardContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: c.device.width,
+    borderWidth: 1,
+  },
+  card: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '95%',
+    width: '95%',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
   },
   body: {
     flex: 1,
