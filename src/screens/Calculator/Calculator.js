@@ -9,8 +9,10 @@ import {
   TextInput,
   Animated,
   ScrollView,
+  Button
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 const c = require('../../assets/constants');
@@ -36,6 +38,7 @@ class Calculator extends Component {
       lmpDate: new Date(Date.now() - 280 * c.t.day),
       eddDate: new Date(Date.now() + 280 * c.t.day),
       gaRecDate: new Date(Date.now()),
+      showEddPicker: false,
     };
     this.state = this.initialState;
     this.pageScroll = null;
@@ -166,62 +169,55 @@ class Calculator extends Component {
   // EDD = LMP + 280
 
   calc() {
-    let {from, weeks, days, lmpDate, eddDate, gaRecDate} = this.state;
+    let {weeks, days, lmpDate, eddDate, gaRecDate} = this.state;
     let res = {ga: `${0} weeks, ${0} days`, edd: '-', lmp: '-'};
     let date;
     let gams;
-    switch (from) {
-      case 'GA': {
-        // Check that either weeks or days is entered in the input
-        if (!weeks && !days) break;
-        // Check if strings include anything other than Digits or blank space
-        if (!weeks.match(/^(\s*|\d+)$/) || !days.match(/^(\s*|\d+)$/)) break;
-        gams =
-          (parseInt(weeks || 0) * 7 + parseInt(days || 0)) * c.t.day +
-          (Date.now() - gaRecDate);
-        res = {
-          ga: `${Math.floor(gams / c.t.week) || 0} weeks, ${
-            Math.floor((gams % c.t.week) / c.t.day) || 0
-          } days`,
-          edd: new Date(Date.now() - gams + 280 * c.t.day).toDateString(),
-          lmp: new Date(Date.now() - gams).toDateString(),
-        };
-        break;
-      }
-      case 'LMP': {
-        date = lmpDate;
-        if (!date) break;
-        gams = Date.now() - date.getTime();
-        res = {
-          ga: `${Math.floor(gams / (c.t.day * 7))} weeks, ${Math.round(
-            (gams % (c.t.day * 7)) / c.t.day,
-          )} days`,
-          edd: new Date(date.getTime() + 280 * c.t.day).toDateString(),
-          lmp: new Date(date.getTime()).toDateString(),
-        };
-        break;
-      }
-      case 'EDD': {
-        //date is EDD expressed in MS at UTC 00:00 for that day
-        date = Math.floor(eddDate.getTime() / c.t.day) * c.t.day;
-        if (!date) break;
-        // gams is today at UTC 00:00, minus the EDD date at UTC 00:00 less 280 days, all in the end expressed in MS
-        gams =
-          (Math.floor(Date.now() / c.t.day) - (date / c.t.day - 280)) * c.t.day;
+    /*
+    // From GA
+    // Check that either weeks or days is entered in the input
+    if (!weeks && !days) return new Error('Check calc()');
+    // Check if strings include anything other than Digits or blank space
+    if (!weeks.match(/^(\s*|\d+)$/) || !days.match(/^(\s*|\d+)$/)) return new Error('Check calc()');
+    gams =
+      (parseInt(weeks || 0) * 7 + parseInt(days || 0)) * c.t.day +
+      (Date.now() - gaRecDate);
+    res.ga = {
+      ga: `${Math.floor(gams / c.t.week) || 0} weeks, ${
+        Math.floor((gams % c.t.week) / c.t.day) || 0
+      } days`,
+      edd: new Date(Date.now() - gams + 280 * c.t.day).toDateString(),
+      lmp: new Date(Date.now() - gams).toDateString(),
+    };
 
-        res = {
-          ga: `${Math.floor(gams / (c.t.day * 7))} weeks, ${Math.round(
-            (gams % (c.t.day * 7)) / c.t.day,
-          )} days`,
-          edd: new Date(date).toDateString(),
-          lmp: new Date(date - 280 * c.t.day).toDateString(),
-        };
-        break;
-      }
-      default: {
-        break;
-      }
-    }
+    // From LMP
+    date = lmpDate;
+    if (!date) return new Error('Check calc()');
+    gams = Date.now() - date.getTime();
+    res.lmp = {
+      ga: `${Math.floor(gams / (c.t.day * 7))} weeks, ${Math.round(
+        (gams % (c.t.day * 7)) / c.t.day,
+      )} days`,
+      edd: new Date(date.getTime() + 280 * c.t.day).toDateString(),
+      lmp: new Date(date.getTime()).toDateString(),
+    };
+
+    */
+    //From EDD
+    //date is EDD expressed in MS at UTC 00:00 for that day
+    date = Math.floor(eddDate.getTime() / c.t.day) * c.t.day;
+    // gams is today at UTC 00:00, minus the EDD date at UTC 00:00 less 280 days, all in the end expressed in MS
+    gams =
+      (Math.floor(Date.now() / c.t.day) - (date / c.t.day - 280)) * c.t.day;
+
+    res.edd = {
+      ga: `${Math.floor(gams / (c.t.day * 7))} weeks, ${Math.round(
+        (gams % (c.t.day * 7)) / c.t.day,
+      )} days`,
+      edd: new Date(date),
+      lmp: new Date(eddDate - 280 * c.t.day),
+    };
+
     return res;
   }
 
@@ -428,6 +424,8 @@ class Calculator extends Component {
   render() {
     let {theme} = this.props;
     const {from} = this.state;
+    let calc = this.calc();
+    console.log(calc);
     return (
       <>
         <View
@@ -532,6 +530,28 @@ class Calculator extends Component {
               <View
                 style={[styles.card, {backgroundColor: c.themes[theme].modal}]}>
                 <Text>Clients Estimated Due Date is...</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.inputButton,
+                    {backgroundColor: c.themes[theme].modal},
+                  ]}
+                  onPress={() => this.setState({showEddPicker: true})}>
+                  <Text>{calc.edd.edd.toDateString()}</Text>
+                </TouchableOpacity>
+                {this.state.showEddPicker && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={this.state.eddDate}
+                    accentColor={c.themes[theme].accent}
+                    mode="date"
+                    is24Hour={true}
+                    onChange={(e, date) =>
+                      this.setState({showEddPicker: false, eddDate: date})
+                    }
+                  />
+                )}
+                <Text>Clients GA: {calc.edd.ga}</Text>
+                <Text>Clients LMP: {calc.edd.lmp.toDateString()}</Text>
               </View>
             </View>
             <View style={styles.cardContainer}>
@@ -631,13 +651,27 @@ const styles = {
     alignItems: 'center',
     height: '100%',
     width: c.device.width,
-    borderWidth: 1,
   },
   card: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: '80%',
+    width: '95%',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+  },
+  inputButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: '95%',
-    width: '95%',
+    width: 200,
+    height: 45,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
