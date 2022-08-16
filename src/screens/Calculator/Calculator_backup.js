@@ -7,17 +7,13 @@ import {
   LayoutAnimation,
   Platform,
   TextInput,
-  Animated,
-  ScrollView,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 const c = require('../../assets/constants');
 
 import SlideUpModal from '../../SlideUpModal/';
-import SVGIcon from '../../components/SVGIcon/';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -413,89 +409,30 @@ class Calculator extends Component {
             styles.container,
             {backgroundColor: c.themes[theme].background},
           ]}>
-          <View style={styles.header}>
-            {/** background start **/}
-
-            <View
-              style={{
-                height: '100%',
-                width: '100%',
-                position: 'absolute',
-                top: 0,
-                backgroundColor: c.themes[theme].accent,
-              }}
-            />
-            {/** background end **/}
-            {/** headerContent Start **/}
-            <Text
-              style={[
-                {
-                  color: c.themes[theme].lightText,
-                  fontSize: 24,
-                  marginLeft: 15,
-                },
-                c.titleFont,
-              ]}>
-              Calculate
-            </Text>
-            <SIcon
-              name="info"
-              onPress={() => this.calcInfo.onPressButton()}
-              style={{position: 'absolute', right: 15, bottom: 5}}
-              size={20}
-              color={c.themes[theme].lightText}
-            />
-            {/** headerContent End **/}
-          </View>
-          <View style={{width: '100%', height: 26, alignItems: 'center'}}>
-            <SVGIcon
-              name="stackedWaves"
-              color={c.themes[theme].accent}
-              style={{
-                transform: [{rotate: '180deg'}],
-                position: 'absolute',
-                height: '200%',
-                top: 0,
-              }}
-            />
-            <Text style={{color: c.themes[theme].lightText}}>
-              I am entering the...
-            </Text>
-          </View>
-          {/** indicator start **/}
           <View
-            style={[
-              styles.cardIndicatorContainer,
-              {
-                backgroundColor: c.themes[theme].modal,
-              },
-            ]}>
-            <Animated.View
-              style={[
-                styles.indicator,
-                {backgroundColor: c.themes[theme].accent},
-              ]}
-            />
-            {['EDD', 'GA', 'LMP'].map(type => (
-              <TouchableOpacity
-                style={{flex: 1, alignItems: 'center'}}
-                onPress={() => this.onPressFrom(type)}>
-                <Text
-                  style={[
-                    styles.indText,
-                    {
-                      color:
-                        from === type
-                          ? c.themes[theme].lightText
-                          : c.themes[theme].text,
-                    },
-                  ]}>
-                  {type}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            style={[styles.header, {backgroundColor: c.themes[theme].accent}]}>
+            <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
+              <Text
+                style={[
+                  {
+                    color: c.themes[theme].lightText,
+                    fontSize: 36,
+                    marginLeft: 20,
+                  },
+                  c.titleFont,
+                ]}>
+                Calculate
+              </Text>
+              <MCIcons
+                name="information-outline"
+                onPress={() => this.calcInfo.onPressButton()}
+                style={{position: 'absolute', right: 5}}
+                size={35}
+                color={c.themes[theme].lightText}
+              />
+            </View>
           </View>
-          {/** indicator end **/}
+
           <View
             style={[
               styles.body,
@@ -511,6 +448,77 @@ class Calculator extends Component {
                 justifyContent: 'space-around',
                 alignItems: 'center',
               }}>
+              <View style={[styles.row, {padding: 5, width: '100%'}]}>
+                <Text
+                  style={[
+                    {color: c.themes[theme].text, fontSize: 24, marginLeft: 20},
+                    c.titleFont,
+                  ]}>
+                  Enter
+                </Text>
+              </View>
+              <View style={[styles.row]}>
+                <TouchableOpacity
+                  onPress={() => this.onPressFrom('EDD')}
+                  style={[
+                    styles.button,
+                    {
+                      borderColor: c.themes[theme].border,
+                      backgroundColor: c.themes[theme].background,
+                    },
+                    from === 'EDD' && {elevation: 5},
+                  ]}>
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      {color: c.themes[theme].text},
+                      from === 'EDD' && {color: c.themes[theme].accent},
+                    ]}>
+                    EDD
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => this.onPressFrom('GA')}
+                  style={[
+                    styles.button,
+                    {
+                      borderColor: c.themes[theme].border,
+                      backgroundColor: c.themes[theme].background,
+                    },
+                    from === 'GA' && {elevation: 5},
+                  ]}>
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      {color: c.themes[theme].text},
+                      from === 'GA' && {color: c.themes[theme].accent},
+                    ]}>
+                    GA
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => this.onPressFrom('LMP')}
+                  style={[
+                    styles.button,
+                    {
+                      borderColor: c.themes[theme].border,
+                      backgroundColor: c.themes[theme].background,
+                    },
+                    from === 'LMP' && {elevation: 5},
+                  ]}>
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      {color: c.themes[theme].text},
+                      from === 'LMP' && {color: c.themes[theme].accent},
+                    ]}>
+                    LMP
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
               <View style={styles.inputRow}>{this.renderInputRow()}</View>
             </View>
 
@@ -540,50 +548,6 @@ class Calculator extends Component {
 }
 
 const styles = {
-  header: {
-    height: 37,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-  },
-  cardIndicatorContainer: {
-    width: '75%',
-    height: 25,
-    borderRadius: 50,
-    marginVertical: 5,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 3,
-  },
-  indText: {
-    fontSize: 14,
-  },
-  indicator: {
-    width: (c.device.width * 0.7) / 3,
-    height: '100%',
-    borderRadius: 50,
-    position: 'absolute',
-  },
-  body: {
-    flex: 1,
-    width: '95%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderWidth: 1,
-    borderRadius: 10,
-    elevation: 1,
-  },
   panel: {
     flex: 1,
     backgroundColor: 'transparent',
@@ -613,6 +577,12 @@ const styles = {
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  header: {
+    height: 65,
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   sectionTop: {
     height: 40,
     width: '95%',
@@ -622,6 +592,18 @@ const styles = {
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
+  },
+  body: {
+    flex: 1,
+    width: '95%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderWidth: 1,
+    marginVertical: 10,
+    borderRadius: 10,
+    elevation: 1,
   },
   inputRow: {
     width: '100%',

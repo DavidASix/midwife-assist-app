@@ -4,7 +4,6 @@ import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 import c from '../assets/constants';
 
 // Animated values used in the TabBar Component
-let opacityAnimation = new Animated.Value(1);
 let scrollAnimation = new Animated.ValueXY();
 let indicatorPosition = new Animated.ValueXY();
 
@@ -12,7 +11,6 @@ const containerWidth = c.device.width * 0.7;
 const linksInBar = 3;
 
 const BottomTabBar = props => {
-  console.log(props);
   const {state, descriptors, navigation, theme} = props;
 
   //Animate the indicator position
@@ -99,7 +97,6 @@ const BottomTabBar = props => {
         style={{height: 40, width: '100%', position: 'absolute', top: 0}}
       />
       <View
-        source={require('../assets/images/tabBarDivider.png')}
         style={{
           height: 11,
           width: '100%',
@@ -126,19 +123,18 @@ const BottomTabBar = props => {
 
 const styles = {
   outerContainer: {
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     width: '100%',
     flex: 0,
     height: 50,
+    paddingBottom: 2,
   },
   mainContainer: {
     flexDirection: 'row',
     padding: 0,
     width: containerWidth,
-    height: 40,
-    paddingBottom: 3,
-    opacity: opacityAnimation,
+    height: 45,
     transform: scrollAnimation.getTranslateTransform(),
   },
   indicatorContainer: {
@@ -151,7 +147,7 @@ const styles = {
   },
   indicator: {
     backgroundColor: 'white',
-    height: 40,
+    height: 45,
     width: 50,
     elevation: 5,
     borderRadius: 10,
