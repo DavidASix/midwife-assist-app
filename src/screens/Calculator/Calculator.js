@@ -12,12 +12,13 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 
-import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 const c = require('../../assets/constants');
 
 import SlideUpModal from '../../SlideUpModal/';
 import SVGIcon from '../../components/SVGIcon/';
+
+const indicatorWidth = 0.8;
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -37,19 +38,9 @@ class Calculator extends Component {
       gaRecDate: new Date(Date.now()),
     };
     this.state = this.initialState;
-  }
-
-  onPressFrom(from) {
-    LayoutAnimation.configureNext({
-      duration: 700,
-      create: {type: 'spring', springDamping: 0.4, property: 'scaleY'},
-      update: {type: 'spring', springDamping: 0.4},
-    });
-    LayoutAnimation.configureNext({
-      duration: 50,
-      delete: {type: 'easeIn', springDamping: 0.4, property: 'scaleY'},
-    });
-    this.setState({from});
+    this.pageScroll = null;
+    this.scrollPosition = new Animated.ValueXY();
+    this.from = ['EDD', 'GA', 'LMP'];
   }
 
   renderInputRow() {
@@ -403,6 +394,36 @@ class Calculator extends Component {
     );
   }
 
+  onScroll = e => {
+    let offset = e.nativeEvent.contentOffset.x;
+    let calculatedOffset = (offset * indicatorWidth) / 3;
+    let index = Math.round(offset / c.device.width);
+    let activeIndex = this.from.indexOf(this.state.from);
+    if (index !== activeIndex) this.setState({from: this.from[index]});
+
+    Animated.timing(this.scrollPosition, {
+      toValue: {x: calculatedOffset, y: 0},
+      useNativeDriver: false,
+      duration: 10,
+    }).start();
+  };
+
+  onPressFrom(from) {
+    /*
+    LayoutAnimation.configureNext({
+      duration: 700,
+      create: {type: 'spring', springDamping: 0.4, property: 'scaleY'},
+      update: {type: 'spring', springDamping: 0.4},
+    });
+    LayoutAnimation.configureNext({
+      duration: 50,
+      delete: {type: 'easeIn', springDamping: 0.4, property: 'scaleY'},
+    });*/
+    this.setState({from});
+    let index = this.from.indexOf(from);
+    this.pageScroll.scrollTo({x: c.device.width * index, y: 0, animated: true});
+  }
+
   render() {
     let {theme} = this.props;
     const {from} = this.state;
@@ -473,13 +494,17 @@ class Calculator extends Component {
             <Animated.View
               style={[
                 styles.indicator,
-                {backgroundColor: c.themes[theme].accent},
+                {
+                  backgroundColor: c.themes[theme].accent,
+                  transform: this.scrollPosition.getTranslateTransform(),
+                },
               ]}
             />
-            {['EDD', 'GA', 'LMP'].map(type => (
+            {this.from.map((type, i) => (
               <TouchableOpacity
+                key={i}
                 style={{flex: 1, alignItems: 'center'}}
-                onPress={() => this.onPressFrom(type)}>
+                onPress={() => this.onPressFrom(type, i)}>
                 <Text
                   style={[
                     styles.indText,
@@ -496,6 +521,38 @@ class Calculator extends Component {
             ))}
           </View>
           {/** indicator end **/}
+          <ScrollView
+            ref={ref => (this.pageScroll = ref)}
+            showsHorizontalScrollIndicator={false}
+            onScroll={evt => this.onScroll(evt)}
+            horizontal
+            pagingEnabled>
+            <View
+              style={{
+                width: c.device.width,
+                borderWidth: 1,
+                height: c.device.width,
+              }}>
+              <Text>Blah Blah Blah Blah </Text>
+            </View>
+            <View
+              style={{
+                width: c.device.width,
+                borderWidth: 1,
+                height: c.device.width,
+              }}>
+              <Text>Blah Blah Blah Blah </Text>
+            </View>
+            <View
+              style={{
+                width: c.device.width,
+                borderWidth: 1,
+                height: c.device.width,
+              }}>
+              <Text>Blah Blah Blah Blah </Text>
+            </View>
+          </ScrollView>
+          {/**}
           <View
             style={[
               styles.body,
@@ -532,6 +589,7 @@ class Calculator extends Component {
 
             {this.renderResults()}
           </View>
+          **/}
         </View>
         {this.renderSlidingPanel()}
       </>
@@ -548,7 +606,7 @@ const styles = {
     alignItems: 'flex-end',
   },
   cardIndicatorContainer: {
-    width: '75%',
+    width: c.device.width * indicatorWidth,
     height: 25,
     borderRadius: 50,
     marginVertical: 5,
@@ -568,7 +626,7 @@ const styles = {
     fontSize: 14,
   },
   indicator: {
-    width: (c.device.width * 0.7) / 3,
+    width: (c.device.width * indicatorWidth) / 3,
     height: '100%',
     borderRadius: 50,
     position: 'absolute',
