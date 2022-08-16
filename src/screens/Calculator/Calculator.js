@@ -9,7 +9,7 @@ import {
   TextInput,
   Animated,
   ScrollView,
-  Button
+  Button,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -33,12 +33,13 @@ class Calculator extends Component {
     super(props);
     this.initialState = {
       from: 'EDD',
-      weeks: '',
-      days: '',
+      weeks: 0,
+      days: 0,
       lmpDate: new Date(Date.now() - 280 * c.t.day),
       eddDate: new Date(Date.now() + 280 * c.t.day),
       gaRecDate: new Date(Date.now()),
       showEddPicker: false,
+      showLmpPicker: false,
     };
     this.state = this.initialState;
     this.pageScroll = null;
@@ -60,13 +61,10 @@ class Calculator extends Component {
         return (
           <>
             <View
-              style={[
-                styles.row,
-                {borderWidth: 1, borderColor: 'transparent'},
-              ]}>
+              style={[sty.row, {borderWidth: 1, borderColor: 'transparent'}]}>
               <TextInput
                 style={[
-                  styles.textInput,
+                  sty.textInput,
                   {
                     borderColor: c.themes[theme].border,
                     color: c.themes[theme].text,
@@ -85,7 +83,7 @@ class Calculator extends Component {
               </Text>
               <TextInput
                 style={[
-                  styles.textInput,
+                  sty.textInput,
                   {
                     borderColor: c.themes[theme].border,
                     color: c.themes[theme].text,
@@ -189,20 +187,18 @@ class Calculator extends Component {
       edd: new Date(Date.now() - gams + 280 * c.t.day).toDateString(),
       lmp: new Date(Date.now() - gams).toDateString(),
     };
-
+*/
     // From LMP
     date = lmpDate;
-    if (!date) return new Error('Check calc()');
     gams = Date.now() - date.getTime();
     res.lmp = {
       ga: `${Math.floor(gams / (c.t.day * 7))} weeks, ${Math.round(
         (gams % (c.t.day * 7)) / c.t.day,
       )} days`,
-      edd: new Date(date.getTime() + 280 * c.t.day).toDateString(),
-      lmp: new Date(date.getTime()).toDateString(),
+      edd: new Date(date.getTime() + 280 * c.t.day),
+      lmp: new Date(date),
     };
 
-    */
     //From EDD
     //date is EDD expressed in MS at UTC 00:00 for that day
     date = Math.floor(eddDate.getTime() / c.t.day) * c.t.day;
@@ -233,7 +229,7 @@ class Calculator extends Component {
           justifyContent: 'space-around',
           alignItems: 'center',
         }}>
-        <View style={[styles.row]}>
+        <View style={[sty.row]}>
           <Text
             style={[
               {marginHorizontal: 10, color: c.themes[theme].text},
@@ -243,7 +239,7 @@ class Calculator extends Component {
           </Text>
           <Text
             style={[
-              styles.textInput,
+              sty.textInput,
               {
                 borderColor: c.themes[theme].border,
                 maxWidth: 200,
@@ -256,7 +252,7 @@ class Calculator extends Component {
         </View>
 
         {from !== 'LMP' && (
-          <View style={[styles.row]}>
+          <View style={[sty.row]}>
             <Text
               style={[
                 {marginHorizontal: 10, color: c.themes[theme].text},
@@ -266,7 +262,7 @@ class Calculator extends Component {
             </Text>
             <Text
               style={[
-                styles.textInput,
+                sty.textInput,
                 {
                   borderColor: c.themes[theme].border,
                   maxWidth: 200,
@@ -280,7 +276,7 @@ class Calculator extends Component {
         )}
 
         {from !== 'EDD' && (
-          <View style={[styles.row]}>
+          <View style={[sty.row]}>
             <Text
               style={[
                 {marginHorizontal: 10, color: c.themes[theme].text},
@@ -290,7 +286,7 @@ class Calculator extends Component {
             </Text>
             <Text
               style={[
-                styles.textInput,
+                sty.textInput,
                 {
                   borderColor: c.themes[theme].border,
                   maxWidth: 200,
@@ -325,30 +321,30 @@ class Calculator extends Component {
           borderColor: c.themes[theme].border,
         }}
         peek={0}>
-        <View style={styles.infoRow}>
-          <Text style={[styles.infoRowText, textColor, {flex: 1}, c.titleFont]}>
+        <View style={sty.infoRow}>
+          <Text style={[sty.infoRowText, textColor, {flex: 1}, c.titleFont]}>
             GA:
           </Text>
           <Text
-            style={[styles.infoRowText, textColor, {flex: 3, fontSize: 16}]}>
+            style={[sty.infoRowText, textColor, {flex: 3, fontSize: 16}]}>
             Gestational Age
           </Text>
         </View>
-        <View style={styles.infoRow}>
-          <Text style={[styles.infoRowText, textColor, {flex: 1}, c.titleFont]}>
+        <View style={sty.infoRow}>
+          <Text style={[sty.infoRowText, textColor, {flex: 1}, c.titleFont]}>
             LMP:
           </Text>
           <Text
-            style={[styles.infoRowText, textColor, {flex: 3, fontSize: 16}]}>
+            style={[sty.infoRowText, textColor, {flex: 3, fontSize: 16}]}>
             Last Mensteral Period
           </Text>
         </View>
-        <View style={styles.infoRow}>
-          <Text style={[styles.infoRowText, textColor, {flex: 1}, c.titleFont]}>
+        <View style={sty.infoRow}>
+          <Text style={[sty.infoRowText, textColor, {flex: 1}, c.titleFont]}>
             EDD:
           </Text>
           <Text
-            style={[styles.infoRowText, textColor, {flex: 3, fontSize: 16}]}>
+            style={[sty.infoRowText, textColor, {flex: 3, fontSize: 16}]}>
             Estimated Delivery Date
           </Text>
         </View>
@@ -370,19 +366,19 @@ class Calculator extends Component {
           />
         </View>
 
-        <View style={styles.infoRow}>
-          <Text style={[styles.infoRowTextSmall, textColor, {flex: 1}]}>
+        <View style={sty.infoRow}>
+          <Text style={[sty.infoRowTextSmall, textColor, {flex: 1}]}>
             These calculations use the same method as "pregnancy wheels".
           </Text>
         </View>
-        <View style={styles.infoRow}>
-          <Text style={[styles.infoRowTextSmall, textColor, {flex: 1}]}>
+        <View style={sty.infoRow}>
+          <Text style={[sty.infoRowTextSmall, textColor, {flex: 1}]}>
             Accuracy of the calculation depends on the accuracy of the inputted
             information.
           </Text>
         </View>
-        <View style={styles.infoRow}>
-          <Text style={[styles.infoRowTextSmall, textColor, {flex: 1}]}>
+        <View style={sty.infoRow}>
+          <Text style={[sty.infoRowTextSmall, textColor, {flex: 1}]}>
             Because of this calculations may be subject to margin of error.
           </Text>
         </View>
@@ -421,18 +417,28 @@ class Calculator extends Component {
     this.pageScroll.scrollTo({x: c.device.width * index, y: 0, animated: true});
   }
 
+  onEnterDay(text) {
+    if (parseInt(text) > 6) {
+      this.setState({
+        weeks: `${(parseInt(this.state.weeks) || 0) + 1}`,
+        days: `${parseInt(text) % 7}`,
+      });
+    } else {
+      this.setState({days: text});
+    }
+  }
+
   render() {
     let {theme} = this.props;
+    // ts is themeshort
+    const thm = c.themes[theme];
     const {from} = this.state;
+    const {weeks, days, lmpDate, eddDate, gaRecDate} = this.state;
     let calc = this.calc();
     return (
       <>
-        <View
-          style={[
-            styles.container,
-            {backgroundColor: c.themes[theme].background},
-          ]}>
-          <View style={styles.header}>
+        <View style={[sty.container, {backgroundColor: thm.background}]}>
+          <View style={sty.header}>
             {/** background start **/}
 
             <View
@@ -441,7 +447,7 @@ class Calculator extends Component {
                 width: '100%',
                 position: 'absolute',
                 top: 0,
-                backgroundColor: c.themes[theme].accent,
+                backgroundColor: thm.accent,
               }}
             />
             {/** background end **/}
@@ -449,7 +455,7 @@ class Calculator extends Component {
             <Text
               style={[
                 {
-                  color: c.themes[theme].lightText,
+                  color: thm.lightText,
                   fontSize: 24,
                   marginLeft: 15,
                 },
@@ -462,14 +468,14 @@ class Calculator extends Component {
               onPress={() => this.calcInfo.onPressButton()}
               style={{position: 'absolute', right: 15, bottom: 5}}
               size={20}
-              color={c.themes[theme].lightText}
+              color={thm.lightText}
             />
             {/** headerContent End **/}
           </View>
           <View style={{width: '100%', height: 26, alignItems: 'center'}}>
             <SVGIcon
               name="stackedWaves"
-              color={c.themes[theme].accent}
+              color={thm.accent}
               style={{
                 transform: [{rotate: '180deg'}],
                 position: 'absolute',
@@ -478,23 +484,16 @@ class Calculator extends Component {
                 top: 0,
               }}
             />
-            <Text style={{color: c.themes[theme].lightText}}>
-              I am entering the...
-            </Text>
+            <Text style={{color: thm.lightText}}>I am entering the...</Text>
           </View>
           {/** indicator start **/}
           <View
-            style={[
-              styles.cardIndicatorContainer,
-              {
-                backgroundColor: c.themes[theme].modal,
-              },
-            ]}>
+            style={[sty.cardIndicatorContainer, {backgroundColor: thm.modal}]}>
             <Animated.View
               style={[
-                styles.indicator,
+                sty.indicator,
                 {
-                  backgroundColor: c.themes[theme].accent,
+                  backgroundColor: thm.accent,
                   transform: this.scrollPosition.getTranslateTransform(),
                 },
               ]}
@@ -506,13 +505,8 @@ class Calculator extends Component {
                 onPress={() => this.onPressFrom(type)}>
                 <Text
                   style={[
-                    styles.indText,
-                    {
-                      color:
-                        from === type
-                          ? c.themes[theme].lightText
-                          : c.themes[theme].text,
-                    },
+                    sty.indText,
+                    {color: from === type ? thm.lightText : thm.text},
                   ]}>
                   {type}
                 </Text>
@@ -520,29 +514,31 @@ class Calculator extends Component {
             ))}
           </View>
           {/** indicator end **/}
+          {/** Card Scrollview Start **/}
           <ScrollView
             ref={ref => (this.pageScroll = ref)}
             showsHorizontalScrollIndicator={false}
             onScroll={evt => this.onScroll(evt)}
             horizontal
             pagingEnabled>
-            <View style={styles.cardContainer}>
-              <View
-                style={[styles.card, {backgroundColor: c.themes[theme].modal}]}>
-                <Text>Clients Estimated Due Date is...</Text>
+            {/** EDD Card Render **/}
+            <View style={sty.cardContainer}>
+              <View style={[sty.card, {backgroundColor: thm.modal}]}>
+                <Text style={[sty.inputTitle, {color: thm.text}]}>
+                  My client's estimated due date is...
+                </Text>
                 <TouchableOpacity
-                  style={[
-                    styles.inputButton,
-                    {backgroundColor: c.themes[theme].modal},
-                  ]}
+                  style={[sty.inputButton, {backgroundColor: thm.modal}]}
                   onPress={() => this.setState({showEddPicker: true})}>
-                  <Text>{calc.edd.edd.toDateString()}</Text>
+                  <Text style={{fontSize: 18}}>
+                    {calc.edd.edd.toDateString()}
+                  </Text>
                 </TouchableOpacity>
                 {this.state.showEddPicker && (
                   <DateTimePicker
                     testID="dateTimePicker"
                     value={this.state.eddDate}
-                    accentColor={c.themes[theme].accent}
+                    accentColor={thm.accent}
                     mode="date"
                     is24Hour={true}
                     onChange={(e, date) =>
@@ -550,61 +546,123 @@ class Calculator extends Component {
                     }
                   />
                 )}
-                <Text>Clients GA: {calc.edd.ga}</Text>
-                <Text>Clients LMP: {calc.edd.lmp.toDateString()}</Text>
+                <View
+                  style={{
+                    borderColor: thm.border,
+                    borderTopWidth: 1,
+                    width: '80%',
+                    alignSelf: 'center',
+                    marginVertical: 10,
+                  }}
+                />
+                {/** Output Verbiage **/}
+                <Text style={sty.outputTitle}>
+                  Their babies gestational age is roughly:
+                </Text>
+                <Text style={{alignSelf: 'center'}}>{calc.edd.ga}</Text>
+
+                <Text style={sty.outputTitle}>
+                  The client's last mensteral period started on
+                </Text>
+                <Text style={{alignSelf: 'center'}}>
+                  {calc.edd.lmp.toDateString()}
+                </Text>
+                {/** Output Verbiage End **/}
               </View>
             </View>
-            <View style={styles.cardContainer}>
-              <View
-                style={[styles.card, {backgroundColor: c.themes[theme].modal}]}>
-                <Text>Blah Blah Blah Blah </Text>
+            {/** EDD Card Render END **/}
+
+            {/** GA Card Render **/}
+            <View style={sty.cardContainer}>
+              <View style={[sty.card, {backgroundColor: thm.modal}]}>
+                <Text style={[sty.inputTitle, {color: thm.text}]}>
+                  The babies gestational age is...
+                </Text>
+                {/** GA Input Row **/}
+                <View style={sty.row}>
+                  <TextInput
+                    style={[sty.ti, {borderColor: thm.border, color: thm.text}]}
+                    onChangeText={text => this.setState({weeks: text})}
+                    value={weeks}
+                    keyboardType="decimal-pad"
+                    maxLength={2}
+                    placeholder="10"
+                    keyboardAppearance={theme}
+                    placeholderTextColor={thm.text + 60}
+                  />
+                  <Text style={{marginHorizontal: 10, color: thm.text}}>
+                    Weeks
+                  </Text>
+                  <TextInput
+                    style={[sty.ti, {borderColor: thm.border, color: thm.text}]}
+                    onChangeText={text => this.onEnterDay(text)}
+                    value={days}
+                    keyboardType="decimal-pad"
+                    maxLength={1}
+                    placeholder="4"
+                    keyboardAppearance={theme}
+                    placeholderTextColor={thm.text + 60}
+                  />
+                  <Text style={{marginHorizontal: 10, color: thm.text}}>
+                    Days
+                  </Text>
+                </View>
+                {/** GA Input Row END **/}
               </View>
             </View>
-            <View style={styles.cardContainer}>
-              <View
-                style={[styles.card, {backgroundColor: c.themes[theme].modal}]}>
-                <Text>Blah Blah Blah Blah </Text>
+            {/** GA Card Render END **/}
+
+            {/** LMP Card Render **/}
+            <View style={sty.cardContainer}>
+              <View style={[sty.card, {backgroundColor: thm.modal}]}>
+                <Text style={[sty.inputTitle, {color: thm.text}]}>
+                  My client's last menstral period was...
+                </Text>
+                <TouchableOpacity
+                  style={[sty.inputButton, {backgroundColor: thm.modal}]}
+                  onPress={() => this.setState({showLmpPick: true})}>
+                  <Text style={{fontSize: 18}}>
+                    {calc.lmp.lmp.toDateString()}
+                  </Text>
+                </TouchableOpacity>
+                {this.state.showLmpPick && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={this.state.lmpDate}
+                    accentColor={thm.accent}
+                    mode="date"
+                    is24Hour={true}
+                    onChange={(e, date) =>
+                      this.setState({showLmpPick: false, lmpDate: date})
+                    }
+                  />
+                )}
+                <View
+                  style={{
+                    borderColor: thm.border,
+                    borderTopWidth: 1,
+                    width: '80%',
+                    alignSelf: 'center',
+                    marginVertical: 10,
+                  }}
+                />
+                {/** Output Verbiage **/}
+                <Text style={sty.outputTitle}>
+                  Their babies gestational age is roughly:
+                </Text>
+                <Text style={{alignSelf: 'center'}}>{calc.lmp.ga}</Text>
+
+                <Text style={sty.outputTitle}>
+                  The client's estimated due date is:
+                </Text>
+                <Text style={{alignSelf: 'center'}}>
+                  {calc.lmp.edd.toDateString()}
+                </Text>
+                {/** Output Verbiage End **/}
               </View>
             </View>
+            {/** LMP Card Render END **/}
           </ScrollView>
-          {/**}
-          <View
-            style={[
-              styles.body,
-              {
-                backgroundColor: c.themes[theme].modal,
-                borderColor: c.themes[theme].border,
-              },
-            ]}>
-            <View
-              style={{
-                flex: 3,
-                width: '100%',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-              }}>
-              <View style={styles.inputRow}>{this.renderInputRow()}</View>
-            </View>
-
-            <View
-              style={{
-                flex: 0.5,
-                width: '80%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <View
-                style={{
-                  height: 1,
-                  width: '100%',
-                  backgroundColor: c.themes[theme].border,
-                }}
-              />
-            </View>
-
-            {this.renderResults()}
-          </View>
-          **/}
         </View>
         {this.renderSlidingPanel()}
       </>
@@ -612,7 +670,7 @@ class Calculator extends Component {
   }
 }
 
-const styles = {
+const sty = {
   header: {
     height: 37,
     width: '100%',
@@ -647,17 +705,20 @@ const styles = {
     position: 'absolute',
   },
   cardContainer: {
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     height: '100%',
     width: c.device.width,
+    paddingVertical: 10,
   },
   card: {
     justifyContent: 'flex-start',
-    alignItems: 'center',
-    height: '80%',
+    alignItems: 'flex-start',
+    flex: 0,
     width: '95%',
     borderRadius: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -670,8 +731,10 @@ const styles = {
   inputButton: {
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
     width: 200,
     height: 45,
+    marginVertical: 5,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
@@ -681,6 +744,24 @@ const styles = {
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
+  },
+  inputTitle: {
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  outputTitle: {
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  ti: {
+    flex: 1,
+    borderBottomWidth: 1,
+    textAlign: 'center',
+    fontSize: 20,
   },
   body: {
     flex: 1,
@@ -736,14 +817,6 @@ const styles = {
     width: '100%',
     flex: 3,
     flexDirection: 'column',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-  },
-  row: {
-    width: '100%',
-    flex: 1,
-    flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingHorizontal: 10,

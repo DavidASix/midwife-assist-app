@@ -68,7 +68,7 @@ c.themes = {
     background: '#161616',
     foreground: '#FFFFFF',
     //modal: '#363636',
-    modal: '#161616',
+    modal: '#464646',
     accent: '#82B983',
     lightText: '#F0F0F0',
     text: '#E0E0E0',
