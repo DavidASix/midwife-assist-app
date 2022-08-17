@@ -3,26 +3,16 @@ import {
   View,
   Text,
   TouchableOpacity,
-  UIManager,
-  Platform,
   TextInput,
   Animated,
   ScrollView,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-import SIcon from 'react-native-vector-icons/SimpleLineIcons';
-const c = require('../../assets/constants');
-
 import SVGIcon from '../../components/SVGIcon/';
 
+const c = require('../../assets/constants');
 const indicatorWidth = 0.8;
-
-if (Platform.OS === 'android') {
-  if (UIManager.setLayoutAnimationEnabledExperimental) {
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-  }
-}
 
 class Calculator extends Component {
   constructor(props) {
@@ -161,13 +151,6 @@ class Calculator extends Component {
             ]}>
             Calculate
           </Text>
-          <SIcon
-            name="info"
-            onPress={() => this.calcInfo.onPressButton()}
-            style={{position: 'absolute', right: 15, bottom: 5}}
-            size={20}
-            color={thm.lightText}
-          />
           {/** headerContent End **/}
         </View>
         <View style={{width: '100%', height: 26, alignItems: 'center'}}>

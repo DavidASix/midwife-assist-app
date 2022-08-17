@@ -18,7 +18,7 @@ import {
   EditClient,
   AddNote,
 } from '../screens/Client/';
-import {Calculator, CalculatorInfo} from '../screens/Calculator/';
+import Calculator from '../screens/Calculator/';
 import {Tutorial} from '../screens/Tutorial/';
 import Settings from '../screens/Settings/';
 
@@ -28,29 +28,6 @@ const Stack = createStackNavigator();
 function mapStateToProps({settings}) {
   return {theme: settings.theme};
 }
-
-const CalcStack = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: true,
-        ...TransitionPresets.ModalSlideFromBottomIOS,
-      }}
-      initialRouteName="calc">
-      <Stack.Screen
-        name="calc"
-        component={Calculator}
-        options={({navigation, route}) => ({title: 'Calculator'})}
-      />
-      <Stack.Screen
-        name="calcInfo"
-        component={CalculatorInfo}
-        options={{cardStyle: {backgroundColor: 'transparent'}}}
-      />
-    </Stack.Navigator>
-  );
-};
 
 const ClientStack = () => {
   return (
@@ -112,7 +89,7 @@ const TabStateless = props => {
       screenOptions={{headerShown: false}}>
       <Tab.Screen
         name="calcStack"
-        component={CalcStack}
+        component={Calculator}
         options={{title: 'Calculator'}}
       />
       <Tab.Screen
