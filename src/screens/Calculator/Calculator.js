@@ -230,9 +230,7 @@ class Calculator extends Component {
                 )}
                 <View style={[sty.spacer, {borderColor: thm.border}]} />
                 {/** Output Verbiage **/}
-                <Text style={sty.outputTitle}>
-                  Their baby's gestational age is roughly:
-                </Text>
+                <Text style={sty.outputTitle}>Their gestational age is:</Text>
                 <Text style={{alignSelf: 'center'}}>{calc.edd.ga}</Text>
 
                 <Text style={sty.outputTitle}>
@@ -250,7 +248,7 @@ class Calculator extends Component {
             <View style={sty.cardContainer}>
               <View style={[sty.card, {backgroundColor: thm.modal}]}>
                 <Text style={[sty.inputTitle, {color: thm.text}]}>
-                  The baby's gestational age is...
+                  The gestational age is...
                 </Text>
                 {/** GA Input Row **/}
                 <View style={sty.row}>
@@ -329,9 +327,7 @@ class Calculator extends Component {
                 )}
                 <View style={[sty.spacer, {borderColor: thm.border}]} />
                 {/** Output Verbiage **/}
-                <Text style={sty.outputTitle}>
-                  Their baby's gestational age is roughly:
-                </Text>
+                <Text style={sty.outputTitle}>Their gestational age is:</Text>
                 <Text style={{alignSelf: 'center'}}>{calc.lmp.ga}</Text>
 
                 <Text style={sty.outputTitle}>

@@ -76,12 +76,12 @@ c.themes = {
   },
   light: {
     background: '#e8e8e8',
-    foreground: '#161616',
+    foreground: '#1f1f1f',
     modal: '#FFF',
     //modal: '#E0E0E0',
     accent: '#82B983', //accent: '#BD7BFF',
     lightText: '#F0F0F0',
-    text: '#161616',
+    text: '#1f1f1f',
     border: '#DDD',
   },
 };

@@ -11,8 +11,15 @@ import {
 } from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MIcons from 'react-native-vector-icons/MaterialIcons';
+import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 const c = require('../../assets/constants');
 import SlideUpModal from '../../SlideUpModal/';
+import SVGIcon from '../../components/SVGIcon/';
+
+const Github = 'http://www.github.com/davidasix';
+const Instagram = 'http://www.instagram.com/dave6dev';
+const Website = 'http://www.dave6.com/';
+const Email = 'mailto:developer@dave6.ca';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -95,8 +102,7 @@ class Settings extends Component {
   }
 
   renderRatingModal() {
-    //
-    let {theme} = this.props;
+    let thm = c.themes[this.props.theme];
     return (
       <SlideUpModal
         ref={ref => (this.rating = ref)}
@@ -109,11 +115,11 @@ class Settings extends Component {
           borderRadius: 10,
           borderWidth: 0.5,
           elevation: 4,
-          backgroundColor: c.themes[theme].background,
-          borderColor: c.themes[theme].border,
+          backgroundColor: thm.modal,
+          borderColor: thm.border,
         }}
         peek={0}>
-        <Text style={{color: c.themes[theme].text, marginVertical: 10}}>
+        <Text style={{color: thm.text, marginVertical: 10}}>
           Tell us what you think!
         </Text>
 
@@ -121,12 +127,12 @@ class Settings extends Component {
           <>
             <TouchableOpacity
               style={[
-                styles.row,
+                sty.row,
                 {
                   marginVertical: 10,
                   justifyContent: 'center',
-                  backgroundColor: c.themes[theme].accent,
-                  borderColor: c.themes[theme].border,
+                  backgroundColor: thm.accent,
+                  borderColor: thm.border,
                 },
               ]}
               onPress={this.onPressSubmitComment}>
@@ -134,24 +140,24 @@ class Settings extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                styles.row,
+                sty.row,
                 {
                   marginVertical: 10,
                   justifyContent: 'center',
-                  backgroundColor: c.themes[theme].accent,
-                  borderColor: c.themes[theme].border,
+                  backgroundColor: thm.accent,
+                  borderColor: thm.border,
                 },
               ]}
               onPress={() =>
                 Linking.openURL(
-                  'mailto:davidandersonsix@gmail.com?subject=Midwife Assist - Comment',
+                  'mailto:developer@dave6.ca?subject=Midwife Assist - Comment',
                 )
               }>
               <Text style={{color: c.themes.dark.text}}>Contact Developer</Text>
             </TouchableOpacity>
           </>
         ) : null}
-        <View style={[styles.row, {marginVertical: 10, borderWidth: 0}]}>
+        <View style={[sty.row, {marginVertical: 10, borderWidth: 0}]}>
           {this.stars()}
         </View>
       </SlideUpModal>
@@ -160,139 +166,140 @@ class Settings extends Component {
 
   render() {
     let {theme} = this.props;
+    let thm = c.themes[this.props.theme];
     const invertTheme = theme === 'light' ? 'dark' : 'light';
     return (
-      <View
-        style={[
-          styles.container,
-          {backgroundColor: c.themes[theme].background},
-        ]}>
-        <View
-          style={[styles.header, {backgroundColor: c.themes[theme].accent}]}>
-          <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-            <Text
-              style={[
-                {
-                  color: c.themes[theme].lightText,
-                  fontSize: 36,
-                  marginLeft: 20,
-                },
-                c.titleFont,
-              ]}>
-              Settings
-            </Text>
-          </View>
+      <View style={[sty.container, {backgroundColor: thm.background}]}>
+        <View style={sty.header}>
+          {/** background start **/}
+          <View
+            style={{
+              backgroundColor: thm.accent,
+              position: 'absolute',
+              top: 0,
+              width: '100%',
+              height: '75%',
+            }}
+          />
+          <SVGIcon
+            name="stackedWaves"
+            color={thm.accent}
+            style={{
+              transform: [{rotate: '180deg'}],
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              top: '75%',
+            }}
+          />
+          {/** Background End **/}
+          {/** headerContent Start **/}
+          <Text
+            style={[
+              {
+                color: thm.lightText,
+                fontSize: 24,
+                marginLeft: 15,
+              },
+              c.titleFont,
+            ]}>
+            Settings
+          </Text>
+          {/** headerContent End **/}
         </View>
 
-        <View
-          style={[
-            styles.body,
-            {
-              backgroundColor: c.themes[theme].modal,
-              borderColor: c.themes[theme].border,
-            },
-          ]}>
+        <View style={[sty.body]}>
           <TouchableOpacity
             onPress={() => this.props.changeTheme(invertTheme)}
             style={[
-              styles.row,
+              sty.row,
               {
-                backgroundColor: c.themes[theme].background,
-                borderColor: c.themes[theme].border,
+                backgroundColor: thm.background,
+                borderColor: thm.border,
               },
             ]}>
-            <Text style={[styles.buttonText, {color: c.themes[theme].text}]}>
+            <Text style={[sty.buttonText, {color: thm.text}]}>
               {invertTheme.charAt(0).toUpperCase() + invertTheme.substr(1)}{' '}
               Theme
             </Text>
-            <MCIcons
-              name="theme-light-dark"
-              size={30}
-              color={c.themes[theme].text}
-            />
+            <MCIcons name="theme-light-dark" size={30} color={thm.text} />
           </TouchableOpacity>
         </View>
 
         <View
           style={[
-            styles.body,
+            sty.body,
             {
-              backgroundColor: c.themes[theme].modal,
-              borderColor: c.themes[theme].border,
+              backgroundColor: thm.modal,
+              borderColor: thm.border,
             },
           ]}>
           {this.props.authType !== 'none' && (
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('auth')}
               style={[
-                styles.row,
+                sty.row,
                 {
-                  backgroundColor: c.themes[theme].background,
-                  borderColor: c.themes[theme].border,
+                  backgroundColor: thm.background,
+                  borderColor: thm.border,
                 },
               ]}>
-              <Text style={[styles.buttonText, {color: c.themes[theme].text}]}>
-                Logout
-              </Text>
-              <MCIcons name="logout" size={30} color={c.themes[theme].text} />
+              <Text style={[sty.buttonText, {color: thm.text}]}>Logout</Text>
+              <MCIcons name="logout" size={30} color={thm.text} />
             </TouchableOpacity>
           )}
           <TouchableOpacity
             onPress={this.onPressChangeAuth}
             style={[
-              styles.row,
+              sty.row,
               {
-                backgroundColor: c.themes[theme].background,
-                borderColor: c.themes[theme].border,
+                backgroundColor: thm.background,
+                borderColor: thm.border,
               },
             ]}>
-            <Text style={[styles.buttonText, {color: c.themes[theme].text}]}>
+            <Text style={[sty.buttonText, {color: thm.text}]}>
               Change Security Option
             </Text>
-            <MCIcons name="lock" size={30} color={c.themes[theme].text} />
+            <MCIcons name="lock" size={30} color={thm.text} />
           </TouchableOpacity>
         </View>
 
         <View
           style={[
-            styles.body,
+            sty.body,
             {
-              backgroundColor: c.themes[theme].modal,
-              borderColor: c.themes[theme].border,
+              backgroundColor: thm.modal,
+              borderColor: thm.border,
             },
           ]}>
           <TouchableOpacity
             onPress={() => this.rating.onPressButton()}
             style={[
-              styles.row,
+              sty.row,
               {
-                backgroundColor: c.themes[theme].background,
-                borderColor: c.themes[theme].border,
+                backgroundColor: thm.background,
+                borderColor: thm.border,
               },
             ]}>
-            <Text style={[styles.buttonText, {color: c.themes[theme].text}]}>
+            <Text style={[sty.buttonText, {color: thm.text}]}>
               Rate this App
             </Text>
-            <MCIcons
-              name="star-outline"
-              size={30}
-              color={c.themes[theme].text}
-            />
+            <MCIcons name="star-outline" size={30} color={thm.text} />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => Linking.openURL('https://www.dave6.com')}
             style={[
-              styles.row,
+              sty.row,
               {
-                backgroundColor: c.themes[theme].background,
-                borderColor: c.themes[theme].border,
+                backgroundColor: thm.background,
+                borderColor: thm.border,
               },
             ]}>
-            <Text style={[styles.buttonText, {color: c.themes[theme].text}]}>
+            <Text style={[sty.buttonText, {color: thm.text}]}>
               Developers Website
             </Text>
-            <MCIcons name="web" size={30} color={c.themes[theme].text} />
+            <MCIcons name="web" size={30} color={thm.text} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -302,21 +309,77 @@ class Settings extends Component {
               )
             }
             style={[
-              styles.row,
+              sty.row,
               {
-                backgroundColor: c.themes[theme].background,
-                borderColor: c.themes[theme].border,
+                backgroundColor: thm.background,
+                borderColor: thm.border,
               },
             ]}>
-            <Text style={[styles.buttonText, {color: c.themes[theme].text}]}>
+            <Text style={[sty.buttonText, {color: thm.text}]}>
               Contact Developer
             </Text>
-            <MCIcons
-              name="email-outline"
-              size={30}
-              color={c.themes[theme].text}
-            />
+            <MCIcons name="email-outline" size={30} color={thm.text} />
           </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            position: 'absolute',
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingBottom: 7,
+            bottom: 0,
+            width: '100%',
+            backgroundColor: thm.modal,
+          }}>
+          <SVGIcon
+            name="tabBarDivider"
+            style={{
+              position: 'absolute',
+              top: -15,
+              height: 15,
+              width: '100%',
+              transform: [{scaleX: -1}],
+            }}
+            color={thm.modal}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <SIcon
+              name="social-github"
+              size={25}
+              color={thm.text}
+              style={{marginHorizontal: 15}}
+              onPress={() => Linking.openURL(Github)}
+            />
+            <SIcon
+              name="screen-desktop"
+              size={25}
+              color={thm.text}
+              style={{marginHorizontal: 15}}
+              onPress={() => Linking.openURL(Website)}
+            />
+            <SIcon
+              name="social-instagram"
+              size={25}
+              color={thm.text}
+              style={{marginHorizontal: 15}}
+              onPress={() => Linking.openURL(Instagram)}
+            />
+            <SIcon
+              name="envelope"
+              size={25}
+              color={thm.text}
+              style={{marginHorizontal: 15}}
+              onPress={() => Linking.openURL(Email)}
+            />
+          </View>
+          <Text style={{marginTop: 0, color: thm.text, fontSize: 14}}>
+            Created by Dave6
+          </Text>
         </View>
         {this.renderRatingModal()}
       </View>
@@ -324,7 +387,7 @@ class Settings extends Component {
   }
 }
 
-const styles = {
+const sty = {
   container: {
     flex: 1,
     width: '100%',
@@ -332,11 +395,11 @@ const styles = {
     alignItems: 'center',
   },
   header: {
-    height: 65,
+    height: 37,
     width: '100%',
+    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 5,
+    alignItems: 'flex-end',
   },
   sectionTop: {
     height: 10,
