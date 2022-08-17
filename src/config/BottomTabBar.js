@@ -95,12 +95,12 @@ const BottomTabBar = props => {
       ]}>
       <SVGIcon
         name="tabBarDivider"
-        style={{position: 'absolute', top: 1, height: 7, width: '100%'}}
+        style={{position: 'absolute', top: -10, height: 15, width: '100%'}}
         color={c.themes[theme].accent}
       />
       <View
         style={{
-          height: 43,
+          height: 45,
           width: '100%',
           position: 'absolute',
           bottom: 0,
