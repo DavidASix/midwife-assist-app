@@ -208,118 +208,41 @@ class Settings extends Component {
           {/** headerContent End **/}
         </View>
 
-        <View style={[sty.body]}>
-          <TouchableOpacity
-            onPress={() => this.props.changeTheme(invertTheme)}
-            style={[
-              sty.row,
-              {
-                backgroundColor: thm.background,
-                borderColor: thm.border,
-              },
-            ]}>
-            <Text style={[sty.buttonText, {color: thm.text}]}>
-              {invertTheme.charAt(0).toUpperCase() + invertTheme.substr(1)}{' '}
-              Theme
-            </Text>
-            <MCIcons name="theme-light-dark" size={30} color={thm.text} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() => this.props.changeTheme(invertTheme)}
+          style={[sty.button, {backgroundColor: thm.modal}]}>
+          <Text style={[sty.buttonText, {color: thm.text}]}>
+            {invertTheme.charAt(0).toUpperCase() + invertTheme.substr(1)} Theme
+          </Text>
+          <MCIcons name="theme-light-dark" size={25} color={thm.text} />
+        </TouchableOpacity>
 
-        <View
-          style={[
-            sty.body,
-            {
-              backgroundColor: thm.modal,
-              borderColor: thm.border,
-            },
-          ]}>
-          {this.props.authType !== 'none' && (
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('auth')}
-              style={[
-                sty.row,
-                {
-                  backgroundColor: thm.background,
-                  borderColor: thm.border,
-                },
-              ]}>
-              <Text style={[sty.buttonText, {color: thm.text}]}>Logout</Text>
-              <MCIcons name="logout" size={30} color={thm.text} />
-            </TouchableOpacity>
-          )}
+        {this.props.authType !== 'none' && (
           <TouchableOpacity
-            onPress={this.onPressChangeAuth}
-            style={[
-              sty.row,
-              {
-                backgroundColor: thm.background,
-                borderColor: thm.border,
-              },
-            ]}>
-            <Text style={[sty.buttonText, {color: thm.text}]}>
-              Change Security Option
-            </Text>
-            <MCIcons name="lock" size={30} color={thm.text} />
+            onPress={() => this.props.navigation.navigate('auth')}
+            style={[sty.button, {backgroundColor: thm.modal}]}>
+            <Text style={[sty.buttonText, {color: thm.text}]}>Logout</Text>
+            <MCIcons name="logout" size={25} color={thm.text} />
           </TouchableOpacity>
-        </View>
+        )}
 
-        <View
-          style={[
-            sty.body,
-            {
-              backgroundColor: thm.modal,
-              borderColor: thm.border,
-            },
-          ]}>
-          <TouchableOpacity
-            onPress={() => this.rating.onPressButton()}
-            style={[
-              sty.row,
-              {
-                backgroundColor: thm.background,
-                borderColor: thm.border,
-              },
-            ]}>
-            <Text style={[sty.buttonText, {color: thm.text}]}>
-              Rate this App
-            </Text>
-            <MCIcons name="star-outline" size={30} color={thm.text} />
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={this.onPressChangeAuth}
+          style={[sty.button, {backgroundColor: thm.modal}]}>
+          <Text style={[sty.buttonText, {color: thm.text}]}>
+            Change Security Option
+          </Text>
+          <MCIcons name="lock" size={25} color={thm.text} />
+        </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => Linking.openURL('https://www.dave6.com')}
-            style={[
-              sty.row,
-              {
-                backgroundColor: thm.background,
-                borderColor: thm.border,
-              },
-            ]}>
-            <Text style={[sty.buttonText, {color: thm.text}]}>
-              Developers Website
-            </Text>
-            <MCIcons name="web" size={30} color={thm.text} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL(
-                'mailto:davidandersonsix@gmail.com?subject=Regarding Midwife Assist App',
-              )
-            }
-            style={[
-              sty.row,
-              {
-                backgroundColor: thm.background,
-                borderColor: thm.border,
-              },
-            ]}>
-            <Text style={[sty.buttonText, {color: thm.text}]}>
-              Contact Developer
-            </Text>
-            <MCIcons name="email-outline" size={30} color={thm.text} />
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.rating.onPressButton()}
+          style={[sty.button, {backgroundColor: thm.modal}]}>
+          <Text style={[sty.buttonText, {color: thm.text}]}>Rate this App</Text>
+          <MCIcons name="star-outline" size={30} color={thm.text} />
+        </TouchableOpacity>
+        <View style={{flex: 1, borderWidth: 1}}>
+          <Text>Stats</Text>
         </View>
         <View
           style={{
@@ -400,29 +323,7 @@ const sty = {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-  },
-  sectionTop: {
-    height: 10,
-    width: '95%',
-    justifyContent: 'center',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-  },
-  body: {
-    flex: 0,
-    width: '95%',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderWidth: 1,
-    marginVertical: 5,
-    padding: 10,
-    borderRadius: 10,
-    elevation: 1,
+    marginBottom: 10,
   },
   row: {
     width: '100%',
@@ -436,21 +337,25 @@ const sty = {
     marginVertical: 2.5,
   },
   button: {
+    width: '95%',
     height: 45,
-    width: 90,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
     borderRadius: 10,
+    paddingHorizontal: 10,
+    marginVertical: 2.5,
   },
   buttonText: {
     fontSize: 16,
-  },
-  textInput: {
-    flex: 1,
-    borderBottomWidth: 1,
-    textAlign: 'left',
-    fontSize: 12,
   },
 };
 
