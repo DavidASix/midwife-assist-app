@@ -11,7 +11,8 @@ import {
   TextInput,
   ToastAndroid,
 } from 'react-native';
-import DatePicker from 'react-native-date-picker'
+//import DatePicker from 'react-native-date-picker';
+const DatePicker = null;
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FFIcons from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';

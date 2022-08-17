@@ -12,7 +12,6 @@ import {
   Linking,
   Animated
 } from 'react-native';
-import DatePicker from 'react-native-date-picker'
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FFIcons from 'react-native-vector-icons/FontAwesome5';
 import AIcons from 'react-native-vector-icons/AntDesign';

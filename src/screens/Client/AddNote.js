@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import DatePicker from 'react-native-date-picker'
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FFIcons from 'react-native-vector-icons/FontAwesome5';
 import AIcons from 'react-native-vector-icons/AntDesign';

@@ -10,7 +10,6 @@ import {
   SectionList,
   Dimensions
 } from 'react-native';
-import DatePicker from 'react-native-date-picker'
 import { Dropdown } from 'react-native-material-dropdown';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcons from 'react-native-vector-icons/Ionicons';
