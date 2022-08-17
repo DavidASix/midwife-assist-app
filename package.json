@@ -20,7 +20,6 @@
     "crypto-random-string": "^5.0.0",
     "react": "^18.0.0",
     "react-native": "^0.69.4",
-    "react-native-date-picker": "^4.2.5",
     "react-native-gesture-handler": "^2.5.0",
     "react-native-global-props": "^1.1.5",
     "react-native-material-dropdown": "^0.11.1",
