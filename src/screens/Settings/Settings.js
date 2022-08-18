@@ -1,16 +1,6 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Linking,
-  UIManager,
-  LayoutAnimation,
-  Platform,
-  ToastAndroid,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Alert, Linking} from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import MIcons from 'react-native-vector-icons/MaterialIcons';
 import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 const c = require('../../assets/constants');
 import SlideUpModal from '../../SlideUpModal/';
@@ -20,12 +10,11 @@ const Github = 'http://www.github.com/davidasix';
 const Instagram = 'http://www.instagram.com/dave6dev';
 const Website = 'http://www.dave6.com/';
 const Email = 'mailto:developer@dave6.ca';
-
-if (Platform.OS === 'android') {
-  if (UIManager.setLayoutAnimationEnabledExperimental) {
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-  }
-}
+const FeatureRequest =
+  'mailto:developer@dave6.ca?subject=Midwife Assist - Feature Request';
+const StorePage =
+  'https://play.google.com/store/apps/details?id=com.dave6.www.midwifeassist';
+const ContactDev = 'mailto:developer@dave6.ca?subject=Midwife Assist';
 
 class Settings extends Component {
   constructor(props) {
@@ -41,236 +30,145 @@ class Settings extends Component {
     this.props.navigation.navigate('auth');
   };
 
-  onPressStar(num) {
-    LayoutAnimation.configureNext({
-      duration: 700,
-      create: {type: 'spring', springDamping: 0.4, property: 'scaleY'},
-      update: {type: 'spring', springDamping: 0.4},
-    });
-    LayoutAnimation.configureNext({
-      duration: 50,
-      delete: {type: 'easeIn', springDamping: 0.4, property: 'scaleY'},
-    });
-    this.setState({starSelected: num});
-    if (num > 3) {
-      // Allow a delay before switching apps, so that the user can see and visualize the 5 stars
-      setTimeout(
-        () =>
-          Linking.openURL(
-            'https://play.google.com/store/apps/details?id=com.dave6.www.midwifeassist',
-          ),
-        400,
+  onPressThumb = dir => {
+    if (dir === 'up') Linking.openURL(StorePage);
+    else {
+      Alert.alert(
+        'Sorry to hear that!',
+        'How can we make it better?',
+        [
+          {
+            text: 'Submit Review',
+            onPress: () => Linking.openURL(StorePage),
+          },
+          {
+            text: 'Add a Feature',
+            onPress: () => Linking.openURL(FeatureRequest),
+          },
+          {
+            text: 'Contact Developer',
+            onPress: () => Linking.openURL(ContactDev),
+          },
+        ],
+        {cancelable: true},
       );
-    } else {
-      this.rating.onPressButton('up');
     }
-  }
-
-  onPressSubmitComment = () => {
-    this.rating.onPressButton();
-    setTimeout(
-      () =>
-        ToastAndroid.showWithGravityAndOffset(
-          'Thank you for your feeback!',
-          ToastAndroid.LONG,
-          ToastAndroid.BOTTOM,
-          25,
-          50,
-        ),
-      650,
-    );
   };
-
-  stars() {
-    let {theme} = this.props;
-    let stars = [];
-    for (let i = 0; i < 5; i++) {
-      stars.push(
-        <MIcons
-          onPress={() => this.onPressStar(i + 1)}
-          name={this.state.starSelected >= i + 1 ? 'star' : 'star-border'}
-          size={45}
-          color={
-            this.state.starSelected >= i + 1
-              ? c.themes[theme].accent
-              : c.themes[theme].text
-          }
-        />,
-      );
-    }
-    return stars;
-  }
 
   renderRatingModal() {
     let thm = c.themes[this.props.theme];
     return (
       <SlideUpModal
         ref={ref => (this.rating = ref)}
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '93%',
-          minHeight: 300,
-          padding: 15,
-          borderRadius: 10,
-          borderWidth: 0.5,
-          elevation: 4,
-          backgroundColor: thm.modal,
-          borderColor: thm.border,
-        }}
+        style={[sty.rmo, {backgroundColor: thm.modal, borderColor: thm.border}]}
         peek={0}>
-        <Text style={{color: thm.text, marginVertical: 10}}>
-          Tell us what you think!
-        </Text>
+        <Text style={{color: thm.text}}>How has your experience been?</Text>
 
-        {this.state.starSelected && this.state.starSelected < 4 ? (
-          <>
-            <TouchableOpacity
-              style={[
-                sty.row,
-                {
-                  marginVertical: 10,
-                  justifyContent: 'center',
-                  backgroundColor: thm.accent,
-                  borderColor: thm.border,
-                },
-              ]}
-              onPress={this.onPressSubmitComment}>
-              <Text style={{color: c.themes.dark.text}}>Submit Rating</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                sty.row,
-                {
-                  marginVertical: 10,
-                  justifyContent: 'center',
-                  backgroundColor: thm.accent,
-                  borderColor: thm.border,
-                },
-              ]}
-              onPress={() =>
-                Linking.openURL(
-                  'mailto:developer@dave6.ca?subject=Midwife Assist - Comment',
-                )
-              }>
-              <Text style={{color: c.themes.dark.text}}>Contact Developer</Text>
-            </TouchableOpacity>
-          </>
-        ) : null}
-        <View style={[sty.row, {marginVertical: 10, borderWidth: 0}]}>
-          {this.stars()}
+        <View style={sty.thumbRow}>
+          <TouchableOpacity
+            onPress={() => this.onPressThumb('down')}
+            style={[sty.button, sty.thumbButton, {backgroundColor: thm.bad}]}>
+            <Text style={{fontSize: 40}}>👎</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => this.onPressThumb('up')}
+            style={[sty.button, sty.thumbButton, {backgroundColor: thm.good}]}>
+            <Text style={{fontSize: 40}}>👍</Text>
+          </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+          onPress={() => Linking.openURL(ContactDev)}
+          style={[sty.button, {backgroundColor: thm.modal}]}>
+          <Text style={[sty.buttonText, {color: thm.text}]}>
+            Contact Developer
+          </Text>
+          <SIcon name="bubble" size={25} color={thm.text} />
+        </TouchableOpacity>
       </SlideUpModal>
     );
   }
 
   render() {
-    let {theme} = this.props;
     let thm = c.themes[this.props.theme];
-    const invertTheme = theme === 'light' ? 'dark' : 'light';
+    const invertTheme = this.props.theme === 'light' ? 'dark' : 'light';
     return (
       <View style={[sty.container, {backgroundColor: thm.background}]}>
         <View style={sty.header}>
           {/** background start **/}
-          <View
-            style={{
-              backgroundColor: thm.accent,
-              position: 'absolute',
-              top: 0,
-              width: '100%',
-              height: '75%',
-            }}
-          />
+          <View style={[sty.headerBg.solid, {backgroundColor: thm.accent}]} />
           <SVGIcon
             name="stackedWaves"
             color={thm.accent}
-            style={{
-              transform: [{rotate: '180deg'}],
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              top: '75%',
-            }}
+            style={sty.headerBg.svg}
           />
           {/** Background End **/}
           {/** headerContent Start **/}
-          <Text
-            style={[
-              {
-                color: thm.lightText,
-                fontSize: 24,
-                marginLeft: 15,
-              },
-              c.titleFont,
-            ]}>
+          <Text style={[{color: thm.lightText}, c.titleFont, sty.title]}>
             Settings
           </Text>
           {/** headerContent End **/}
         </View>
-
-        <TouchableOpacity
-          onPress={() => this.props.changeTheme(invertTheme)}
-          style={[sty.button, {backgroundColor: thm.modal}]}>
-          <Text style={[sty.buttonText, {color: thm.text}]}>
-            {invertTheme.charAt(0).toUpperCase() + invertTheme.substr(1)} Theme
-          </Text>
-          <MCIcons name="theme-light-dark" size={25} color={thm.text} />
-        </TouchableOpacity>
-
-        {this.props.authType !== 'none' && (
+        <View style={{flex: 0, width: '100%', alignItems: 'center'}}>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('auth')}
+            onPress={() => this.props.changeTheme(invertTheme)}
             style={[sty.button, {backgroundColor: thm.modal}]}>
-            <Text style={[sty.buttonText, {color: thm.text}]}>Logout</Text>
-            <MCIcons name="logout" size={25} color={thm.text} />
+            <Text style={[sty.buttonText, {color: thm.text}]}>
+              {invertTheme.charAt(0).toUpperCase() + invertTheme.substr(1)}{' '}
+              Theme
+            </Text>
+            <MCIcons name="theme-light-dark" size={25} color={thm.text} />
           </TouchableOpacity>
-        )}
 
-        <TouchableOpacity
-          onPress={this.onPressChangeAuth}
-          style={[sty.button, {backgroundColor: thm.modal}]}>
-          <Text style={[sty.buttonText, {color: thm.text}]}>
-            Change Security Option
-          </Text>
-          <MCIcons name="lock" size={25} color={thm.text} />
-        </TouchableOpacity>
+          {this.props.authType !== 'none' && (
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('auth')}
+              style={[sty.button, {backgroundColor: thm.modal}]}>
+              <Text style={[sty.buttonText, {color: thm.text}]}>Logout</Text>
+              <MCIcons name="logout" size={25} color={thm.text} />
+            </TouchableOpacity>
+          )}
 
-        <TouchableOpacity
-          onPress={() => this.rating.onPressButton()}
-          style={[sty.button, {backgroundColor: thm.modal}]}>
-          <Text style={[sty.buttonText, {color: thm.text}]}>Rate this App</Text>
-          <MCIcons name="star-outline" size={30} color={thm.text} />
-        </TouchableOpacity>
-        <View style={{flex: 1, borderWidth: 1}}>
-          <Text>Stats</Text>
+          <TouchableOpacity
+            onPress={this.onPressChangeAuth}
+            style={[sty.button, {backgroundColor: thm.modal}]}>
+            <Text style={[sty.buttonText, {color: thm.text}]}>
+              Change Security Option
+            </Text>
+            <SIcon name="lock" size={25} color={thm.text} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => this.rating.onPressButton()}
+            style={[sty.button, {backgroundColor: thm.modal}]}>
+            <Text style={[sty.buttonText, {color: thm.text}]}>
+              Rate this App
+            </Text>
+            <SIcon name="star" size={25} color={thm.text} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => Linking.openURL(FeatureRequest)}
+            style={[sty.button, {backgroundColor: thm.modal}]}>
+            <Text style={[sty.buttonText, {color: thm.text}]}>
+              Feature Request
+            </Text>
+            <SIcon name="plus" size={25} color={thm.text} />
+          </TouchableOpacity>
         </View>
-        <View
-          style={{
-            position: 'absolute',
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingBottom: 7,
-            bottom: 0,
-            width: '100%',
-            backgroundColor: thm.modal,
-          }}>
+
+        <View style={sty.statsContainer}>
+          <Text style={{fontSize: 32, color: thm.accent}}>Stats</Text>
+        </View>
+
+        <View style={[sty.linkBar, {backgroundColor: thm.modal}]}>
           <SVGIcon
             name="tabBarDivider"
-            style={{
-              position: 'absolute',
-              top: -15,
-              height: 15,
-              width: '100%',
-              transform: [{scaleX: -1}],
-            }}
+            style={sty.linkBarDivider}
             color={thm.modal}
           />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <SIcon
               name="social-github"
               size={25}
@@ -325,16 +223,24 @@ const sty = {
     alignItems: 'flex-end',
     marginBottom: 10,
   },
-  row: {
-    width: '100%',
-    height: 45,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginVertical: 2.5,
+  headerBg: {
+    solid: {
+      position: 'absolute',
+      top: 0,
+      width: '100%',
+      height: '75%',
+    },
+    svg: {
+      transform: [{rotate: '180deg'}],
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      top: '75%',
+    },
+  },
+  title: {
+    fontSize: 24,
+    marginLeft: 15,
   },
   button: {
     width: '95%',
@@ -356,6 +262,49 @@ const sty = {
   },
   buttonText: {
     fontSize: 16,
+  },
+  statsContainer: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'flex-start',
+    borderWidth: 1,
+  },
+  linkBar: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 7,
+    bottom: 0,
+    width: '100%',
+  },
+  linkBarDivider: {
+    position: 'absolute',
+    top: -15,
+    height: 15,
+    width: '100%',
+    transform: [{scaleX: -1}],
+  },
+  rmo: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '93%',
+    flex: 0,
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    elevation: 4,
+  },
+  thumbRow: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-around',
+    marginVertical: 10,
+  },
+  thumbButton: {
+    width: '30%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    aspectRatio: 1,
   },
 };
 

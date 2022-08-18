@@ -73,6 +73,8 @@ c.themes = {
     lightText: '#F0F0F0',
     text: '#E0E0E0',
     border: '#555',
+    bad: '#633636',
+    good: '#366340',
   },
   light: {
     background: '#e8e8e8',
@@ -83,6 +85,8 @@ c.themes = {
     lightText: '#F0F0F0',
     text: '#1f1f1f',
     border: '#DDD',
+    bad: '#f2b4b4',
+    good: '#bbf2b4',
   },
 };
 
