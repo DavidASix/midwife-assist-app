@@ -156,6 +156,15 @@ class Settings extends Component {
             </Text>
             <SIcon name="plus" size={25} color={thm.text} />
           </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('tutorial')}
+            style={[sty.button, {backgroundColor: thm.modal}]}>
+            <Text style={[sty.buttonText, {color: thm.text}]}>
+              View Welcome Screen
+            </Text>
+            <SIcon name="loop" size={25} color={thm.text} />
+          </TouchableOpacity>
         </View>
 
         <View style={sty.statsContainer}>

@@ -1,175 +1,222 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
-  SafeAreaView,
   View,
   Text,
   ActivityIndicator,
   TouchableOpacity,
   Image,
   FlatList,
-  SectionList,
-  Dimensions
+  Animated,
 } from 'react-native';
-import { Dropdown } from 'react-native-material-dropdown';
-import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import IonIcons from 'react-native-vector-icons/Ionicons';
-import axios from 'axios';
+import FIcon from 'react-native-vector-icons/Feather';
 
 const c = require('../../assets/constants');
 
 class Tutorial extends Component {
   constructor(props) {
     super(props);
-    this.window = Dimensions.get('window');
+    this.scrollAnim = new Animated.Value(0);
     this.flatList;
     this.slides = [
       {
         title: 'Midwife Assist',
-        description: 'Welcome to Midwife Assist, an app dedicated to assisting midwives in their day to day.',
-        image: require('../../assets/images/phone.png'),
-        iconName: 'mother-nurse',
+        description: 'An app dedicated to assisting midwives',
+        image: require('../../assets/images/woman.png'),
+        iconName: 'home',
+        color: c.themes[props.theme].accent,
       },
       {
-        title: 'Do calculations',
-        description: 'Say goodbye to OB wheels! You can easily convert estimated delivery date, gestational age, and last menstrual periods.',
-        image: require('../../assets/images/calc.png'),
-        iconName: 'calculator-variant',
+        title: 'Delivery Date Calculations',
+        description:
+          'Convert estimated delivery date, gestational age, and last menstrual periods',
+        image: require('../../assets/images/calendar.png'),
+        iconName: 'calendar',
+        color: '#B195BA',
       },
       {
         title: 'Store client information',
-        description: 'Safely store your client information for later, locking it behind a pin or bio-metric scan.',
-        image: require('../../assets/images/lock.png'),
-        iconName: 'account-group',
+        description:
+          'Store client data, locking it behind security of your choice',
+        image: require('../../assets/images/shield.png'),
+        iconName: 'users',
+        color: '#BA7B70',
       },
       {
         title: 'Never connect to a network',
-        description: 'You can rest assured that your patients data is safe, as this app does not connect to the internet at all.',
-        image: require('../../assets/images/nosignal.png'),
-        iconName: 'access-point-network-off',
-      }
-    ]
+        description:
+          "This app does not connect to the internet, your patient's data stays on your device",
+        image: require('../../assets/images/no-server.png'),
+        iconName: 'wifi-off',
+        color: '#8FBFB7',
+      },
+    ];
     this.state = {
       page: 0,
-      loading: true
+      loading: true,
     };
   }
 
   componentDidMount() {
     this.props.refreshStore();
+
     if (!this.props.firstLogin) {
       this.props.navigation.navigate('auth');
     } else {
-      this.setState({ loading: false });
+      this.setState({loading: false});
     }
+
+    this.focusListener = this.props.navigation.addListener('focus', () =>
+      this.onFocusChange(),
+    );
+    this.blurListener = this.props.navigation.addListener('blur', () =>
+      this.onFocusChange(),
+    );
   }
 
-  onViewChange = (item) => this.setState({ page: item.changed[0].index });
+  componentWillUnmount() {
+    this.focusListener();
+    this.blurListener();
+  }
+
+  onFocusChange() {
+    this.setState({loading: true});
+    if (this.flatList) {
+      this.flatList.scrollToOffset({offset: 0, animated: false});
+    }
+    this.setState({loading: false});
+  }
+
+  onViewChange = item => this.setState({page: item.changed[0].index});
 
   onPressFinalPage = () => {
-    this.props.markFirstLogin();
-    this.props.navigation.navigate('auth')
-  }
+    if (this.props.firstLogin) {
+      this.props.navigation.navigate('tabs');
+    } else {
+      this.props.markFirstLogin();
+      this.props.navigation.navigate('auth');
+    }
+  };
 
   renderSlide(slide, i) {
-    let { theme, clients } = this.props;
-    let { page } = this.state;
-    const Final = () =>  i === this.slides.length - 1 ?
-    (<TouchableOpacity
-        onPress={this.onPressFinalPage}
-        style={[styles.completeButton, { backgroundColor: c.themes[theme].accent }]}>
-      <Text style={{ color: c.themes[theme].lightText }}>
-        Lets go
-      </Text>
-    </TouchableOpacity>)
-    : null;
+    let {theme} = this.props;
+    let scale = Animated.divide(this.scrollAnim, c.device.width);
+    scale = Animated.modulo(scale, 1);
+    scale = scale.interpolate({
+      inputRange: [0, 0.4, 0.6, 1],
+      outputRange: [1, 0.975, 0.975, 1],
+    });
+    const Final = () =>
+      i === this.slides.length - 1 ? (
+        <TouchableOpacity
+          onPress={this.onPressFinalPage}
+          style={[
+            sty.completeButton,
+            {backgroundColor: c.themes[theme].accent},
+          ]}>
+          <Text style={{color: c.themes[theme].lightText}}>Get Started</Text>
+        </TouchableOpacity>
+      ) : null;
     return (
-      <View style={{ width: this.window.width, justifyContent: 'center', alignItems: 'center' }}>
-        <View style={styles.slide}>
-          <View style={{ paddingVertical: 10, flex: 0, width: '90%', borderBottomWidth: 0.5, justifyContent: 'center' }}>
-            <Text style={{ color: c.themes[theme].text }}>
-              {i + 1} of {this.slides.length}
+      <View style={[sty.slide]}>
+        <Animated.View style={{transform: [{scale}], width: '100%', flex: 1}}>
+          <View
+            style={{
+              flex: 2,
+              ...c.center,
+            }}>
+            <View style={sty.imgCircle} />
+            <Image
+              source={slide.image}
+              style={{width: '60%', position: 'absolute'}}
+              resizeMode="contain"
+            />
+          </View>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text
+              style={[
+                c.titleFont,
+                {
+                  fontSize: 25,
+                  color: c.themes[theme].lightText,
+                  marginVertical: 10,
+                },
+              ]}>
+              {slide.title}
             </Text>
+            <Text
+              style={{
+                color: c.themes[theme].lightText,
+                fontSize: 16,
+                maxWidth: '80%',
+                textAlign: 'center',
+              }}>
+              {slide.description}
+            </Text>
+            <Final />
           </View>
-          <View style={styles.slideContent}>
-            <View style={{ flex: 1, ...c.center }}>
-              <Image
-                source={slide.image}
-                style={{ height: '80%' }}
-                resizeMode='contain' />
-            </View>
-            <View style={{ flex: 2, justifyContent: 'center' }}>
-              <Text style={{ fontSize: 26, color: c.themes[theme].text, marginVertical: 10 }}>
-                {slide.title}
-              </Text>
-              <Text style={{ color: c.themes[theme].text }}>
-                {slide.description}
-              </Text>
-            </View>
-            <View style={{ flex: 1, ...c.center }}>
-              <Final />
-            </View>
-          </View>
-        </View>
+        </Animated.View>
       </View>
-    )
+    );
   }
 
   renderIndicator() {
-    let { theme, clients } = this.props;
-    let { page } = this.state;
-    const size = 30;
-    const indicatorColor = (j) => j === page ? c.themes[theme].accent : c.themes[theme].text;
+    let {theme} = this.props;
+    let {page} = this.state;
+    const size = 25;
+    const indicatorColor = j =>
+      j === page ? c.themes[theme].lightText : c.themes[theme].text;
     return this.slides.map((slide, i) => (
       <TouchableOpacity
-        onPress={() => this.flatList.scrollToIndex({ index: i })}>
-        <MCIcons
-          style={styles.indicatorIcon}
+        key={i}
+        onPress={() => this.flatList.scrollToIndex({index: i})}>
+        <FIcon
+          style={sty.indicatorIcon}
           size={size}
           color={indicatorColor(i)}
-          name={slide.iconName} />
+          name={slide.iconName}
+        />
       </TouchableOpacity>
-    ))
+    ));
   }
 
   renderLoadingSwitch() {
-    let { theme, clients } = this.props;
-    let { page } = this.state;
-    if (this.state.loading) {
-      return (
-        <ActivityIndicator />
-      );
-    }
+    if (this.state.loading) return <ActivityIndicator />;
     return (
       <>
         <FlatList
-          ref={(list) => this.flatList = list}
+          ref={list => (this.flatList = list)}
           data={this.slides}
-          renderItem={({ item, index }) => this.renderSlide(item, index)}
-          viewabilityConfig={{ viewAreaCoveragePercentThreshold: 100 }}
+          renderItem={({item, index}) => this.renderSlide(item, index)}
+          viewabilityConfig={{viewAreaCoveragePercentThreshold: 100}}
           onViewableItemsChanged={this.onViewChange}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {x: this.scrollAnim}}}],
+            {useNativeDriver: false},
+          )}
           pagingEnabled
           showsHorizontalScrollIndicator={false}
-          horizontal />
-        <View style={styles.indicatorContainer}>
-          {this.renderIndicator()}
-        </View>
+          horizontal
+        />
+        <View style={sty.indicatorContainer}>{this.renderIndicator()}</View>
       </>
-    )
+    );
   }
 
   render() {
-    let { theme, clients } = this.props;
-    let { page } = this.state;
+    let bg = this.scrollAnim.interpolate({
+      inputRange: this.slides.map((v, i) => i * c.device.width),
+      outputRange: this.slides.map(v => v.color),
+    });
     return (
-      <View style={[styles.container, { backgroundColor: c.themes[theme].background }]}>
+      <Animated.View style={[sty.container, {backgroundColor: bg}]}>
         {this.renderLoadingSwitch()}
-      </View>
+      </Animated.View>
     );
   }
 }
 
-
-const styles = {
+const sty = {
   container: {
     flex: 1,
     width: '100%',
@@ -177,16 +224,18 @@ const styles = {
     alignItems: 'center',
   },
   slide: {
-    height: '100%',
-    width: '100%',
-    justifyContent: 'flex-start',
+    width: c.device.width,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  slideContent: {
-    paddingVertical: 10,
-    flex: 1,
-    width: '90%',
-    justifyContent: 'space-around'
+  imgCircle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '85%',
+    aspectRatio: 1,
+    borderRadius: c.device.width,
+    backgroundColor: 'white',
+    opacity: 0.2,
   },
   indicatorContainer: {
     ...c.center,
@@ -195,16 +244,16 @@ const styles = {
     flexDirection: 'row',
   },
   indicatorIcon: {
-    marginHorizontal: 15
+    marginHorizontal: 15,
   },
   completeButton: {
     ...c.center,
     elevation: 3,
     height: 45,
     borderRadius: 10,
-    width: '70%'
+    marginVertical: 10,
+    width: '70%',
   },
 };
-
 
 export default Tutorial;
