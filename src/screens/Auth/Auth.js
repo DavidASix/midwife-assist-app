@@ -1,25 +1,18 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
-  SafeAreaView,
   View,
   Text,
   TextInput,
   ActivityIndicator,
   TouchableOpacity,
-  Image,
-  FlatList,
-  SectionList,
-  Dimensions,
   UIManager,
   LayoutAnimation,
   Platform,
-  Alert
+  Alert,
 } from 'react-native';
-import { Dropdown } from 'react-native-material-dropdown';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import IonIcons from 'react-native-vector-icons/Ionicons';
 //import FingerprintScanner from 'react-native-fingerprint-scanner';
-import axios from 'axios';
+const c = require('../../assets/constants');
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -27,7 +20,6 @@ if (Platform.OS === 'android') {
   }
 }
 
-const c = require('../../assets/constants');
 
 class Auth extends Component {
   constructor(props) {
@@ -36,25 +28,27 @@ class Auth extends Component {
       bio: null,
       pin: '',
       loading: false,
-      showNewPinInputs: false
+      showNewPinInputs: false,
     };
   }
 
   async componentDidMount() {
-    let { authType } = this.props;
+    let {authType} = this.props;
     if (authType === 'none') {
-      this.props.navigation.navigate('tabs')
+      this.props.navigation.navigate('tabs');
     } else {
-      try {/*
+      try {
+        /*
         let sensor = await FingerprintScanner.isSensorAvailable();
         this.setState({ bio: sensor });*/
       } catch (err) {
-        this.setState({ bio: false });
+        this.setState({bio: false});
       }
     }
   }
 
-  onPressBiometric = async () => {/*
+  onPressBiometric = async () => {
+    /*
     try {
       let auth = await FingerprintScanner.authenticate({
         description: 'Scan your finger to enable biometric security.',
@@ -72,229 +66,291 @@ class Auth extends Component {
     } catch (err) {
       FingerprintScanner.release();
     }*/
-  }
+  };
 
   onPressNoSecurity = () => {
-    this.setState({ loading: false, pin: '', showNewPinInputs: false });
+    this.setState({loading: false, pin: '', showNewPinInputs: false});
     this.props.updateAuthType('none');
     this.props.navigation.navigate('tabs');
-  }
+  };
 
   onPressSubmitNewPin = () => {
-    let pin = String(this.state.pin)
-    this.setState({ loading: true });
+    let pin = String(this.state.pin);
+    this.setState({loading: true});
     setTimeout(() => {
-      this.setState({ loading: false, pin: '', showNewPinInputs: false });
+      this.setState({loading: false, pin: '', showNewPinInputs: false});
       if (pin.length === 4 && pin.match(/^\d+$/)) {
         this.props.updateAuthType('pin', pin);
         this.props.login();
         Alert.alert(
           `Your PIN is set to: ${pin}`,
-          'To protect client information there is no PIN recovery option. Don\'t forget it!',
-          [{ text: 'OK', onPress: () => this.props.navigation.navigate('tabs') }])
+          "To protect client information there is no PIN recovery option. Don't forget it!",
+          [{text: 'OK', onPress: () => this.props.navigation.navigate('tabs')}],
+        );
       } else {
-        this.setState({ showNewPinInputs: true });
-        Alert.alert('Issue with PIN', 'PIN\'s must be 4 numbers. Please try again.')
+        this.setState({showNewPinInputs: true});
+        Alert.alert(
+          'Issue with PIN',
+          "PIN's must be 4 numbers. Please try again.",
+        );
       }
-    })
-  }
+    });
+  };
 
   onPinTextChange(newPin) {
-    this.setState({ pin: newPin })
+    this.setState({pin: newPin});
 
     if (newPin.length === 4) {
-      this.setState({ loading: true });
+      this.setState({loading: true});
       setTimeout(() => {
-        this.setState({ pin: '', loading: false });
+        this.setState({pin: '', loading: false});
         if (newPin === this.props.pin) {
           this.props.login();
           this.props.navigation.navigate('tabs');
         } else {
-          Alert.alert('PIN is Incorrect', 'Please try again.')
+          Alert.alert('PIN is Incorrect', 'Please try again.');
         }
-      }, 750)
+      }, 750);
     }
   }
 
   renderNullAuth() {
-    let { theme, pin } = this.props;
-      return (
-        <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-
-          <TouchableOpacity
-              onPress={() => {
-                LayoutAnimation.configureNext({
-                  duration: 700,
-                  create: { type: 'spring', springDamping: 0.4, property: 'scaleY' },
-                  update: { type: 'spring', springDamping: 0.4 },
-                });
-                LayoutAnimation.configureNext({ duration: 50,
-                delete: { type: 'easeIn', springDamping: 0.4, property: 'scaleY' } })
-                this.setState({ showNewPinInputs: !this.state.showNewPinInputs });
-              }}
-              style={[styles.button, { backgroundColor: c.themes[theme].accent }]}>
-            <MCIcons
-              style={{ position: 'absolute', left: 5 }}
-              size={30}
-              color={c.themes[theme].lightText}
-              name='lock-smart' />
-            <Text style={{ fontSize: 16, color: c.themes[theme].lightText }}>
-              Set a PIN
-            </Text>
-          </TouchableOpacity>
-
-          {this.state.showNewPinInputs &&
-            (
-              <>
-                <View style={{ ...c.center, width: '70%', flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <View style={[styles.button, { flex: 1, backgroundColor: c.themes[theme].accent, height: 60 }]}>
-                    <TextInput
-                      onChangeText={(text) => this.setState({ pin: text })}
-                      keyboardType='number-pad'
-                      keyboardAppearance={theme}
-                      returnKeyType='go'
-                      textAlign='center'
-                      placeholder='PIN'
-                      value={this.state.pin}
-                      maxLength={4}
-                      placeholderTextColor={c.themes[theme].lightText + '60'}
-                      style={[styles.pinInput, { color: c.themes[theme].lightText, borderColor: c.themes[theme].lightText }]}/>
-                  </View>
-                  <TouchableOpacity
-                    style={[styles.button,
-                      {
-                        marginLeft: 10,
-                        height: 40,
-                        width: 40,
-                        borderRadius: 30,
-                        backgroundColor: c.themes[theme].accent
-                      }]}
-                    onPress={this.onPressSubmitNewPin}>
-                    {this.state.loading ?
-                      <ActivityIndicator color={c.themes[theme].lightText} size='small' /> :
-                      <MCIcons size={30} name='chevron-double-right' color={c.themes[theme].lightText} />
-                    }
-
-                  </TouchableOpacity>
-                </View>
-
-                <Text style={{ fontSize: 12, color: c.themes[theme].text, fontFamily: 'ZillaSlab' }}>
-                  Do not forget this PIN!
-                </Text>
-                <Text style={{ fontSize: 12, color: c.themes[theme].text, fontFamily: 'ZillaSlab' }}>
-                  To protect client information there is no PIN recovery option.
-                </Text>
-              </>
-            )
-          }
-
-          {this.state.bio &&
-            (
-              <TouchableOpacity
-                  onPress={this.onPressBiometric}
-                  style={[styles.button, { backgroundColor: c.themes[theme].accent }]}>
-                <MCIcons
-                  style={{ position: 'absolute', left: 5 }}
-                  size={30}
-                  color={c.themes[theme].lightText}
-                  name='fingerprint' />
-                <Text style={{ fontSize: 16, color: c.themes[theme].lightText }}>
-                  Use Biometrics
-                </Text>
-              </TouchableOpacity>
-            )
-          }
-
-          <TouchableOpacity
-              onPress={this.onPressNoSecurity}
-              style={[styles.button, { backgroundColor: c.themes[theme].accent }]}>
+    const thm = c.themes[this.props.theme];
+    return (
+      <View
+        style={{justifyContent: 'center', alignItems: 'center', width: '100%'}}>
+        <TouchableOpacity
+          onPress={() => {
+            LayoutAnimation.configureNext({
+              duration: 700,
+              create: {type: 'spring', springDamping: 0.4, property: 'scaleY'},
+              update: {type: 'spring', springDamping: 0.4},
+            });
+            LayoutAnimation.configureNext({
+              duration: 50,
+              delete: {type: 'easeIn', springDamping: 0.4, property: 'scaleY'},
+            });
+            this.setState({showNewPinInputs: !this.state.showNewPinInputs});
+          }}
+          style={[sty.button, {backgroundColor: thm.accent}]}>
           <MCIcons
-            style={{ position: 'absolute', left: 5 }}
+            style={{position: 'absolute', left: 5}}
             size={30}
-            color={c.themes[theme].lightText}
-            name='lock-open' />
-            <Text style={{ fontSize: 16, color: c.themes[theme].lightText }}>
-              No security
+            color={thm.lightText}
+            name="lock-smart"
+          />
+          <Text style={{fontSize: 16, color: thm.lightText}}>Set a PIN</Text>
+        </TouchableOpacity>
+
+        {this.state.showNewPinInputs && (
+          <>
+            <View
+              style={{
+                ...c.center,
+                width: '70%',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <View
+                style={[
+                  sty.button,
+                  {
+                    flex: 1,
+                    backgroundColor: thm.accent,
+                    height: 60,
+                  },
+                ]}>
+                <TextInput
+                  onChangeText={text => this.setState({pin: text})}
+                  keyboardType="number-pad"
+                  keyboardAppearance={this.props.theme}
+                  returnKeyType="go"
+                  textAlign="center"
+                  placeholder="PIN"
+                  value={this.state.pin}
+                  maxLength={4}
+                  placeholderTextColor={thm.lightText + '60'}
+                  style={[
+                    sty.pinInput,
+                    {
+                      color: thm.lightText,
+                      borderColor: thm.lightText,
+                    },
+                  ]}
+                />
+              </View>
+              <TouchableOpacity
+                style={[
+                  sty.button,
+                  {
+                    marginLeft: 10,
+                    height: 40,
+                    width: 40,
+                    borderRadius: 30,
+                    backgroundColor: thm.accent,
+                  },
+                ]}
+                onPress={this.onPressSubmitNewPin}>
+                {this.state.loading ? (
+                  <ActivityIndicator color={thm.lightText} size="small" />
+                ) : (
+                  <MCIcons
+                    size={30}
+                    name="chevron-double-right"
+                    color={thm.lightText}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+
+            <Text
+              style={{
+                fontSize: 12,
+                color: thm.text,
+                fontFamily: 'ZillaSlab',
+              }}>
+              Do not forget this PIN!
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                color: thm.text,
+                fontFamily: 'ZillaSlab',
+              }}>
+              To protect client information there is no PIN recovery option.
+            </Text>
+          </>
+        )}
+
+        {this.state.bio && (
+          <TouchableOpacity
+            onPress={this.onPressBiometric}
+            style={[sty.button, {backgroundColor: thm.accent}]}>
+            <MCIcons
+              style={{position: 'absolute', left: 5}}
+              size={30}
+              color={thm.lightText}
+              name="fingerprint"
+            />
+            <Text style={{fontSize: 16, color: thm.lightText}}>
+              Use Biometrics
             </Text>
           </TouchableOpacity>
+        )}
 
-          <Text style={{ fontSize: 12, color: c.themes[theme].text, fontFamily: 'ZillaSlab' }}>
-            (You can change this later in Settings)
-          </Text>
+        <TouchableOpacity
+          onPress={this.onPressNoSecurity}
+          style={[sty.button, {backgroundColor: thm.accent}]}>
+          <MCIcons
+            style={{position: 'absolute', left: 5}}
+            size={30}
+            color={thm.lightText}
+            name="lock-open"
+          />
+          <Text style={{fontSize: 16, color: thm.lightText}}>No security</Text>
+        </TouchableOpacity>
 
-        </View>
-      );
+        <Text
+          style={{
+            fontSize: 12,
+            color: thm.text,
+            fontFamily: 'ZillaSlab',
+          }}>
+          (You can change this later in Settings)
+        </Text>
+      </View>
+    );
   }
 
   renderEnterPin() {
-    let { theme, pin } = this.props;
-      return (
-        <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-          <View style={[styles.button, { backgroundColor: c.themes[theme].accent, height: 60 }]}>
-            <TextInput
-              onChangeText={(text) => this.onPinTextChange(text)}
-              keyboardType='number-pad'
-              keyboardAppearance={theme}
-              returnKeyType='go'
-              textAlign='center'
-              placeholder='PIN'
-              value={this.state.pin}
-              maxLength={4}
-              placeholderTextColor={c.themes[theme].lightText + '60'}
-              style={[styles.pinInput, { color: c.themes[theme].lightText, borderColor: c.themes[theme].lightText }]}/>
+    const thm = c.themes[this.props.theme];
+    return (
+      <View
+        style={{justifyContent: 'center', alignItems: 'center', width: '100%'}}>
+        <View style={[sty.button, {backgroundColor: thm.accent, height: 60}]}>
+          <TextInput
+            onChangeText={text => this.onPinTextChange(text)}
+            keyboardType="number-pad"
+            keyboardAppearance={this.props.theme}
+            returnKeyType="go"
+            textAlign="center"
+            placeholder="PIN"
+            value={this.state.pin}
+            maxLength={4}
+            placeholderTextColor={thm.lightText + '60'}
+            style={[
+              sty.pinInput,
+              {
+                color: thm.lightText,
+                borderColor: thm.lightText,
+              },
+            ]}
+          />
 
-              {this.state.loading && (
-                <View style={{ position: 'absolute', right: 15 }}>
-                  <ActivityIndicator color={c.themes[theme].lightText} size='small' />
-                </View>
-              )}
-
-          </View>
+          {this.state.loading && (
+            <View style={{position: 'absolute', right: 15}}>
+              <ActivityIndicator color={thm.lightText} size="small" />
+            </View>
+          )}
         </View>
-      );
+      </View>
+    );
   }
 
   renderBioAuth() {
-    let { theme, pin } = this.props;
-      return (
-        <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-
+    const thm = c.themes[this.props.theme];
+    return (
+      <View
+        style={{justifyContent: 'center', alignItems: 'center', width: '100%'}}>
         <TouchableOpacity
-            onPress={this.onPressBiometric}
-            style={[styles.button, { backgroundColor: c.themes[theme].accent }]}>
+          onPress={this.onPressBiometric}
+          style={[sty.button, {backgroundColor: thm.accent}]}>
           <MCIcons
-            style={{ position: 'absolute', left: 5 }}
+            style={{position: 'absolute', left: 5}}
             size={30}
-            color={c.themes[theme].lightText}
-            name='fingerprint' />
-          <Text style={{ fontSize: 16, color: c.themes[theme].lightText }}>
+            color={thm.lightText}
+            name="fingerprint"
+          />
+          <Text style={{fontSize: 16, color: thm.lightText}}>
             Login with Biometrics
           </Text>
         </TouchableOpacity>
-
-        </View>
-      );
+      </View>
+    );
   }
 
   renderSwitch() {
-    let { theme, pin, authType } = this.props;
-    switch (authType) {
-      case null: return (<>{this.renderNullAuth()}</>);
-      case 'none': return (<>{this.renderNullAuth()}</>);
-      case 'pin': return (<>{this.renderEnterPin()}</>);
-      default: return (<>{this.renderBioAuth()}</>)
+    switch (this.props.authType) {
+      case null:
+        return <>{this.renderNullAuth()}</>;
+      case 'none':
+        return <>{this.renderNullAuth()}</>;
+      case 'pin':
+        return <>{this.renderEnterPin()}</>;
+      default:
+        return <>{this.renderBioAuth()}</>;
     }
   }
 
   render() {
-    let { theme } = this.props;
+    const thm = c.themes[this.props.theme];
     return (
-      <View style={[styles.container, { backgroundColor: c.themes[theme].background }]}>
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 42, color: c.themes[theme].text, fontFamily: 'ZillaSlab' }}>
+      <View style={[sty.container, {backgroundColor: thm.background}]}>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <Text
+            style={{
+              fontSize: 42,
+              color: thm.text,
+              fontFamily: 'ZillaSlab',
+            }}>
             Midwife
           </Text>
-          <Text style={{ fontSize: 20, color: c.themes[theme].text, fontFamily: 'ZillaSlab' }}>
+          <Text
+            style={{
+              fontSize: 20,
+              color: thm.text,
+              fontFamily: 'ZillaSlab',
+            }}>
             Assist
           </Text>
         </View>
@@ -304,7 +360,7 @@ class Auth extends Component {
   }
 }
 
-const styles = {
+const sty = {
   container: {
     flex: 1,
     width: '100%',
@@ -321,12 +377,12 @@ const styles = {
     paddingVertical: 10,
     flex: 1,
     width: '90%',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
   pinInput: {
     width: '90%',
     height: '80%',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   indicatorContainer: {
     ...c.center,
@@ -335,7 +391,7 @@ const styles = {
     flexDirection: 'row',
   },
   indicatorIcon: {
-    marginHorizontal: 15
+    marginHorizontal: 15,
   },
   button: {
     ...c.center,
@@ -343,9 +399,8 @@ const styles = {
     height: 45,
     borderRadius: 10,
     width: '70%',
-    marginVertical: 10
+    marginVertical: 10,
   },
 };
-
 
 export default Auth;
