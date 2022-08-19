@@ -13,11 +13,12 @@ const settings = (state = INITIAL_STATE, action) => {
       return newState;
     case types.CHANGE_THEME:
       // Set new theme to user selected theme, this will update all parts of the app
-      return Object.assign(newState, { theme: action.payload });
+      return Object.assign(newState, {theme: action.payload});
     case types.FIRST_LOGIN:
-      return Object.assign(newState, { firstLogin: false });
-    default: return state;
+      return Object.assign(newState, {firstLogin: false});
+    default:
+      return state;
   }
-}
+};
 
 export default settings;

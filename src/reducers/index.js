@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
 import settings from './SettingsReducer';
 import auth from './AuthReducer';
@@ -11,7 +11,7 @@ const reducers = combineReducers({
   settings,
   auth,
   client,
-  notes
+  notes,
 });
 
 export default reducers;

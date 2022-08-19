@@ -1,6 +1,4 @@
 import * as types from '../actions/ActionTypes';
-const c = require('../assets/constants');
-
 /*
 this.sortingOptions = [
   { value: 'Last Name', slug: 'lastAlpha' },
@@ -11,7 +9,7 @@ this.sortingOptions = [
 const INITIAL_STATE = {
   clients: [], //[], //c.clients
   babies: [],
-  sortType: 'lastAlpha'
+  sortType: 'lastAlpha',
 };
 
 const notes = (state = INITIAL_STATE, action) => {
@@ -20,19 +18,33 @@ const notes = (state = INITIAL_STATE, action) => {
     case types.REFRESH_STORE:
       return newState;
     case types.STORE_CLIENT:
-      return Object.assign(newState, { clients: [...newState.clients, action.payload] });
+      return Object.assign(newState, {
+        clients: [...newState.clients, action.payload],
+      });
     case types.DELETE_CLIENT:
-      return Object.assign(newState, { clients: newState.clients.filter((client, i) => client.id !== action.payload) });
+      return Object.assign(newState, {
+        clients: newState.clients.filter(
+          (client, i) => client.id !== action.payload,
+        ),
+      });
     case types.UPDATE_CLIENT:
-      return Object.assign(newState, { clients: [
-        ...newState.clients.filter((client, i) => client.id !== action.payload.id),
-        action.payload ] });
+      return Object.assign(newState, {
+        clients: [
+          ...newState.clients.filter(
+            (client, i) => client.id !== action.payload.id,
+          ),
+          action.payload,
+        ],
+      });
     case types.STORE_BABY:
-      return Object.assign(newState,  { babies: [...newState.babies, action.payload] });
-  case types.CHANGE_SORT_TYPE:
-    return Object.assign(newState,  { sortType: action.payload });
-    default: return state;
+      return Object.assign(newState, {
+        babies: [...newState.babies, action.payload],
+      });
+    case types.CHANGE_SORT_TYPE:
+      return Object.assign(newState, {sortType: action.payload});
+    default:
+      return state;
   }
-}
+};
 
 export default notes;
