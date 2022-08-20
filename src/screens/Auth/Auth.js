@@ -11,6 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-toast-message';
 import ReactNativeBiometrics from 'react-native-biometrics';
 const rnBiometrics = new ReactNativeBiometrics();
 
@@ -56,16 +57,15 @@ class Auth extends Component {
       : 'Scan fingerprint to enable biometrics';
     try {
       let prompt = await rnBiometrics.simplePrompt({promptMessage});
-      console.log(prompt);
       if (prompt.success) {
         this.props.login();
         this.props.updateAuthType('biometric');
         this.props.navigation.navigate('tabs');
       } else {
-        console.log('fail');
+        Toast.show({type: 'error', text1: prompt.error});
       }
     } catch (e) {
-      console.log({e});
+      Toast.show({type: 'error', text1: e});
     }
   };
 
@@ -115,7 +115,7 @@ class Auth extends Component {
     }
   }
 
-  renderNullAuth() {
+  renderSetAuthType() {
     const thm = c.themes[this.props.theme];
     return (
       <View
@@ -312,8 +312,8 @@ class Auth extends Component {
         );
       case 'none':
         return null;
-      default:
-        return this.renderNullAuth();
+      default: // authType is null, return login form
+        return this.renderSetAuthType();
     }
   }
 

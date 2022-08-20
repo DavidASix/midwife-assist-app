@@ -5,6 +5,7 @@ import {StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/lib/integration/react';
 import {setCustomTextInput, setCustomText} from 'react-native-global-props';
+import Toast from 'react-native-toast-message';
 
 import {store, persistor} from './src/config/store';
 
@@ -24,6 +25,7 @@ class App extends React.Component {
           <>
             <StatusBar barStyle="dark-content" />
             <Router />
+          <Toast />
           </>
         </PersistGate>
       </Provider>
