@@ -5,10 +5,10 @@
 ### Overall
 * ~~Find new solution for Biometric as old library no longer supported~~
 * ~~Replace DropDown library as no longer supported~~
-* Change Color
+* ~~Change Color~~
 ### Calculator
-* Change method of Calendar TextInput
-* Under GA, kayboard covers words and squishes theme*
+* ~~Change method of Calendar TextInput~~
+* ~~Under GA, kayboard covers words and squishes theme~~
 ### Client List
 * Client Cards in list should show more important information
 * Show clients GA (36W4D/ 36+4)
