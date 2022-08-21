@@ -32,6 +32,26 @@ class Auth extends Component {
       loading: false,
       showNewPinInputs: false,
     };
+    this.authTypes = [
+      {
+        title: 'Pin',
+        icon: 'lock-smart',
+        onPressVal: 'pin',
+        showButton: true,
+      },
+      {
+        title: 'Biometric',
+        icon: 'fingerprint',
+        onPressVal: 'bio',
+        showButton: this.state.bio,
+      },
+      {
+        title: 'No security',
+        icon: 'lock-open',
+        onPressVal: 'none',
+        showButton: true,
+      },
+    ];
   }
 
   async componentDidMount() {
@@ -49,6 +69,49 @@ class Auth extends Component {
         this.setState({bio: false});
       }
     }
+  }
+
+  onPressNewAuthType(type) {
+    switch (type) {
+      case 'pin':
+        this.onPressNewPin();
+        break;
+      case 'bio':
+        this.onPressBiometric();
+        break;
+      case 'none':
+        this.onPressNoSecurity();
+        break;
+      default:
+        Toast.show({type: 'error', text1: 'Invalid authentication type'});
+    }
+  }
+
+  onPressSubmitNewPin = () => {
+    let pin = String(this.state.pin);
+    this.setState({loading: true});
+    setTimeout(() => {
+      this.setState({loading: false, pin: '', showNewPinInputs: false});
+      if (pin.length === 4 && pin.match(/^\d+$/)) {
+        this.props.updateAuthType('pin', pin);
+        this.props.login();
+        Alert.alert(
+          `Your PIN is set to: ${pin}`,
+          "To protect client information there is no PIN recovery option. Don't forget it!",
+          [{text: 'OK', onPress: () => this.props.navigation.navigate('tabs')}],
+        );
+      } else {
+        this.setState({showNewPinInputs: true});
+        Alert.alert(
+          'Issue with PIN',
+          "PIN's must be 4 numbers. Please try again.",
+        );
+      }
+    });
+  };
+
+  onPressNewPin = () => {
+
   }
 
   onPressBiometric = async () => {
@@ -73,29 +136,6 @@ class Auth extends Component {
     this.setState({loading: false, pin: '', showNewPinInputs: false});
     this.props.updateAuthType('none');
     this.props.navigation.navigate('tabs');
-  };
-
-  onPressSubmitNewPin = () => {
-    let pin = String(this.state.pin);
-    this.setState({loading: true});
-    setTimeout(() => {
-      this.setState({loading: false, pin: '', showNewPinInputs: false});
-      if (pin.length === 4 && pin.match(/^\d+$/)) {
-        this.props.updateAuthType('pin', pin);
-        this.props.login();
-        Alert.alert(
-          `Your PIN is set to: ${pin}`,
-          "To protect client information there is no PIN recovery option. Don't forget it!",
-          [{text: 'OK', onPress: () => this.props.navigation.navigate('tabs')}],
-        );
-      } else {
-        this.setState({showNewPinInputs: true});
-        Alert.alert(
-          'Issue with PIN',
-          "PIN's must be 4 numbers. Please try again.",
-        );
-      }
-    });
   };
 
   onPinTextChange(newPin) {
@@ -313,24 +353,47 @@ class Auth extends Component {
       case 'none':
         return null;
       default: // authType is null, return login form
-        return this.renderSetAuthType();
+        return this.authTypes.map(
+          (type, i) =>
+            type.showButton && (
+              <TouchableOpacity
+                key={i}
+                onPress={() => this.onPressNewAuthType(type.onPressVal)}
+                style={[sty.button, {backgroundColor: thm.accent}]}>
+                <MCIcons
+                  style={{position: 'absolute', left: 5}}
+                  size={30}
+                  color={thm.lightText}
+                  name={type.icon}
+                />
+                <Text style={{fontSize: 16, color: thm.lightText}}>
+                  {type.title}
+                </Text>
+              </TouchableOpacity>
+            ),
+        );
     }
   }
 
   render() {
     const thm = c.themes[this.props.theme];
     return (
-      <View style={[sty.container, {backgroundColor: thm.background}]}>
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={[c.titleFont, {fontSize: 42, color: thm.text}]}>
-            Midwife
-          </Text>
-          <Text style={[c.titleFont, {fontSize: 20, color: thm.text}]}>
-            Assist
-          </Text>
+      <>
+        <View style={[sty.container, {backgroundColor: thm.background}]}>
+          <View style={c.center}>
+            <Text style={[c.titleFont, {fontSize: 42, color: thm.text}]}>
+              Midwife
+            </Text>
+            <Text style={[c.titleFont, {fontSize: 20, color: thm.text}]}>
+              Assist
+            </Text>
+          </View>
+
+          <View style={{...c.center, width: '100%'}}>
+            {this.renderSwitch()}
+          </View>
         </View>
-        {this.renderSwitch()}
-      </View>
+      </>
     );
   }
 }
