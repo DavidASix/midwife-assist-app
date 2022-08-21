@@ -25,7 +25,7 @@ class App extends React.Component {
           <>
             <StatusBar barStyle="dark-content" />
             <Router />
-          <Toast />
+            <Toast />
           </>
         </PersistGate>
       </Provider>

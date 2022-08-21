@@ -84,7 +84,7 @@ const TabStateless = props => {
   }, []);
   return (
     <Tab.Navigator
-      initialRouteName="calcStack"
+      initialRouteName="clientStack"
       tabBar={navProps => <BottomTabBar {...props} {...navProps} />}
       screenOptions={{headerShown: false}}>
       <Tab.Screen

@@ -1,21 +1,17 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
-  SafeAreaView,
   View,
   Text,
   Alert,
-  ActivityIndicator,
   TouchableOpacity,
   ScrollView,
-  Image,
   TextInput,
   ToastAndroid,
 } from 'react-native';
-//import DatePicker from 'react-native-date-picker';
-const DatePicker = null;
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FFIcons from 'react-native-vector-icons/FontAwesome5';
-import axios from 'axios';
 
 const c = require('../../assets/constants');
 
@@ -36,17 +32,30 @@ class AddClient extends Component {
       gbs: 'unknown',
       notes: '',
       dob: new Date(Date.now() - 30 * c.t.year),
-      edd: new Date(Date.now() + 280 * c.t.day)
+      edd: new Date(Date.now() + 280 * c.t.day),
     };
   }
 
   onPressSubmit = () => {
     const {
-      preferredName, firstName, lastName,
-      street, city, province, country,
-      phoneCount, rh, gbs, notes, dob, edd } = this.state;
+      preferredName,
+      firstName,
+      lastName,
+      street,
+      city,
+      province,
+      country,
+      phoneCount,
+      rh,
+      gbs,
+      notes,
+      dob,
+      edd,
+    } = this.state;
     let phones = [];
-    for (let i = 1; i <= phoneCount; i++) { if (this.state[`phone${i}`]) phones.push(this.state[`phone${i}`]); }
+    for (let i = 1; i <= phoneCount; i++) {
+      if (this.state[`phone${i}`]) phones.push(this.state[`phone${i}`]);
+    }
     let newClient = {
       id: c.randomString(),
       name: {
@@ -58,7 +67,7 @@ class AddClient extends Component {
         street,
         city,
         province,
-        country
+        country,
       },
       dob: dob.getTime(),
       edd: edd.getTime(),
@@ -66,174 +75,232 @@ class AddClient extends Component {
       gbs: gbs,
       delivered: false,
       phones,
-      notes
+      notes,
     };
-    if (!newClient.name.first || !newClient.name.last)  return Alert.alert('Please enter your clients name');
+    if (!newClient.name.first || !newClient.name.last)
+      return Alert.alert('Please enter your clients name');
     this.props.storeNewClient(newClient);
     ToastAndroid.show('Client Saved', ToastAndroid.SHORT);
     this.props.navigation.navigate('clients');
-  }
+  };
 
   renderName() {
-    let { theme } = this.props;
-    let { firstName, lastName, preferredName } = this.state;
+    let {theme} = this.props;
+    let {firstName, lastName, preferredName} = this.state;
     return (
       <>
         <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
+          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
             Name
           </Text>
         </View>
         <View style={[styles.row]}>
           <TextInput
-            style={[styles.textInput, { color: c.themes[theme].text, borderColor: c.themes[theme].border  }]}
-            onChangeText={text => this.setState({ firstName: text })}
+            style={[
+              styles.textInput,
+              {
+                color: c.themes[theme].text,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
+            onChangeText={text => this.setState({firstName: text})}
             value={firstName}
-            placeholder='First'
-            keyboardType='default'
-            autoCapitalize='words'
+            placeholder="First"
+            keyboardType="default"
+            autoCapitalize="words"
             autoCorrect={false}
-            autoCompleteType='name'
+            autoCompleteType="name"
             maxLength={20}
-            placeholderTextColor={c.themes[theme].text + 60} />
+            placeholderTextColor={c.themes[theme].text + 60}
+          />
         </View>
         <View style={[styles.row]}>
           <TextInput
-            style={[styles.textInput, { color: c.themes[theme].text, borderColor: c.themes[theme].border  }]}
-            onChangeText={text => this.setState({ lastName: text })}
+            style={[
+              styles.textInput,
+              {
+                color: c.themes[theme].text,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
+            onChangeText={text => this.setState({lastName: text})}
             value={lastName}
-            placeholder='Last'
-            keyboardType='default'
-            autoCapitalize='words'
+            placeholder="Last"
+            keyboardType="default"
+            autoCapitalize="words"
             autoCorrect={false}
-            autoCompleteType='name'
+            autoCompleteType="name"
             maxLength={20}
-            placeholderTextColor={c.themes[theme].text + 60} />
+            placeholderTextColor={c.themes[theme].text + 60}
+          />
         </View>
         <View style={[styles.row]}>
           <TextInput
-            style={[styles.textInput, { color: c.themes[theme].text, borderColor: c.themes[theme].border  }]}
-            onChangeText={text => this.setState({ preferredName: text })}
+            style={[
+              styles.textInput,
+              {
+                color: c.themes[theme].text,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
+            onChangeText={text => this.setState({preferredName: text})}
             value={preferredName}
-            placeholder='Preferred'
-            keyboardType='default'
-            autoCapitalize='words'
+            placeholder="Preferred"
+            keyboardType="default"
+            autoCapitalize="words"
             autoCorrect={false}
-            autoCompleteType='name'
+            autoCompleteType="name"
             maxLength={41}
-            placeholderTextColor={c.themes[theme].text + 60} />
+            placeholderTextColor={c.themes[theme].text + 60}
+          />
         </View>
       </>
-    )
+    );
   }
 
   renderAddress() {
-    let { theme } = this.props;
-    let { street, city, province, country } = this.state;
+    let {theme} = this.props;
+    let {street, city, province, country} = this.state;
     return (
       <>
         <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
+          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
             Address
           </Text>
         </View>
         <View style={[styles.row]}>
           <TextInput
-            style={[styles.textInput, { color: c.themes[theme].text, borderColor: c.themes[theme].border  }]}
-            onChangeText={text => this.setState({ street: text })}
+            style={[
+              styles.textInput,
+              {
+                color: c.themes[theme].text,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
+            onChangeText={text => this.setState({street: text})}
             value={street}
-            keyboardType='default'
-            autoCapitalize='words'
+            keyboardType="default"
+            autoCapitalize="words"
             autoCorrect={false}
-            autoCompleteType='street-address'
+            autoCompleteType="street-address"
             maxLength={60}
-            placeholder='Street'
-            placeholderTextColor={c.themes[theme].text + 60} />
+            placeholder="Street"
+            placeholderTextColor={c.themes[theme].text + 60}
+          />
         </View>
         <View style={[styles.row]}>
           <TextInput
-            style={[styles.textInput, { color: c.themes[theme].text, borderColor: c.themes[theme].border  }]}
-            onChangeText={text => this.setState({ city: text })}
+            style={[
+              styles.textInput,
+              {
+                color: c.themes[theme].text,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
+            onChangeText={text => this.setState({city: text})}
             value={city}
-            keyboardType='default'
-            autoCapitalize='words'
+            keyboardType="default"
+            autoCapitalize="words"
             autoCorrect={false}
-            autoCompleteType='name'
+            autoCompleteType="name"
             maxLength={30}
-            placeholder='City'
-            placeholderTextColor={c.themes[theme].text + 60} />
+            placeholder="City"
+            placeholderTextColor={c.themes[theme].text + 60}
+          />
         </View>
         <View style={[styles.row]}>
           <TextInput
-            style={[styles.textInput, { color: c.themes[theme].text, borderColor: c.themes[theme].border  }]}
-            onChangeText={text => this.setState({ province: text })}
+            style={[
+              styles.textInput,
+              {
+                color: c.themes[theme].text,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
+            onChangeText={text => this.setState({province: text})}
             value={province}
-            keyboardType='default'
-            autoCapitalize='words'
+            keyboardType="default"
+            autoCapitalize="words"
             autoCorrect={false}
-            autoCompleteType='name'
+            autoCompleteType="name"
             maxLength={30}
-            placeholder='Province/State'
-            placeholderTextColor={c.themes[theme].text + 60} />
+            placeholder="Province/State"
+            placeholderTextColor={c.themes[theme].text + 60}
+          />
         </View>
         <View style={[styles.row]}>
           <TextInput
-            style={[styles.textInput, { color: c.themes[theme].text, borderColor: c.themes[theme].border  }]}
-            onChangeText={text => this.setState({ country: text })}
+            style={[
+              styles.textInput,
+              {
+                color: c.themes[theme].text,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
+            onChangeText={text => this.setState({country: text})}
             value={country}
-            keyboardType='default'
-            autoCapitalize='words'
+            keyboardType="default"
+            autoCapitalize="words"
             autoCorrect={false}
-            autoCompleteType='name'
+            autoCompleteType="name"
             maxLength={30}
-            placeholder='Country'
-            placeholderTextColor={c.themes[theme].text + 60} />
+            placeholder="Country"
+            placeholderTextColor={c.themes[theme].text + 60}
+          />
         </View>
       </>
     );
   }
 
-renderPhoneInputs() {
-  let { theme } = this.props;
-  let { phoneCount } = this.state;
-  let phoneRows = [];
-  for (let i = 0; i < phoneCount; i++) {
-    phoneRows.push(
-      <View style={[styles.row]} key={i}>
-        <TextInput
-          style={[styles.textInput, { color: c.themes[theme].text, borderColor: c.themes[theme].border  }]}
-          onChangeText={text => this.setState({ [`phone${i + 1}`]: text })}
-          value={this.state[`phone${i + 1}`]}
-          keyboardType='phone-pad'
-          autoCapitalize='words'
-          autoCorrect={false}
-          autoCompleteType='tel'
-          maxLength={60}
-          placeholder={c.numberingNames[i]}
-          placeholderTextColor={c.themes[theme].text + 60} />
-      </View>
-    );
+  renderPhoneInputs() {
+    let {theme} = this.props;
+    let {phoneCount} = this.state;
+    let phoneRows = [];
+    for (let i = 0; i < phoneCount; i++) {
+      phoneRows.push(
+        <View style={[styles.row]} key={i}>
+          <TextInput
+            style={[
+              styles.textInput,
+              {
+                color: c.themes[theme].text,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
+            onChangeText={text => this.setState({[`phone${i + 1}`]: text})}
+            value={this.state[`phone${i + 1}`]}
+            keyboardType="phone-pad"
+            autoCapitalize="words"
+            autoCorrect={false}
+            autoCompleteType="tel"
+            maxLength={60}
+            placeholder={c.numberingNames[i]}
+            placeholderTextColor={c.themes[theme].text + 60}
+          />
+        </View>,
+      );
+    }
+    return phoneRows;
   }
-  return phoneRows;
-}
 
   renderPhone() {
-    let { theme } = this.props;
-    let { phoneCount, phone } = this.state;
+    let {theme} = this.props;
+    let {phoneCount, phone} = this.state;
     return (
       <>
         <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
+          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
             Phone
           </Text>
 
           <TouchableOpacity
-            onPress={() => this.setState({ phoneCount: phoneCount === 10 ? phoneCount : phoneCount + 1 })}
-            style={{ height: 40, width: 40, borderRadius: 20, ...c.center }}>
-            <MCIcons
-              name='phone-plus'
-              size={30}
-              color={c.themes[theme].text} />
+            onPress={() =>
+              this.setState({
+                phoneCount: phoneCount === 10 ? phoneCount : phoneCount + 1,
+              })
+            }
+            style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
+            <MCIcons name="phone-plus" size={30} color={c.themes[theme].text} />
           </TouchableOpacity>
         </View>
         {this.renderPhoneInputs()}
@@ -242,103 +309,136 @@ renderPhoneInputs() {
   }
 
   renderDob() {
-    let { theme } = this.props;
-    let { dob } = this.state;
+    let {theme} = this.props;
+    let {dob} = this.state;
     return (
       <>
         <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
+          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
             Date of Birth
           </Text>
         </View>
-        <View style={[styles.row, { justifyContent: 'center' }]}>
-          <DatePicker
-            mode='date'
+        <View style={[styles.row, {justifyContent: 'center'}]}>
+          {/*<DatePicker
+            mode="date"
             date={dob}
             textColor={c.themes[theme].text}
             fadeToColor={c.themes[theme].modal}
-            style={{ height: 120 }}
-            onDateChange={(newDate) => this.setState({ dob: newDate })} />
+            style={{height: 120}}
+            onDateChange={newDate => this.setState({dob: newDate})}
+          />*/}
         </View>
       </>
     );
   }
 
   renderEdd() {
-    let { theme } = this.props;
-    let { edd } = this.state;
+    let {theme} = this.props;
+    let {edd} = this.state;
     return (
       <>
         <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
+          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
             Estimated Delivery Date
           </Text>
         </View>
-        <View style={[styles.row, { justifyContent: 'center' }]}>
-          <DatePicker
-            mode='date'
+        <View style={[styles.row, {justifyContent: 'center'}]}>
+          {/*<DatePicker
+            mode="date"
             date={edd}
             textColor={c.themes[theme].text}
             fadeToColor={c.themes[theme].modal}
-            style={{ height: 120 }}
-            onDateChange={(newDate) => this.setState({ edd: newDate })} />
+            style={{height: 120}}
+            onDateChange={newDate => this.setState({edd: newDate})}
+          />*/}
         </View>
       </>
     );
   }
 
   renderRh() {
-    let { theme } = this.props;
-    let { rh } = this.state;
+    let {theme} = this.props;
+    let {rh} = this.state;
     const size = 31;
     return (
       <>
         <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
+          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
             Rh status
           </Text>
         </View>
-        <View style={[styles.row, { paddingVertical: 5, justifyContent: 'space-around' }]}>
+        <View
+          style={[
+            styles.row,
+            {paddingVertical: 5, justifyContent: 'space-around'},
+          ]}>
           <TouchableOpacity
-            onPress={() => this.setState({ rh: 'positive' })}
+            onPress={() => this.setState({rh: 'positive'})}
             style={{
               height: size,
               width: size,
               borderRadius: size / 2,
-              backgroundColor: rh === 'positive' ? c.themes[theme].accent : c.themes[theme].text,
-              ...c.center }}>
+              backgroundColor:
+                rh === 'positive'
+                  ? c.themes[theme].accent
+                  : c.themes[theme].text,
+              ...c.center,
+            }}>
             <MCIcons
-              name='plus'
+              name="plus"
               size={size / 2}
-              color={rh === 'positive' ? c.themes[theme].lightText : c.themes[theme].modal} />
+              color={
+                rh === 'positive'
+                  ? c.themes[theme].lightText
+                  : c.themes[theme].modal
+              }
+            />
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.setState({ rh: 'negative' })}
+            onPress={() => this.setState({rh: 'negative'})}
             style={{
               height: size,
               width: size,
               borderRadius: size / 2,
-              backgroundColor: rh === 'negative' ? c.themes[theme].accent : c.themes[theme].text,
-              ...c.center }}>
+              backgroundColor:
+                rh === 'negative'
+                  ? c.themes[theme].accent
+                  : c.themes[theme].text,
+              ...c.center,
+            }}>
             <MCIcons
-              name='minus'
+              name="minus"
               size={size / 2}
-              color={rh === 'negative' ? c.themes[theme].lightText : c.themes[theme].modal} />
+              color={
+                rh === 'negative'
+                  ? c.themes[theme].lightText
+                  : c.themes[theme].modal
+              }
+            />
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.setState({ rh: 'unknown' })}
+            onPress={() => this.setState({rh: 'unknown'})}
             style={{
               height: size,
               width: size,
               borderRadius: size / 2,
-              backgroundColor: rh === 'unknown' ? c.themes[theme].accent : c.themes[theme].text,
-              ...c.center }}>
+              backgroundColor:
+                rh === 'unknown'
+                  ? c.themes[theme].accent
+                  : c.themes[theme].text,
+              ...c.center,
+            }}>
             <FFIcons
-              name='question'
+              name="question"
               size={size / 2}
-              color={rh === 'unknown' ? c.themes[theme].lightText : c.themes[theme].modal} />
+              color={
+                rh === 'unknown'
+                  ? c.themes[theme].lightText
+                  : c.themes[theme].modal
+              }
+            />
           </TouchableOpacity>
         </View>
       </>
@@ -346,57 +446,88 @@ renderPhoneInputs() {
   }
 
   renderGbs() {
-    let { theme } = this.props;
-    let { gbs } = this.state;
+    let {theme} = this.props;
+    let {gbs} = this.state;
     const size = 31;
     return (
       <>
         <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
+          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
             GBS status
           </Text>
         </View>
-        <View style={[styles.row, { paddingVertical: 5, justifyContent: 'space-around' }]}>
+        <View
+          style={[
+            styles.row,
+            {paddingVertical: 5, justifyContent: 'space-around'},
+          ]}>
           <TouchableOpacity
-            onPress={() => this.setState({ gbs: 'positive' })}
+            onPress={() => this.setState({gbs: 'positive'})}
             style={{
               height: size,
               width: size,
               borderRadius: size / 2,
-              backgroundColor: gbs === 'positive' ? c.themes[theme].accent : c.themes[theme].text,
-              ...c.center }}>
+              backgroundColor:
+                gbs === 'positive'
+                  ? c.themes[theme].accent
+                  : c.themes[theme].text,
+              ...c.center,
+            }}>
             <MCIcons
-              name='plus'
+              name="plus"
               size={size / 2}
-              color={gbs === 'positive' ? c.themes[theme].lightText : c.themes[theme].modal} />
+              color={
+                gbs === 'positive'
+                  ? c.themes[theme].lightText
+                  : c.themes[theme].modal
+              }
+            />
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.setState({ gbs: 'negative' })}
+            onPress={() => this.setState({gbs: 'negative'})}
             style={{
               height: size,
               width: size,
               borderRadius: size / 2,
-              backgroundColor: gbs === 'negative' ? c.themes[theme].accent : c.themes[theme].text,
-              ...c.center }}>
+              backgroundColor:
+                gbs === 'negative'
+                  ? c.themes[theme].accent
+                  : c.themes[theme].text,
+              ...c.center,
+            }}>
             <MCIcons
-              name='minus'
+              name="minus"
               size={size / 2}
-              color={gbs === 'negative' ? c.themes[theme].lightText : c.themes[theme].modal} />
+              color={
+                gbs === 'negative'
+                  ? c.themes[theme].lightText
+                  : c.themes[theme].modal
+              }
+            />
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.setState({ gbs: 'unknown' })}
+            onPress={() => this.setState({gbs: 'unknown'})}
             style={{
               height: size,
               width: size,
               borderRadius: size / 2,
-              backgroundColor: gbs === 'unknown' ? c.themes[theme].accent : c.themes[theme].text,
-              ...c.center }}>
+              backgroundColor:
+                gbs === 'unknown'
+                  ? c.themes[theme].accent
+                  : c.themes[theme].text,
+              ...c.center,
+            }}>
             <FFIcons
-              name='question'
+              name="question"
               size={size / 2}
-              color={gbs === 'unknown' ? c.themes[theme].lightText : c.themes[theme].modal} />
+              color={
+                gbs === 'unknown'
+                  ? c.themes[theme].lightText
+                  : c.themes[theme].modal
+              }
+            />
           </TouchableOpacity>
         </View>
       </>
@@ -404,43 +535,48 @@ renderPhoneInputs() {
   }
 
   renderNotes() {
-    let { theme } = this.props;
-    let { notes } = this.state;
+    let {theme} = this.props;
+    let {notes} = this.state;
     return (
       <>
         <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
+          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
             Notes
           </Text>
         </View>
         <View style={[styles.row]}>
           <TextInput
-            style={[styles.textInput, { color: c.themes[theme].text, borderColor: c.themes[theme].border  }]}
-            onChangeText={text => this.setState({ notes: text })}
+            style={[
+              styles.textInput,
+              {
+                color: c.themes[theme].text,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
+            onChangeText={text => this.setState({notes: text})}
             value={notes}
-            keyboardType='default'
-            autoCapitalize='sentences'
+            keyboardType="default"
+            autoCapitalize="sentences"
             autoCorrect={false}
             maxLength={300}
             multiline
-            placeholder='Notes'
-            placeholderTextColor={c.themes[theme].text + 60} />
+            placeholder="Notes"
+            placeholderTextColor={c.themes[theme].text + 60}
+          />
         </View>
       </>
     );
   }
 
   renderSubmit() {
-    let { theme } = this.props;
+    let {theme} = this.props;
     return (
       <>
-        <View style={[styles.row, { justifyContent: 'center' }]}>
+        <View style={[styles.row, {justifyContent: 'center'}]}>
           <TouchableOpacity
-            style={[styles.submit, { backgroundColor: c.themes[theme].accent }]}
+            style={[styles.submit, {backgroundColor: c.themes[theme].accent}]}
             onPress={this.onPressSubmit}>
-            <Text style={[{ color: c.themes[theme].lightText }]}>
-              Submit
-            </Text>
+            <Text style={[{color: c.themes[theme].lightText}]}>Submit</Text>
           </TouchableOpacity>
         </View>
       </>
@@ -448,18 +584,41 @@ renderPhoneInputs() {
   }
 
   render() {
-    let { theme } = this.props;
+    let {theme} = this.props;
     return (
-      <View style={[styles.container, { backgroundColor: c.themes[theme].background, borderColor: c.themes[theme].border }]}>
-        <View style={[styles.header, { backgroundColor: c.themes[theme].accent }]}>
-          <View style={{ flex: 1, width: '100%', justifyContent: 'center' }}>
-            <Text style={[{ color: c.themes[theme].lightText, fontSize: 36, marginLeft: 20 }, c.titleFont]}>
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: c.themes[theme].background,
+            borderColor: c.themes[theme].border,
+          },
+        ]}>
+        <View
+          style={[styles.header, {backgroundColor: c.themes[theme].accent}]}>
+          <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
+            <Text
+              style={[
+                {
+                  color: c.themes[theme].lightText,
+                  fontSize: 36,
+                  marginLeft: 20,
+                },
+                c.titleFont,
+              ]}>
               Add new client
             </Text>
           </View>
         </View>
         <ScrollView style={styles.body}>
-          <View style={[styles.sectionContainer, { backgroundColor: c.themes[theme].modal, borderColor: c.themes[theme].border }]}>
+          <View
+            style={[
+              styles.sectionContainer,
+              {
+                backgroundColor: c.themes[theme].modal,
+                borderColor: c.themes[theme].border,
+              },
+            ]}>
             {this.renderName()}
             {this.renderAddress()}
             {this.renderPhone()}
@@ -474,7 +633,6 @@ renderPhoneInputs() {
     );
   }
 }
-
 
 const styles = {
   container: {
@@ -527,13 +685,13 @@ const styles = {
   },
   subHeaderText: {
     fontSize: 20,
-    ...c.titleFont
+    ...c.titleFont,
   },
   textInput: {
     flex: 1,
     borderBottomWidth: 1,
     fontSize: 16,
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
   submit: {
     width: '95%',
@@ -543,9 +701,8 @@ const styles = {
     marginVertical: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'center'
-  }
-}
-
+    alignSelf: 'center',
+  },
+};
 
 export default AddClient;
