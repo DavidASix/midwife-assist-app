@@ -18,7 +18,6 @@ import AIcons from 'react-native-vector-icons/AntDesign';
 import EIcons from 'react-native-vector-icons/Entypo';
 import axios from 'axios';
 
-import SlideUpModal from '../../SlideUpModal/'
 const c = require('../../assets/constants');
 
 class ViewClient extends Component {

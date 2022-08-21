@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, Alert, Linking} from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 const c = require('../../assets/constants');
-import SlideUpModal from '../../SlideUpModal/';
+import SlideUpModal from '../../components/SlideUpModal/';
 import SVGIcon from '../../components/SVGIcon/';
 
 const Github = 'http://www.github.com/davidasix';
@@ -140,7 +140,7 @@ class Settings extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.rating.onPressButton()}
+            onPress={() => this.rating.changeVisibility()}
             style={[sty.button, {backgroundColor: thm.modal}]}>
             <Text style={[sty.buttonText, {color: thm.text}]}>
               Rate this App
