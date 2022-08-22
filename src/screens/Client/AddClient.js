@@ -33,6 +33,8 @@ class AddClient extends Component {
       notes: '',
       dob: new Date(Date.now() - 30 * c.t.year),
       edd: new Date(Date.now() + 280 * c.t.day),
+      showEddPicker: false,
+      showDobPicker: false,
     };
   }
 
@@ -309,316 +311,149 @@ class AddClient extends Component {
   }
 
   renderDob() {
-    let {theme} = this.props;
-    let {dob} = this.state;
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
     return (
       <>
-        <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-            Date of Birth
-          </Text>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>Date of Birth</Text>
         </View>
-        <View style={[styles.row, {justifyContent: 'center'}]}>
-          {/*<DatePicker
+
+        <TouchableOpacity
+          style={sty.rowButton}
+          onPress={() => this.setState({showDobPicker: true})}>
+          <Text style={{color: thm.text}}>{this.state.dob.toDateString()}</Text>
+        </TouchableOpacity>
+        {this.state.showDobPicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={this.state.dob}
+            accentColor={thm.accent}
             mode="date"
-            date={dob}
-            textColor={c.themes[theme].text}
-            fadeToColor={c.themes[theme].modal}
-            style={{height: 120}}
-            onDateChange={newDate => this.setState({dob: newDate})}
-          />*/}
-        </View>
+            is24Hour={true}
+            onChange={(e, date) =>
+              this.setState({showDobPicker: false, dob: date})
+            }
+          />
+        )}
       </>
     );
   }
 
   renderEdd() {
-    let {theme} = this.props;
-    let {edd} = this.state;
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
     return (
       <>
-        <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-            Estimated Delivery Date
-          </Text>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>Estimated Delivery Date</Text>
         </View>
-        <View style={[styles.row, {justifyContent: 'center'}]}>
-          {/*<DatePicker
+
+        <TouchableOpacity
+          style={sty.rowButton}
+          onPress={() => this.setState({showEddPicker: true})}>
+          <Text style={{color: thm.text}}>{this.state.edd.toDateString()}</Text>
+        </TouchableOpacity>
+        {this.state.showEddPicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={this.state.edd}
+            accentColor={thm.accent}
             mode="date"
-            date={edd}
-            textColor={c.themes[theme].text}
-            fadeToColor={c.themes[theme].modal}
-            style={{height: 120}}
-            onDateChange={newDate => this.setState({edd: newDate})}
-          />*/}
-        </View>
+            is24Hour={true}
+            onChange={(e, date) =>
+              this.setState({showEddPicker: false, edd: date})
+            }
+          />
+        )}
       </>
     );
   }
 
   renderRh() {
-    let {theme} = this.props;
-    let {rh} = this.state;
-    const size = 31;
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
+    const active = type => type === this.state.rh;
+    const rhTypes = [
+      {name: 'positive', icon: 'plus'},
+      {name: 'negative', icon: 'minus'},
+      {name: 'unknown', icon: 'question'},
+    ];
     return (
       <>
-        <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-            Rh status
-          </Text>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>RH status</Text>
         </View>
-        <View
-          style={[
-            styles.row,
-            {paddingVertical: 5, justifyContent: 'space-around'},
-          ]}>
-          <TouchableOpacity
-            onPress={() => this.setState({rh: 'positive'})}
-            style={{
-              height: size,
-              width: size,
-              borderRadius: size / 2,
-              backgroundColor:
-                rh === 'positive'
-                  ? c.themes[theme].accent
-                  : c.themes[theme].text,
-              ...c.center,
-            }}>
-            <MCIcons
-              name="plus"
-              size={size / 2}
-              color={
-                rh === 'positive'
-                  ? c.themes[theme].lightText
-                  : c.themes[theme].modal
-              }
-            />
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => this.setState({rh: 'negative'})}
-            style={{
-              height: size,
-              width: size,
-              borderRadius: size / 2,
-              backgroundColor:
-                rh === 'negative'
-                  ? c.themes[theme].accent
-                  : c.themes[theme].text,
-              ...c.center,
-            }}>
-            <MCIcons
-              name="minus"
-              size={size / 2}
-              color={
-                rh === 'negative'
-                  ? c.themes[theme].lightText
-                  : c.themes[theme].modal
-              }
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => this.setState({rh: 'unknown'})}
-            style={{
-              height: size,
-              width: size,
-              borderRadius: size / 2,
-              backgroundColor:
-                rh === 'unknown'
-                  ? c.themes[theme].accent
-                  : c.themes[theme].text,
-              ...c.center,
-            }}>
-            <FFIcons
-              name="question"
-              size={size / 2}
-              color={
-                rh === 'unknown'
-                  ? c.themes[theme].lightText
-                  : c.themes[theme].modal
-              }
-            />
-          </TouchableOpacity>
+        <View style={sty.row}>
+          {rhTypes.map((type, i) => (
+            <TouchableOpacity
+              key={i}
+              onPress={() => this.setState({rh: type.name})}
+              style={[
+                sty.iconButton,
+                active(type.name) && {backgroundColor: thm.accent},
+              ]}>
+              <MCIcons
+                name={type.icon}
+                size={15}
+                color={active(type.name) ? thm.modal : thm.text}
+              />
+            </TouchableOpacity>
+          ))}
         </View>
       </>
     );
   }
 
   renderGbs() {
-    let {theme} = this.props;
-    let {gbs} = this.state;
-    const size = 31;
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
+    const active = type => type === this.state.gbs;
+    const gbsTypes = [
+      {name: 'positive', icon: 'plus'},
+      {name: 'negative', icon: 'minus'},
+      {name: 'unknown', icon: 'question'},
+    ];
     return (
       <>
-        <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-            GBS status
-          </Text>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>GBS status</Text>
         </View>
-        <View
-          style={[
-            styles.row,
-            {paddingVertical: 5, justifyContent: 'space-around'},
-          ]}>
-          <TouchableOpacity
-            onPress={() => this.setState({gbs: 'positive'})}
-            style={{
-              height: size,
-              width: size,
-              borderRadius: size / 2,
-              backgroundColor:
-                gbs === 'positive'
-                  ? c.themes[theme].accent
-                  : c.themes[theme].text,
-              ...c.center,
-            }}>
-            <MCIcons
-              name="plus"
-              size={size / 2}
-              color={
-                gbs === 'positive'
-                  ? c.themes[theme].lightText
-                  : c.themes[theme].modal
-              }
-            />
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => this.setState({gbs: 'negative'})}
-            style={{
-              height: size,
-              width: size,
-              borderRadius: size / 2,
-              backgroundColor:
-                gbs === 'negative'
-                  ? c.themes[theme].accent
-                  : c.themes[theme].text,
-              ...c.center,
-            }}>
-            <MCIcons
-              name="minus"
-              size={size / 2}
-              color={
-                gbs === 'negative'
-                  ? c.themes[theme].lightText
-                  : c.themes[theme].modal
-              }
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => this.setState({gbs: 'unknown'})}
-            style={{
-              height: size,
-              width: size,
-              borderRadius: size / 2,
-              backgroundColor:
-                gbs === 'unknown'
-                  ? c.themes[theme].accent
-                  : c.themes[theme].text,
-              ...c.center,
-            }}>
-            <FFIcons
-              name="question"
-              size={size / 2}
-              color={
-                gbs === 'unknown'
-                  ? c.themes[theme].lightText
-                  : c.themes[theme].modal
-              }
-            />
-          </TouchableOpacity>
-        </View>
-      </>
-    );
-  }
-
-  renderNotes() {
-    let {theme} = this.props;
-    let {notes} = this.state;
-    return (
-      <>
-        <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-            Notes
-          </Text>
-        </View>
-        <View style={[styles.row]}>
-          <TextInput
-            style={[
-              styles.textInput,
-              {
-                color: c.themes[theme].text,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
-            onChangeText={text => this.setState({notes: text})}
-            value={notes}
-            keyboardType="default"
-            autoCapitalize="sentences"
-            autoCorrect={false}
-            maxLength={300}
-            multiline
-            placeholder="Notes"
-            placeholderTextColor={c.themes[theme].text + 60}
-          />
-        </View>
-      </>
-    );
-  }
-
-  renderSubmit() {
-    let {theme} = this.props;
-    return (
-      <>
-        <View style={[styles.row, {justifyContent: 'center'}]}>
-          <TouchableOpacity
-            style={[styles.submit, {backgroundColor: c.themes[theme].accent}]}
-            onPress={this.onPressSubmit}>
-            <Text style={[{color: c.themes[theme].lightText}]}>Submit</Text>
-          </TouchableOpacity>
+        <View style={sty.row}>
+          {gbsTypes.map((type, i) => (
+            <TouchableOpacity
+              key={i}
+              onPress={() => this.setState({gbs: type.name})}
+              style={[
+                sty.iconButton,
+                active(type.name) && {backgroundColor: thm.accent},
+              ]}>
+              <MCIcons
+                name={type.icon}
+                size={15}
+                color={active(type.name) ? thm.modal : thm.text}
+              />
+            </TouchableOpacity>
+          ))}
         </View>
       </>
     );
   }
 
   render() {
-    let {theme} = this.props;
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
     return (
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: c.themes[theme].background,
-            borderColor: c.themes[theme].border,
-          },
-        ]}>
-        <View
-          style={[styles.header, {backgroundColor: c.themes[theme].accent}]}>
+      <View style={sty.container}>
+        <View style={sty.header}>
           <View style={{flex: 1, width: '100%', justifyContent: 'center'}}>
-            <Text
-              style={[
-                {
-                  color: c.themes[theme].lightText,
-                  fontSize: 36,
-                  marginLeft: 20,
-                },
-                c.titleFont,
-              ]}>
-              Add new client
-            </Text>
+            <Text style={sty.title}>Add new client</Text>
           </View>
         </View>
-        <ScrollView style={styles.body}>
-          <View
-            style={[
-              styles.sectionContainer,
-              {
-                backgroundColor: c.themes[theme].modal,
-                borderColor: c.themes[theme].border,
-              },
-            ]}>
+        <ScrollView style={{width: '100%'}}>
+          <View style={sty.sectionContainer}>
             {this.renderName()}
             {this.renderAddress()}
             {this.renderPhone()}
@@ -626,13 +461,135 @@ class AddClient extends Component {
             {this.renderEdd()}
             {this.renderRh()}
             {this.renderGbs()}
-            {this.renderSubmit()}
+            {/*** RENDER SUBMIT ***/}
+            <TouchableOpacity style={sty.submit} onPress={this.onPressSubmit}>
+              <Text style={[{color: thm.lightText}]}>Submit</Text>
+            </TouchableOpacity>
+            {/*** RENDER SUBMIT ***/}
           </View>
         </ScrollView>
       </View>
     );
   }
 }
+
+const style = (theme = 'light') => ({
+  container: {
+    height: '98%',
+    width: '95%',
+    overflow: 'hidden',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderTopWidth: 1,
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+    elevation: 5,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: 0,
+    backgroundColor: c.themes[theme].background,
+    borderColor: c.themes[theme].border,
+  },
+  header: {
+    height: 100,
+    width: '100%',
+    backgroundColor: c.themes[theme].accent,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  title: {
+    color: c.themes[theme].lightText,
+    fontSize: 36,
+    marginLeft: 20,
+    ...c.titleFont,
+  },
+  sectionContainer: {
+    backgroundColor: c.themes[theme].modal,
+    borderColor: c.themes[theme].border,
+    flex: 0,
+    width: '96%',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    alignSelf: 'center',
+    borderRadius: 10,
+    borderWidth: 1,
+    marginVertical: 5,
+    paddingHorizontal: 10,
+  },
+  row: {
+    width: '100%',
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  iconButton: {
+    height: 30,
+    width: 30,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.5,
+    borderColor: c.themes[theme].border,
+    backgroundColor: c.themes[theme].modal,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+  },
+  rowButton: {
+    width: '95%',
+    minHeight: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderWidth: 0.5,
+    borderColor: c.themes[theme].border,
+    backgroundColor: c.themes[theme].modal,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+  },
+  subHeaderRow: {
+    justifyContent: 'space-between',
+    height: 40,
+    paddingTop: 10,
+  },
+  subHeaderText: {
+    color: c.themes[theme].text,
+    fontSize: 20,
+    ...c.titleFont,
+  },
+  textInput: {
+    flex: 1,
+    borderBottomWidth: 1,
+    fontSize: 16,
+    marginHorizontal: 10,
+  },
+  submit: {
+    backgroundColor: c.themes[theme].accent,
+    width: '95%',
+    height: 40,
+    borderRadius: 10,
+    elevation: 2,
+    marginVertical: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+});
 
 const styles = {
   container: {
@@ -676,10 +633,11 @@ const styles = {
     width: '100%',
     flex: 0,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   subHeaderRow: {
+    justifyContent: 'space-between',
     height: 40,
     paddingTop: 10,
   },
