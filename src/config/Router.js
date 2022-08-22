@@ -35,6 +35,7 @@ const ClientStack = () => {
       screenOptions={{
         headerShown: false,
         gestureEnabled: true,
+        presentation: 'transparentModal',
         ...TransitionPresets.ModalSlideFromBottomIOS,
       }}
       initialRouteName="clients">
@@ -43,31 +44,11 @@ const ClientStack = () => {
         component={Client}
         options={{title: 'Clients'}}
       />
-      <Stack.Screen
-        name="addClient"
-        component={AddClient}
-        options={{cardStyle: {backgroundColor: 'transparent'}}}
-      />
-      <Stack.Screen
-        name="viewClient"
-        component={ViewClient}
-        options={{cardStyle: {backgroundColor: 'transparent'}}}
-      />
-      <Stack.Screen
-        name="editClient"
-        component={EditClient}
-        options={{cardStyle: {backgroundColor: 'transparent'}}}
-      />
-      <Stack.Screen
-        name="addNote"
-        component={AddNote}
-        options={{cardStyle: {backgroundColor: 'transparent'}}}
-      />
-      <Stack.Screen
-        name="addBaby"
-        component={AddBaby}
-        options={{cardStyle: {backgroundColor: 'transparent'}}}
-      />
+      <Stack.Screen name="addClient" component={AddClient} />
+      <Stack.Screen name="viewClient" component={ViewClient} />
+      <Stack.Screen name="editClient" component={EditClient} />
+      <Stack.Screen name="addNote" component={AddNote} />
+      <Stack.Screen name="addBaby" component={AddBaby} />
     </Stack.Navigator>
   );
 };
