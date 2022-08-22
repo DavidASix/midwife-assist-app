@@ -9,9 +9,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FFIcons from 'react-native-vector-icons/FontAwesome5';
 
 const c = require('../../assets/constants');
 
@@ -26,7 +24,6 @@ class AddClient extends Component {
       city: '',
       province: '',
       country: '',
-      phoneCount: 1,
       phone1: '',
       rh: 'unknown',
       gbs: 'unknown',
@@ -47,7 +44,6 @@ class AddClient extends Component {
       city,
       province,
       country,
-      phoneCount,
       rh,
       gbs,
       notes,
@@ -55,7 +51,7 @@ class AddClient extends Component {
       edd,
     } = this.state;
     let phones = [];
-    for (let i = 1; i <= phoneCount; i++) {
+    for (let i = 1; i <= 3; i++) {
       if (this.state[`phone${i}`]) phones.push(this.state[`phone${i}`]);
     }
     let newClient = {
@@ -254,58 +250,32 @@ class AddClient extends Component {
     );
   }
 
-  renderPhoneInputs() {
-    let {theme} = this.props;
-    let {phoneCount} = this.state;
-    let phoneRows = [];
-    for (let i = 0; i < phoneCount; i++) {
-      phoneRows.push(
-        <View style={[styles.row]} key={i}>
-          <TextInput
-            style={[
-              styles.textInput,
-              {
-                color: c.themes[theme].text,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
-            onChangeText={text => this.setState({[`phone${i + 1}`]: text})}
-            value={this.state[`phone${i + 1}`]}
-            keyboardType="phone-pad"
-            autoCapitalize="words"
-            autoCorrect={false}
-            autoCompleteType="tel"
-            maxLength={60}
-            placeholder={c.numberingNames[i]}
-            placeholderTextColor={c.themes[theme].text + 60}
-          />
-        </View>,
-      );
-    }
-    return phoneRows;
-  }
-
   renderPhone() {
-    let {theme} = this.props;
-    let {phoneCount, phone} = this.state;
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
+    const numberTypes = ['Primary', 'Secondary', 'Emergency'];
     return (
       <>
-        <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-            Phone
-          </Text>
-
-          <TouchableOpacity
-            onPress={() =>
-              this.setState({
-                phoneCount: phoneCount === 10 ? phoneCount : phoneCount + 1,
-              })
-            }
-            style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
-            <MCIcons name="phone-plus" size={30} color={c.themes[theme].text} />
-          </TouchableOpacity>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>Phone</Text>
         </View>
-        {this.renderPhoneInputs()}
+        {/*** RENDER NUMBER INPUTS ***/}
+        {[...Array(3).keys()].map(i => (
+          <View style={[sty.row]} key={i}>
+            <TextInput
+              style={sty.textInput}
+              onChangeText={text => this.setState({[`phone${i + 1}`]: text})}
+              value={this.state[`phone${i + 1}`]}
+              keyboardType="phone-pad"
+              autoCapitalize="words"
+              autoCorrect={false}
+              autoCompleteType="tel"
+              maxLength={60}
+              placeholder={numberTypes[i]}
+              placeholderTextColor={thm.text + 60}
+            />
+          </View>
+        ))}
       </>
     );
   }
@@ -573,6 +543,7 @@ const style = (theme = 'light') => ({
     ...c.titleFont,
   },
   textInput: {
+    borderColor: c.themes[theme].border,
     flex: 1,
     borderBottomWidth: 1,
     fontSize: 16,
