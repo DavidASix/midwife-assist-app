@@ -42,8 +42,6 @@ class AddClient extends Component {
       lastName,
       street,
       city,
-      province,
-      country,
       rh,
       gbs,
       notes,
@@ -64,8 +62,6 @@ class AddClient extends Component {
       address: {
         street,
         city,
-        province,
-        country,
       },
       dob: dob.getTime(),
       edd: edd.getTime(),
@@ -75,83 +71,43 @@ class AddClient extends Component {
       phones,
       notes,
     };
-    if (!newClient.name.first || !newClient.name.last)
+    if (!newClient.name.first || !newClient.name.last) {
       return Alert.alert('Please enter your clients name');
+    }
     this.props.storeNewClient(newClient);
     ToastAndroid.show('Client Saved', ToastAndroid.SHORT);
     this.props.navigation.navigate('clients');
   };
 
   renderName() {
-    let {theme} = this.props;
-    let {firstName, lastName, preferredName} = this.state;
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
+    const names = [
+      {var: 'firstName', title: 'First'},
+      {var: 'lastName', title: 'Last'},
+      {var: 'preferredName', title: 'Preferred'},
+    ];
     return (
       <>
-        <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-            Name
-          </Text>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>Name</Text>
         </View>
-        <View style={[styles.row]}>
-          <TextInput
-            style={[
-              styles.textInput,
-              {
-                color: c.themes[theme].text,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
-            onChangeText={text => this.setState({firstName: text})}
-            value={firstName}
-            placeholder="First"
-            keyboardType="default"
-            autoCapitalize="words"
-            autoCorrect={false}
-            autoCompleteType="name"
-            maxLength={20}
-            placeholderTextColor={c.themes[theme].text + 60}
-          />
-        </View>
-        <View style={[styles.row]}>
-          <TextInput
-            style={[
-              styles.textInput,
-              {
-                color: c.themes[theme].text,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
-            onChangeText={text => this.setState({lastName: text})}
-            value={lastName}
-            placeholder="Last"
-            keyboardType="default"
-            autoCapitalize="words"
-            autoCorrect={false}
-            autoCompleteType="name"
-            maxLength={20}
-            placeholderTextColor={c.themes[theme].text + 60}
-          />
-        </View>
-        <View style={[styles.row]}>
-          <TextInput
-            style={[
-              styles.textInput,
-              {
-                color: c.themes[theme].text,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
-            onChangeText={text => this.setState({preferredName: text})}
-            value={preferredName}
-            placeholder="Preferred"
-            keyboardType="default"
-            autoCapitalize="words"
-            autoCorrect={false}
-            autoCompleteType="name"
-            maxLength={41}
-            placeholderTextColor={c.themes[theme].text + 60}
-          />
-        </View>
+        {names.map((n, i) => (
+          <View style={sty.row} key={i}>
+            <TextInput
+              style={sty.textInput}
+              onChangeText={text => this.setState({[n.var]: text})}
+              value={this.state[n.var]}
+              placeholder={n.title}
+              keyboardType="default"
+              autoCapitalize="words"
+              autoCorrect={false}
+              autoCompleteType="name"
+              maxLength={41}
+              placeholderTextColor={thm.text + 60}
+            />
+          </View>
+        ))}
       </>
     );
   }
@@ -159,41 +115,31 @@ class AddClient extends Component {
   renderAddress() {
     const thm = c.themes[this.props.theme];
     const sty = style(this.props.theme);
-    let {street, city} = this.state;
+    const types = [
+      {var: 'street', title: 'Street', autoComplete: 'street-address'},
+      {var: 'city', title: 'City', autoComplete: undefined},
+    ];
     return (
       <>
         <View style={[sty.row, sty.subHeaderRow]}>
           <Text style={sty.subHeaderText}>Address</Text>
         </View>
-
-        <View style={[sty.row]}>
-          <TextInput
-            style={sty.textInput}
-            onChangeText={text => this.setState({street: text})}
-            value={street}
-            keyboardType="default"
-            autoCapitalize="words"
-            autoCorrect={false}
-            autoCompleteType="street-address"
-            maxLength={60}
-            placeholder="Street"
-            placeholderTextColor={thm.text + 60}
-          />
-        </View>
-        <View style={sty.row}>
-          <TextInput
-            style={sty.textInput}
-            onChangeText={text => this.setState({city: text})}
-            value={city}
-            keyboardType="default"
-            autoCapitalize="words"
-            autoCorrect={false}
-            autoCompleteType="name"
-            maxLength={30}
-            placeholder="City"
-            placeholderTextColor={thm.text + 60}
-          />
-        </View>
+        {types.map((type, i) => (
+          <View style={[sty.row]}>
+            <TextInput
+              style={sty.textInput}
+              onChangeText={text => this.setState({[type.var]: text})}
+              value={this.state[type.var]}
+              keyboardType="default"
+              autoCapitalize="words"
+              autoCorrect={false}
+              autoCompleteType={type.autoComplete}
+              maxLength={60}
+              placeholder={type.title}
+              placeholderTextColor={thm.text + 60}
+            />
+          </View>
+        ))}
       </>
     );
   }
@@ -508,77 +454,5 @@ const style = (theme = 'light') => ({
     alignSelf: 'center',
   },
 });
-
-const styles = {
-  container: {
-    height: '98%',
-    width: '98%',
-    overflow: 'hidden',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-    borderLeftWidth: 1,
-    elevation: 5,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    position: 'absolute',
-    alignSelf: 'center',
-    bottom: 0,
-  },
-  header: {
-    height: 100,
-    width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  body: {
-    flex: 1,
-    width: '100%',
-  },
-  sectionContainer: {
-    flex: 0,
-    width: '96%',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    alignSelf: 'center',
-    borderRadius: 10,
-    borderWidth: 1,
-    marginVertical: 5,
-    paddingHorizontal: 10,
-  },
-  row: {
-    width: '100%',
-    flex: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  subHeaderRow: {
-    justifyContent: 'space-between',
-    height: 40,
-    paddingTop: 10,
-  },
-  subHeaderText: {
-    fontSize: 20,
-    ...c.titleFont,
-  },
-  textInput: {
-    flex: 1,
-    borderBottomWidth: 1,
-    fontSize: 16,
-    marginHorizontal: 10,
-  },
-  submit: {
-    width: '95%',
-    height: 50,
-    borderRadius: 10,
-    elevation: 2,
-    marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-};
 
 export default AddClient;
