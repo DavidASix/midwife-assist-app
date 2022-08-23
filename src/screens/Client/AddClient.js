@@ -9,7 +9,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AIcon from 'react-native-vector-icons/AntDesign';
 
 const c = require('../../assets/constants');
 
@@ -157,24 +157,18 @@ class AddClient extends Component {
   }
 
   renderAddress() {
-    let {theme} = this.props;
-    let {street, city, province, country} = this.state;
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
+    let {street, city} = this.state;
     return (
       <>
-        <View style={[styles.row, styles.subHeaderRow]}>
-          <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-            Address
-          </Text>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>Address</Text>
         </View>
-        <View style={[styles.row]}>
+
+        <View style={[sty.row]}>
           <TextInput
-            style={[
-              styles.textInput,
-              {
-                color: c.themes[theme].text,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
+            style={sty.textInput}
             onChangeText={text => this.setState({street: text})}
             value={street}
             keyboardType="default"
@@ -183,18 +177,12 @@ class AddClient extends Component {
             autoCompleteType="street-address"
             maxLength={60}
             placeholder="Street"
-            placeholderTextColor={c.themes[theme].text + 60}
+            placeholderTextColor={thm.text + 60}
           />
         </View>
-        <View style={[styles.row]}>
+        <View style={sty.row}>
           <TextInput
-            style={[
-              styles.textInput,
-              {
-                color: c.themes[theme].text,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
+            style={sty.textInput}
             onChangeText={text => this.setState({city: text})}
             value={city}
             keyboardType="default"
@@ -203,47 +191,7 @@ class AddClient extends Component {
             autoCompleteType="name"
             maxLength={30}
             placeholder="City"
-            placeholderTextColor={c.themes[theme].text + 60}
-          />
-        </View>
-        <View style={[styles.row]}>
-          <TextInput
-            style={[
-              styles.textInput,
-              {
-                color: c.themes[theme].text,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
-            onChangeText={text => this.setState({province: text})}
-            value={province}
-            keyboardType="default"
-            autoCapitalize="words"
-            autoCorrect={false}
-            autoCompleteType="name"
-            maxLength={30}
-            placeholder="Province/State"
-            placeholderTextColor={c.themes[theme].text + 60}
-          />
-        </View>
-        <View style={[styles.row]}>
-          <TextInput
-            style={[
-              styles.textInput,
-              {
-                color: c.themes[theme].text,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
-            onChangeText={text => this.setState({country: text})}
-            value={country}
-            keyboardType="default"
-            autoCapitalize="words"
-            autoCorrect={false}
-            autoCompleteType="name"
-            maxLength={30}
-            placeholder="Country"
-            placeholderTextColor={c.themes[theme].text + 60}
+            placeholderTextColor={thm.text + 60}
           />
         </View>
       </>
@@ -364,7 +312,7 @@ class AddClient extends Component {
                 sty.iconButton,
                 active(type.name) && {backgroundColor: thm.accent},
               ]}>
-              <MCIcons
+              <AIcon
                 name={type.icon}
                 size={15}
                 color={active(type.name) ? thm.modal : thm.text}
@@ -400,7 +348,7 @@ class AddClient extends Component {
                 sty.iconButton,
                 active(type.name) && {backgroundColor: thm.accent},
               ]}>
-              <MCIcons
+              <AIcon
                 name={type.icon}
                 size={15}
                 color={active(type.name) ? thm.modal : thm.text}
@@ -422,7 +370,9 @@ class AddClient extends Component {
             <Text style={sty.title}>Add new client</Text>
           </View>
         </View>
-        <ScrollView style={{width: '100%'}}>
+        <ScrollView
+          style={{width: '100%'}}
+          showsVerticalScrollIndicator={false}>
           <View style={sty.sectionContainer}>
             {this.renderName()}
             {this.renderAddress()}
@@ -479,13 +429,10 @@ const style = (theme = 'light') => ({
     backgroundColor: c.themes[theme].modal,
     borderColor: c.themes[theme].border,
     flex: 0,
-    width: '96%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'flex-start',
     alignSelf: 'center',
-    borderRadius: 10,
-    borderWidth: 1,
-    marginVertical: 5,
     paddingHorizontal: 10,
   },
   row: {
