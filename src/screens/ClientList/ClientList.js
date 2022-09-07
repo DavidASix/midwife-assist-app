@@ -1,18 +1,13 @@
 import React, {Component} from 'react';
 import {
-  SafeAreaView,
   View,
   Text,
-  ActivityIndicator,
   TouchableOpacity,
   Image,
   SectionList,
   AppState,
 } from 'react-native';
-import {Dropdown} from 'react-native-material-dropdown';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import IonIcons from 'react-native-vector-icons/Ionicons';
-import axios from 'axios';
 
 const c = require('../../assets/constants');
 
@@ -165,7 +160,7 @@ class ClientList extends Component {
   }
 
   renderSectionHeader(section) {
-    let {theme, clients} = this.props;
+    let {theme} = this.props;
     return (
       <View
         style={{
@@ -196,7 +191,7 @@ class ClientList extends Component {
   }
 
   getSections() {
-    let {theme, clients, sortType} = this.props;
+    let {clients, sortType} = this.props;
     let sections = {};
     let sec = null;
     switch (sortType) {
@@ -230,7 +225,6 @@ class ClientList extends Component {
         }));
         // Use the "sort" value to sort the sections from earliest EDD to latest
         return sections.sort((a, b) => (a.sort > b.sort ? 1 : -1));
-        break;
       }
       case 'eddDsc': {
         // For each client in the list, add that client to an object (sections) under a key that correlates to the EDD.

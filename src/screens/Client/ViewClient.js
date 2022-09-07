@@ -16,6 +16,7 @@ import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FFIcons from 'react-native-vector-icons/FontAwesome5';
 import AIcons from 'react-native-vector-icons/AntDesign';
 import EIcons from 'react-native-vector-icons/Entypo';
+import Toast from 'react-native-toast-message';
 import axios from 'axios';
 
 const c = require('../../assets/constants');
@@ -26,6 +27,7 @@ class ViewClient extends Component {
     this.pageScroll = null;
     this.scrollPosition = new Animated.ValueXY();
     this.addNoteModal = null;
+    this.client = undefined;
   }
 
   componentDidMount() {
@@ -462,17 +464,7 @@ class ViewClient extends Component {
 
   renderNotes() {
     let {theme, route} = this.props;
-    // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
-    // With the IF we use a copy of client created on mount
-    const reduxRefreshedClient = this.props.clients.find(
-      (cl, i) => cl.id === route.params.client.id,
-    );
-    let client = undefined;
-    if (!reduxRefreshedClient) {
-      client = this.state.client;
-    } else {
-      client = reduxRefreshedClient;
-    }
+    let {client} = this;
     // take the notes array from redux state and check if there is a legacy note from the previous schema available. if there is, add that to the array
     let formattedNoteArray = this.props.notes.filter(
       (note, i) => note.clientId === this.props.route.params.client.id,
@@ -481,7 +473,7 @@ class ViewClient extends Component {
       ? [
           ...formattedNoteArray,
           {
-            id: `legacy`,
+            id: 'legacy',
             clientId: client.id,
             title: 'Previous Notes',
             body: client.notes,
@@ -597,152 +589,91 @@ class ViewClient extends Component {
       </>
     );
   }
-  /***
-  Client should appear static, but on press of info a change event happens.
-  If the stringified body of the client data changes, a save button sould appaer
-  user must press save button for data to be saved
-***/
-  render() {
-    let {theme, route} = this.props;
+
+  edit(field) {
     // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
     // With the IF we use a copy of client created on mount
     const reduxRefreshedClient = this.props.clients.find(
-      (cl, i) => cl.id === route.params.client.id,
+      (cl, i) => cl.id === this.props.route.params.client.id,
     );
-    let client = undefined;
+    let client;
     if (!reduxRefreshedClient) {
       client = this.state.client;
     } else {
       client = reduxRefreshedClient;
     }
-    const {first, last, preferred} = client.name;
-    const {street, city, province, country} = client.address;
-    const {dob, edd, notes, rh, phones, gbs} = client;
-    // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
-    let scrubbedGbs = gbs || 'unknown';
-    // Formatting of the address string is done here to avoid blank spaces created from extra \n
-    let adrStr = street ? `${street},` : '';
-    adrStr && city ? (adrStr += `\n${city},`) : (adrStr += city);
-    adrStr && province ? (adrStr += `\n${province},`) : (adrStr += province);
-    adrStr && country ? (adrStr += `\n${country}`) : (adrStr += country);
+    switch (field) {
+      case 'name':
+        this.props.navigation.navigate('editClient', {
+          edit: 'name',
+          client,
+        });
+        break;
+      default:
+        console.log('def');
+    }
+  }
+  holdToEditToast(pos = 'bottom') {
+    Toast.show({
+      type: 'info',
+      visibilityTime: 1500,
+      position: 'bottom',
+      text1: 'Hold to edit',
+    });
+  }
+  /***
+  Client should appear static, but on press of info a change event happens.
+  If the stringified body of the client data changes, a save button sould appaer
+  user must press save button for data to be saved
+***/
+  clientVariableSet() {
+    // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
+    // With the IF we use a copy of client created on mount
+    // reduxRefreshedClient is the most recently updated version of our client in redux
+    const reduxRefreshedClient = this.props.clients.find(
+      (cl, i) => cl.id === this.props.route.params.client.id,
+    );
+    this.client = reduxRefreshedClient || this.state.client;
+  }
 
+  render() {
+    this.clientVariableSet();
+    const sty = style(this.props.theme);
+    const scrollTo = this?.pageScroll?.scrollTo;
+    const scrollTrans = this.scrollPosition.getTranslateTransform();
+    const {first, last, preferred} = this.client.name;
     return (
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: c.themes[theme].background,
-            borderColor: c.themes[theme].border,
-          },
-        ]}>
-        <View
-          style={[styles.header, {backgroundColor: c.themes[theme].accent}]}>
-          <View
-            style={{
-              flex: 2,
-              width: '90%',
-              justifyContent: 'center',
-              paddingLeft: 0,
-              borderBottomWidth: 0.5,
-              borderColor: c.themes[theme].border,
-            }}>
-            <Text
-              style={[
-                {color: c.themes[theme].lightText, fontSize: 25},
-                c.titleFont,
-              ]}>
+      <View style={sty.container}>
+        <View style={sty.header}>
+          <TouchableOpacity
+            style={sty.nameContainer}
+            onPress={this.holdToEditToast}
+            onLongPress={() => this.edit('name')}>
+            <Text style={[sty.title, {fontSize: 25}]}>
               {first}
               {last ? ` ${last}` : ''}
             </Text>
-            <Text
-              style={[
-                {color: c.themes[theme].lightText, fontSize: 16},
-                c.titleFont,
-              ]}>
-              {client.name.preferred}
-            </Text>
-            {/* NAME EDIT */}
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('editClient', {
-                  edit: 'name',
-                  client,
-                })
-              }
-              style={{
-                position: 'absolute',
-                right: 10,
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-                ...c.center,
-              }}>
-              <FFIcons
-                name="edit"
-                size={20}
-                color={c.themes[theme].lightText}
-              />
-            </TouchableOpacity>
-          </View>
+            <Text style={sty.title}>{preferred}</Text>
+          </TouchableOpacity>
 
-          <View
-            style={{
-              flex: 1,
-              width: '100%',
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              alignItems: 'center',
-            }}>
+          <View style={sty.headerButtonContainer}>
             <TouchableOpacity
-              onPress={() =>
-                this.pageScroll.scrollTo({x: 0, y: 0, animated: true})
-              }
+              onPress={() => scrollTo({x: 0, animated: true})}
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text
-                style={[
-                  styles.subHeaderText,
-                  {color: c.themes[theme].lightText},
-                ]}>
-                Client Details
-              </Text>
+              <Text style={sty.subHeaderText}>Client Details</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() =>
-                this.pageScroll.scrollTo({
-                  x: c.device.width,
-                  y: 0,
-                  animated: true,
-                })
-              }
+              onPress={() => scrollTo({x: c.device.width, animated: true})}
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text
-                style={[
-                  styles.subHeaderText,
-                  {color: c.themes[theme].lightText},
-                ]}>
-                Notes
-              </Text>
+              <Text style={sty.subHeaderText}>Notes</Text>
             </TouchableOpacity>
-            <Animated.View
-              style={{
-                position: 'absolute',
-                width: '50%',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: 4,
-                bottom: 2,
-                transform: this.scrollPosition.getTranslateTransform(),
-              }}>
-              <View
-                style={{
-                  width: '80%',
-                  height: 1.5,
-                  backgroundColor: c.themes[theme].lightText,
-                }}
-              />
+
+            <Animated.View style={[sty.indContainer, {transform: scrollTrans}]}>
+              <View style={sty.indicator} />
             </Animated.View>
           </View>
         </View>
+
         <ScrollView
           ref={sv => (this.pageScroll = sv)}
           showsHorizontalScrollIndicator={false}
@@ -761,6 +692,131 @@ class ViewClient extends Component {
     );
   }
 }
+
+const style = (theme = 'light') => ({
+  container: {
+    height: '98%',
+    width: '98%',
+    overflow: 'hidden',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderTopWidth: 1,
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+    elevation: 5,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: 0,
+    backgroundColor: c.themes[theme].background,
+    borderColor: c.themes[theme].border,
+  },
+  header: {
+    height: 100,
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: c.themes[theme].accent,
+  },
+  nameContainer: {
+    flex: 2,
+    width: '90%',
+    justifyContent: 'center',
+    paddingLeft: 0,
+    borderBottomWidth: 0.5,
+    borderColor: c.themes[theme].border,
+  },
+  headerButtonContainer: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  title: {
+    ...c.titleFont,
+    color: c.themes[theme].lightText,
+    fontSize: 16,
+  },
+  indContainer: {
+    position: 'absolute',
+    width: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 4,
+    bottom: 2,
+  },
+  indicator: {
+    width: '80%',
+    height: 1.5,
+    backgroundColor: c.themes[theme].lightText,
+  },
+  pageContainer: {
+    flex: 1,
+    width: c.device.width * 0.9725,
+  },
+  body: {
+    flex: 1,
+    width: '98%',
+    alignSelf: 'center',
+  },
+  sectionContainer: {
+    flex: 0,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    alignSelf: 'center',
+    borderRadius: 10,
+    borderWidth: 1,
+    marginVertical: 5,
+    paddingHorizontal: 10,
+  },
+  row: {
+    width: '100%',
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  subHeaderRow: {
+    height: 40,
+    marginTop: 10,
+  },
+  subHeaderText: {
+    fontSize: 20,
+    color: c.themes[theme].lightText,
+    ...c.titleFont,
+  },
+  textInput: {
+    flex: 1,
+    borderBottomWidth: 0.5,
+    fontSize: 16,
+    marginHorizontal: 10,
+  },
+  submit: {
+    width: '95%',
+    height: 50,
+    borderRadius: 10,
+    elevation: 2,
+    marginVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  addButton: {
+    height: 50,
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 25,
+    position: 'absolute',
+    bottom: 10,
+    right: 5,
+    elevation: 5,
+    borderWidth: 1,
+  },
+});
 
 const styles = {
   container: {
