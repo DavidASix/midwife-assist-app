@@ -26,9 +26,6 @@ class ViewClient extends Component {
     this.pageScroll = null;
     this.scrollPosition = new Animated.ValueXY();
     this.addNoteModal = null;
-    this.state = {
-      babyId: false,
-    };
   }
 
   componentDidMount() {
@@ -62,12 +59,6 @@ class ViewClient extends Component {
     );
   };
 
-  onPressAddBaby = () => {
-    let {theme, route} = this.props;
-    const client = route.params.client;
-    this.props.navigation.navigate('addBaby', {motherId: client.id});
-  };
-
   onPressDeleteNote(noteId) {
     let {id} = this.state.client;
     Alert.alert(
@@ -97,26 +88,6 @@ class ViewClient extends Component {
   onPressNewNote = () => {};
 
   //  ---  Render Functions  ---  //
-  renderBabies() {
-    let {theme, route, babies} = this.props;
-    const client = route.params.client;
-    let babyList = babies.filter((baby, i) => baby.motherId === client.id);
-    if (babyList.length) {
-      return babyList.map((baby, i) => (
-        <>
-          <View style={[styles.row, {padding: 10, justifyContent: 'center'}]}>
-            <Text>Name: {baby.name}</Text>
-            <FFIcons
-              style={{marginHorizontal: 10}}
-              name="baby"
-              size={30}
-              color={c.themes[theme].text}
-            />
-          </View>
-        </>
-      ));
-    }
-  }
 
   renderPhoneNumbers(phones) {
     let {theme} = this.props;
@@ -466,35 +437,6 @@ class ViewClient extends Component {
             </View>
           </>
         </View>
-
-        {false && this.renderBabies()}
-        {false && (
-          // Removing show add baby for now
-          <TouchableOpacity
-            style={[
-              styles.sectionContainer,
-              {
-                backgroundColor: c.themes[theme].modal,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
-            onPress={this.onPressAddBaby}>
-            <View style={[styles.row, {padding: 10, justifyContent: 'center'}]}>
-              <FFIcons
-                style={{marginHorizontal: 10}}
-                name="plus"
-                size={30}
-                color={c.themes[theme].text}
-              />
-              <FFIcons
-                style={{marginHorizontal: 10}}
-                name="baby"
-                size={30}
-                color={c.themes[theme].text}
-              />
-            </View>
-          </TouchableOpacity>
-        )}
 
         <TouchableOpacity
           style={[

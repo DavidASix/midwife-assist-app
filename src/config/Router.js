@@ -10,13 +10,7 @@ import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import BottomTabBar from './BottomTabBar';
 
 import Auth from '../screens/Auth/';
-import {
-  AddBaby,
-  AddClient,
-  ViewClient,
-  EditClient,
-  AddNote,
-} from '../screens/Client/';
+import {AddClient, ViewClient, EditClient, AddNote} from '../screens/Client/';
 import ClientList from '../screens/ClientList/';
 import Calculator from '../screens/Calculator/';
 import {Tutorial} from '../screens/Tutorial/';
@@ -48,7 +42,6 @@ const ClientStack = () => {
       <Stack.Screen name="viewClient" component={ViewClient} />
       <Stack.Screen name="editClient" component={EditClient} />
       <Stack.Screen name="addNote" component={AddNote} />
-      <Stack.Screen name="addBaby" component={AddBaby} />
     </Stack.Navigator>
   );
 };
