@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   SafeAreaView,
   View,
@@ -10,7 +10,7 @@ import {
   Image,
   TextInput,
   Linking,
-  Animated
+  Animated,
 } from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FFIcons from 'react-native-vector-icons/FontAwesome5';
@@ -25,9 +25,9 @@ class ViewClient extends Component {
     super(props);
     this.pageScroll = null;
     this.scrollPosition = new Animated.ValueXY();
-    this.addNoteModal = null
+    this.addNoteModal = null;
     this.state = {
-      babyId: false
+      babyId: false,
     };
   }
 
@@ -41,365 +41,490 @@ class ViewClient extends Component {
   //  ---  On Press Functions  ---  //
 
   onPressDeleteClient = () => {
-  let { name, id } = this.state.client;
+    let {name, id} = this.state.client;
     Alert.alert(
       `Delete ${`${name.first} ${name.last}` || name.preferred || 'Client'}?`,
       'Are you sure you want to delete this client? You will not be able to recover their information.',
       [
         {
-          text: "Cancel",
+          text: 'Cancel',
           onPress: () => {},
-          style: "cancel"
+          style: 'cancel',
         },
-        { text: 'Delete', onPress: () => {
-          this.props.deleteClient(id);
-          this.props.navigation.pop();
-        }}
-      ]
+        {
+          text: 'Delete',
+          onPress: () => {
+            this.props.deleteClient(id);
+            this.props.navigation.pop();
+          },
+        },
+      ],
     );
-  }
+  };
 
   onPressAddBaby = () => {
-    let { theme, route } = this.props;
+    let {theme, route} = this.props;
     const client = route.params.client;
-    this.props.navigation.navigate('addBaby', { motherId: client.id })
-  }
+    this.props.navigation.navigate('addBaby', {motherId: client.id});
+  };
 
   onPressDeleteNote(noteId) {
-    let { id } = this.state.client;
+    let {id} = this.state.client;
     Alert.alert(
       `Delete Note?`,
       'Are you sure you want to delete this note? You will not be able to recover the note.',
       [
         {
-          text: "Cancel",
+          text: 'Cancel',
           onPress: () => {},
-          style: "cancel"
+          style: 'cancel',
         },
-        { text: 'Delete', onPress: () => {
-          // if the note is a legacy note we overwrite the client object and remove the notes field
-          if (noteId === 'legacy') {
-            this.props.updateClient({ ...this.state.client, notes: "" });
-          } else {
-            this.props.deleteNote(noteId);
-          }
-        }}
-      ]
+        {
+          text: 'Delete',
+          onPress: () => {
+            // if the note is a legacy note we overwrite the client object and remove the notes field
+            if (noteId === 'legacy') {
+              this.props.updateClient({...this.state.client, notes: ''});
+            } else {
+              this.props.deleteNote(noteId);
+            }
+          },
+        },
+      ],
     );
   }
 
-  onPressNewNote = () => {
-
-  }
-
+  onPressNewNote = () => {};
 
   //  ---  Render Functions  ---  //
   renderBabies() {
-    let { theme, route, babies } = this.props;
+    let {theme, route, babies} = this.props;
     const client = route.params.client;
-    let babyList = babies.filter((baby, i) => (baby.motherId === client.id));
+    let babyList = babies.filter((baby, i) => baby.motherId === client.id);
     if (babyList.length) {
       return babyList.map((baby, i) => (
         <>
-          <View
-            style={[styles.row, { padding: 10, justifyContent: 'center' }]}>
-              <Text>Name: {baby.name}</Text>
-              <FFIcons style={{ marginHorizontal: 10 }} name='baby' size={30} color={c.themes[theme].text} />
+          <View style={[styles.row, {padding: 10, justifyContent: 'center'}]}>
+            <Text>Name: {baby.name}</Text>
+            <FFIcons
+              style={{marginHorizontal: 10}}
+              name="baby"
+              size={30}
+              color={c.themes[theme].text}
+            />
           </View>
         </>
       ));
     }
   }
 
-
   renderPhoneNumbers(phones) {
-    let { theme } = this.props;
+    let {theme} = this.props;
     return phones.map((phone, i) => {
       return (
         <View style={[styles.row]}>
-          <MCIcons
-            name='phone'
-            size={25}
-            color={c.themes[theme].accent} />
+          <MCIcons name="phone" size={25} color={c.themes[theme].accent} />
           <TouchableOpacity
-            style={[styles.textInput, { height: 40, justifyContent: 'center', borderColor: c.themes[theme].border }]}
+            style={[
+              styles.textInput,
+              {
+                height: 40,
+                justifyContent: 'center',
+                borderColor: c.themes[theme].border,
+              },
+            ]}
             onPress={() => Linking.openURL(`tel:${phone}`)}>
-            <Text style={[{ fontSize: 16, color: c.themes[theme].text }]}>
+            <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
               {phone}
             </Text>
           </TouchableOpacity>
         </View>
       );
-    })
+    });
   }
 
-    renderRhIcon(rh) {
-      let { theme } = this.props;
-      const size = 31;
-      switch(rh) {
-        case 'positive': return (
+  renderRhIcon(rh) {
+    let {theme} = this.props;
+    const size = 31;
+    switch (rh) {
+      case 'positive':
+        return (
           <MCIcons
-            name='plus'
+            name="plus"
             size={20 / 2}
-            color={c.themes[theme].lightText} />
+            color={c.themes[theme].lightText}
+          />
         );
-        case 'negative': return (
+      case 'negative':
+        return (
           <MCIcons
-            name='minus'
+            name="minus"
             size={20 / 2}
-            color={c.themes[theme].lightText} />
+            color={c.themes[theme].lightText}
+          />
         );
-        default: return (
+      default:
+        return (
           <FFIcons
-            name='question'
+            name="question"
             size={20 / 2}
-            color={c.themes[theme].lightText} />
+            color={c.themes[theme].lightText}
+          />
         );
-      }
     }
+  }
 
-    renderGbsIcon(gbs) {
-      let { theme } = this.props;
-      const size = 31;
-      switch(gbs) {
-        case 'positive': return (
+  renderGbsIcon(gbs) {
+    let {theme} = this.props;
+    const size = 31;
+    switch (gbs) {
+      case 'positive':
+        return (
           <MCIcons
-            name='plus'
+            name="plus"
             size={20 / 2}
-            color={c.themes[theme].lightText} />
+            color={c.themes[theme].lightText}
+          />
         );
-        case 'negative': return (
+      case 'negative':
+        return (
           <MCIcons
-            name='minus'
+            name="minus"
             size={20 / 2}
-            color={c.themes[theme].lightText} />
+            color={c.themes[theme].lightText}
+          />
         );
-        default: return (
+      default:
+        return (
           <FFIcons
-            name='question'
+            name="question"
             size={20 / 2}
-            color={c.themes[theme].lightText} />
+            color={c.themes[theme].lightText}
+          />
         );
-      }
     }
+  }
 
   renderDetails() {
-
-      let { theme, route } = this.props;
-      // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
-      // With the IF we use a copy of client created on mount
-      const reduxRefreshedClient = this.props.clients.find((cl, i) => (cl.id === route.params.client.id));
-      let client = undefined;
-      if (!reduxRefreshedClient) {
-        client = this.state.client;
-      } else { client = reduxRefreshedClient; }
-      const { first, last, preferred } = client.name;
-      const { street, city, province, country } = client.address
-      const { dob, edd, rh, phones, gbs } = client;
-      // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
-      let scrubbedGbs = gbs || 'unknown';
-      // Formatting of the address string is done here to avoid blank spaces created from extra \n
-      let adrStr = street ? `${street},` : '';
-      adrStr && city ? adrStr += `\n${city},` : adrStr += city;
-      adrStr && province ? adrStr += `\n${province},` : adrStr += province;
-      adrStr && country ? adrStr += `\n${country}` : adrStr += country;
-
-      return (
-        <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
-
-          <View style={[styles.sectionContainer, { backgroundColor: c.themes[theme].modal, borderColor: c.themes[theme].border }]}>
-            {/* Address */}
-            <View style={[styles.row, styles.subHeaderRow, { borderColor: c.themes[theme].border }]}>
-              <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
-                Address
-              </Text>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('editClient', { edit: 'address', client })}
-                style={{ height: 40, width: 40, borderRadius: 20, ...c.center }}>
-                <FFIcons
-                  name='edit'
-                  size={20}
-                  color={c.themes[theme].text} />
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity
-              onPress={() => Linking.openURL(`https://www.google.ca/maps/search/${adrStr.replace(/\s/g, '+')}`)}
-              style={[styles.row, { justifyContent: 'center' }]}>
-              <EIcons
-                name='address'
-                size={25}
-                color={c.themes[theme].accent} />
-              <View style={[styles.textInput, { minHeight: 40, justifyContent: 'center', borderColor: c.themes[theme].border }]}>
-                <Text style={[{ fontSize: 16, color: c.themes[theme].text }]}>
-                  {adrStr}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            {/* Phones */}
-            <View style={[styles.row, styles.subHeaderRow]}>
-              <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
-                Phone Numbers
-              </Text>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('editClient', { edit: 'phones', client })}
-                style={{ height: 40, width: 40, borderRadius: 20, ...c.center }}>
-                <FFIcons
-                  name='edit'
-                  size={20}
-                  color={c.themes[theme].text} />
-              </TouchableOpacity>
-            </View>
-            {this.renderPhoneNumbers(phones)}
-            {/* DOB */}
-            <View style={[styles.row, styles.subHeaderRow]}>
-              <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
-                Date of Birth
-              </Text>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('editClient', { edit: 'dob', client })}
-                style={{ height: 40, width: 40, borderRadius: 20, ...c.center }}>
-                <FFIcons
-                  name='edit'
-                  size={20}
-                  color={c.themes[theme].text} />
-              </TouchableOpacity>
-            </View>
-            <View style={[styles.row, { justifyContent: 'center' }]}>
-              <MCIcons
-                name='calendar-star'
-                size={25}
-                color={c.themes[theme].accent} />
-              <View style={[styles.textInput, { height: 40, justifyContent: 'center', borderColor: c.themes[theme].border }]}>
-                <Text style={[{ fontSize: 16, color: c.themes[theme].text }]}>
-                  {new Date(dob).toDateString()}
-                </Text>
-              </View>
-            </View>
-            {/* EDD */}
-            <View style={[styles.row, styles.subHeaderRow]}>
-              <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
-                Estimated Delivery Date
-              </Text>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('editClient', { edit: 'edd', client })}
-                style={{ height: 40, width: 40, borderRadius: 20, ...c.center }}>
-                <FFIcons
-                  name='edit'
-                  size={20}
-                  color={c.themes[theme].text} />
-              </TouchableOpacity>
-            </View>
-            <View style={[styles.row, { justifyContent: 'center' }]}>
-              <MCIcons
-                name='calendar-heart'
-                size={25}
-                color={c.themes[theme].accent} />
-              <View style={[styles.textInput, { height: 40, justifyContent: 'center', borderColor: c.themes[theme].border }]}>
-                <Text style={[{ fontSize: 16, color: c.themes[theme].text }]}>
-                  {new Date(edd).toDateString()}
-                </Text>
-              </View>
-            </View>
-            {/* RH STATUS */}
-            <>
-              <View style={[styles.row, styles.subHeaderRow]}>
-                <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
-                  Rh Status
-                </Text>
-
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('editClient', { edit: 'rh', client })}
-                  style={{ height: 40, width: 40, borderRadius: 20, ...c.center }}>
-                  <FFIcons
-                    name='edit'
-                    size={20}
-                    color={c.themes[theme].text} />
-                </TouchableOpacity>
-              </View>
-              <View style={[styles.row, { justifyContent: 'center' }]}>
-                <View
-                  style={{
-                    height: 20,
-                    width: 20,
-                    borderRadius: 20 / 2,
-                    backgroundColor: c.themes[theme].accent,
-                    ...c.center }}>
-                  {this.renderRhIcon(rh)}
-                </View>
-                <View style={[styles.textInput, { height: 40, justifyContent: 'center', borderColor: c.themes[theme].border }]}>
-                  <Text style={[{ fontSize: 16, color: c.themes[theme].text }]}>
-                    {rh.charAt(0).toUpperCase() + rh.substr(1)}
-                  </Text>
-                </View>
-              </View>
-            </>
-
-            {/* GBS STATUS */}
-            <>
-              <View style={[styles.row, styles.subHeaderRow]}>
-                <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
-                  GBS Status
-                </Text>
-
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('editClient', { edit: 'gbs', client })}
-                  style={{ height: 40, width: 40, borderRadius: 20, ...c.center }}>
-                  <FFIcons
-                    name='edit'
-                    size={20}
-                    color={c.themes[theme].text} />
-                </TouchableOpacity>
-              </View>
-              <View style={[styles.row, { justifyContent: 'center' }]}>
-                <View
-                  style={{
-                    height: 20,
-                    width: 20,
-                    borderRadius: 20 / 2,
-                    backgroundColor: c.themes[theme].accent,
-                    ...c.center }}>
-                  {this.renderGbsIcon(scrubbedGbs)}
-                </View>
-                <View style={[styles.textInput, { height: 40, justifyContent: 'center', borderColor: c.themes[theme].border }]}>
-                  <Text style={[{ fontSize: 16, color: c.themes[theme].text }]}>
-                    {scrubbedGbs.charAt(0).toUpperCase() + scrubbedGbs.substr(1)}
-                  </Text>
-                </View>
-              </View>
-            </>
-
-          </View>
-
-          {false && this.renderBabies()}
-          {false &&
-            // Removing show add baby for now
-            (
-              <TouchableOpacity
-                style={[styles.sectionContainer, { backgroundColor: c.themes[theme].modal, borderColor: c.themes[theme].border }]}
-                onPress={this.onPressAddBaby}>
-                <View style={[styles.row, { padding: 10, justifyContent: 'center' }]}>
-                    <FFIcons style={{ marginHorizontal: 10 }} name='plus' size={30} color={c.themes[theme].text} />
-                    <FFIcons style={{ marginHorizontal: 10 }} name='baby' size={30} color={c.themes[theme].text} />
-                </View>
-              </TouchableOpacity>
-            )}
-
-          <TouchableOpacity
-            style={[styles.sectionContainer, { backgroundColor: c.themes[theme].modal, borderColor: c.themes[theme].border }]}
-            onPress={this.onPressDeleteClient}>
-            <View style={[styles.row, { padding: 5, justifyContent: 'center' }]}>
-                <MCIcons style={{ marginHorizontal: 10 }} name='account-remove' size={40} color={c.themes[theme].text} />
-            </View>
-          </TouchableOpacity>
-        </ScrollView>
-      );
-    }
-
-  renderNotes() {
-    let { theme, route } = this.props;
+    let {theme, route} = this.props;
     // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
     // With the IF we use a copy of client created on mount
-    const reduxRefreshedClient = this.props.clients.find((cl, i) => (cl.id === route.params.client.id));
+    const reduxRefreshedClient = this.props.clients.find(
+      (cl, i) => cl.id === route.params.client.id,
+    );
+    let client;
+    if (!reduxRefreshedClient) {
+      client = this.state.client;
+    } else {
+      client = reduxRefreshedClient;
+    }
+    const {first, last, preferred} = client.name;
+    const {street, city, province, country} = client.address;
+    const {dob, edd, rh, phones, gbs} = client;
+    // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
+    let scrubbedGbs = gbs || 'unknown';
+    // Formatting of the address string is done here to avoid blank spaces created from extra \n
+    let adrStr = street ? `${street},` : '';
+    adrStr && city ? (adrStr += `\n${city},`) : (adrStr += city);
+    adrStr && province ? (adrStr += `\n${province},`) : (adrStr += province);
+    adrStr && country ? (adrStr += `\n${country}`) : (adrStr += country);
+
+    return (
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
+        <View
+          style={[
+            styles.sectionContainer,
+            {
+              backgroundColor: c.themes[theme].modal,
+              borderColor: c.themes[theme].border,
+            },
+          ]}>
+          {/* Address */}
+          <View
+            style={[
+              styles.row,
+              styles.subHeaderRow,
+              {borderColor: c.themes[theme].border},
+            ]}>
+            <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
+              Address
+            </Text>
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate('editClient', {
+                  edit: 'address',
+                  client,
+                })
+              }
+              style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
+              <FFIcons name="edit" size={20} color={c.themes[theme].text} />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL(
+                `https://www.google.ca/maps/search/${adrStr.replace(
+                  /\s/g,
+                  '+',
+                )}`,
+              )
+            }
+            style={[styles.row, {justifyContent: 'center'}]}>
+            <EIcons name="address" size={25} color={c.themes[theme].accent} />
+            <View
+              style={[
+                styles.textInput,
+                {
+                  minHeight: 40,
+                  justifyContent: 'center',
+                  borderColor: c.themes[theme].border,
+                },
+              ]}>
+              <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
+                {adrStr}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          {/* Phones */}
+          <View style={[styles.row, styles.subHeaderRow]}>
+            <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
+              Phone Numbers
+            </Text>
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate('editClient', {
+                  edit: 'phones',
+                  client,
+                })
+              }
+              style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
+              <FFIcons name="edit" size={20} color={c.themes[theme].text} />
+            </TouchableOpacity>
+          </View>
+          {this.renderPhoneNumbers(phones)}
+          {/* DOB */}
+          <View style={[styles.row, styles.subHeaderRow]}>
+            <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
+              Date of Birth
+            </Text>
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate('editClient', {
+                  edit: 'dob',
+                  client,
+                })
+              }
+              style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
+              <FFIcons name="edit" size={20} color={c.themes[theme].text} />
+            </TouchableOpacity>
+          </View>
+          <View style={[styles.row, {justifyContent: 'center'}]}>
+            <MCIcons
+              name="calendar-star"
+              size={25}
+              color={c.themes[theme].accent}
+            />
+            <View
+              style={[
+                styles.textInput,
+                {
+                  height: 40,
+                  justifyContent: 'center',
+                  borderColor: c.themes[theme].border,
+                },
+              ]}>
+              <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
+                {new Date(dob).toDateString()}
+              </Text>
+            </View>
+          </View>
+          {/* EDD */}
+          <View style={[styles.row, styles.subHeaderRow]}>
+            <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
+              Estimated Delivery Date
+            </Text>
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate('editClient', {
+                  edit: 'edd',
+                  client,
+                })
+              }
+              style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
+              <FFIcons name="edit" size={20} color={c.themes[theme].text} />
+            </TouchableOpacity>
+          </View>
+          <View style={[styles.row, {justifyContent: 'center'}]}>
+            <MCIcons
+              name="calendar-heart"
+              size={25}
+              color={c.themes[theme].accent}
+            />
+            <View
+              style={[
+                styles.textInput,
+                {
+                  height: 40,
+                  justifyContent: 'center',
+                  borderColor: c.themes[theme].border,
+                },
+              ]}>
+              <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
+                {new Date(edd).toDateString()}
+              </Text>
+            </View>
+          </View>
+          {/* RH STATUS */}
+          <>
+            <View style={[styles.row, styles.subHeaderRow]}>
+              <Text
+                style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
+                Rh Status
+              </Text>
+
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('editClient', {
+                    edit: 'rh',
+                    client,
+                  })
+                }
+                style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
+                <FFIcons name="edit" size={20} color={c.themes[theme].text} />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.row, {justifyContent: 'center'}]}>
+              <View
+                style={{
+                  height: 20,
+                  width: 20,
+                  borderRadius: 20 / 2,
+                  backgroundColor: c.themes[theme].accent,
+                  ...c.center,
+                }}>
+                {this.renderRhIcon(rh)}
+              </View>
+              <View
+                style={[
+                  styles.textInput,
+                  {
+                    height: 40,
+                    justifyContent: 'center',
+                    borderColor: c.themes[theme].border,
+                  },
+                ]}>
+                <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
+                  {rh.charAt(0).toUpperCase() + rh.substr(1)}
+                </Text>
+              </View>
+            </View>
+          </>
+
+          {/* GBS STATUS */}
+          <>
+            <View style={[styles.row, styles.subHeaderRow]}>
+              <Text
+                style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
+                GBS Status
+              </Text>
+
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('editClient', {
+                    edit: 'gbs',
+                    client,
+                  })
+                }
+                style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
+                <FFIcons name="edit" size={20} color={c.themes[theme].text} />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.row, {justifyContent: 'center'}]}>
+              <View
+                style={{
+                  height: 20,
+                  width: 20,
+                  borderRadius: 20 / 2,
+                  backgroundColor: c.themes[theme].accent,
+                  ...c.center,
+                }}>
+                {this.renderGbsIcon(scrubbedGbs)}
+              </View>
+              <View
+                style={[
+                  styles.textInput,
+                  {
+                    height: 40,
+                    justifyContent: 'center',
+                    borderColor: c.themes[theme].border,
+                  },
+                ]}>
+                <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
+                  {scrubbedGbs.charAt(0).toUpperCase() + scrubbedGbs.substr(1)}
+                </Text>
+              </View>
+            </View>
+          </>
+        </View>
+
+        {false && this.renderBabies()}
+        {false && (
+          // Removing show add baby for now
+          <TouchableOpacity
+            style={[
+              styles.sectionContainer,
+              {
+                backgroundColor: c.themes[theme].modal,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
+            onPress={this.onPressAddBaby}>
+            <View style={[styles.row, {padding: 10, justifyContent: 'center'}]}>
+              <FFIcons
+                style={{marginHorizontal: 10}}
+                name="plus"
+                size={30}
+                color={c.themes[theme].text}
+              />
+              <FFIcons
+                style={{marginHorizontal: 10}}
+                name="baby"
+                size={30}
+                color={c.themes[theme].text}
+              />
+            </View>
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity
+          style={[
+            styles.sectionContainer,
+            {
+              backgroundColor: c.themes[theme].modal,
+              borderColor: c.themes[theme].border,
+            },
+          ]}
+          onPress={this.onPressDeleteClient}>
+          <View style={[styles.row, {padding: 5, justifyContent: 'center'}]}>
+            <MCIcons
+              style={{marginHorizontal: 10}}
+              name="account-remove"
+              size={40}
+              color={c.themes[theme].text}
+            />
+          </View>
+        </TouchableOpacity>
+      </ScrollView>
+    );
+  }
+
+  renderNotes() {
+    let {theme, route} = this.props;
+    // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
+    // With the IF we use a copy of client created on mount
+    const reduxRefreshedClient = this.props.clients.find(
+      (cl, i) => cl.id === route.params.client.id,
+    );
     let client = undefined;
     if (!reduxRefreshedClient) {
       client = this.state.client;
@@ -407,77 +532,103 @@ class ViewClient extends Component {
       client = reduxRefreshedClient;
     }
     // take the notes array from redux state and check if there is a legacy note from the previous schema available. if there is, add that to the array
-    let formattedNoteArray =  this.props.notes.filter((note, i) => (note.clientId === this.props.route.params.client.id));
-    formattedNoteArray = client.notes ? [
-      ...formattedNoteArray,
-      { id: `legacy`, clientId: client.id, title: "Previous Notes", body: client.notes, time: 0 }
-    ] : formattedNoteArray;
+    let formattedNoteArray = this.props.notes.filter(
+      (note, i) => note.clientId === this.props.route.params.client.id,
+    );
+    formattedNoteArray = client.notes
+      ? [
+          ...formattedNoteArray,
+          {
+            id: `legacy`,
+            clientId: client.id,
+            title: 'Previous Notes',
+            body: client.notes,
+            time: 0,
+          },
+        ]
+      : formattedNoteArray;
     // Sort notes chonologicaly
-    formattedNoteArray = formattedNoteArray.sort((a, b) => (a.time < b.time));
+    formattedNoteArray = formattedNoteArray.sort((a, b) => a.time < b.time);
     const Notes = () => {
       if (!formattedNoteArray.length) {
         return (
           <View
-            style={[styles.sectionContainer, { backgroundColor: c.themes[theme].modal, borderColor: c.themes[theme].border }]}>
-              <View style={[styles.row]}>
-                <View style={{ marginTop: 10 }}>
-                  <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
-                    Client notes go here!
-                  </Text>
-                </View>
+            style={[
+              styles.sectionContainer,
+              {
+                backgroundColor: c.themes[theme].modal,
+                borderColor: c.themes[theme].border,
+              },
+            ]}>
+            <View style={[styles.row]}>
+              <View style={{marginTop: 10}}>
+                <Text
+                  style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
+                  Client notes go here!
+                </Text>
               </View>
+            </View>
 
-              <View style={[styles.row, { justifyContent: 'center' }]}>
-
-                <View style={[styles.textInput, { minHeight: 40, paddingVertical: 5, borderBottomWidth: 0 }]}>
-                  <Text style={[{ fontSize: 16, color: c.themes[theme].text }]}>
-                    Click the button below to add this clients first note.
-                  </Text>
-                </View>
+            <View style={[styles.row, {justifyContent: 'center'}]}>
+              <View
+                style={[
+                  styles.textInput,
+                  {minHeight: 40, paddingVertical: 5, borderBottomWidth: 0},
+                ]}>
+                <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
+                  Click the button below to add this clients first note.
+                </Text>
               </View>
+            </View>
           </View>
-        )
+        );
       } else {
         return formattedNoteArray.map((note, i) => (
           <View
-            style={[styles.sectionContainer, { backgroundColor: c.themes[theme].modal, borderColor: c.themes[theme].border }]}
+            style={[
+              styles.sectionContainer,
+              {
+                backgroundColor: c.themes[theme].modal,
+                borderColor: c.themes[theme].border,
+              },
+            ]}
             key={note.id}>
-              <View style={[styles.row]}>
-                <View style={{ marginTop: 10 }}>
-                  <Text style={[styles.subHeaderText, { color: c.themes[theme].text }]}>
-                    {note.title}
+            <View style={[styles.row]}>
+              <View style={{marginTop: 10}}>
+                <Text
+                  style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
+                  {note.title}
+                </Text>
+
+                {note.time !== 0 && (
+                  <Text style={{color: c.themes[theme].text, fontSize: 14}}>
+                    {new Date(note.time).toString().slice(4, 21)}
                   </Text>
-
-                  {note.time !== 0 &&
-                    <Text style={{ color: c.themes[theme].text, fontSize: 14 }}>
-                      {new Date(note.time).toString().slice(4, 21)}
-                    </Text>
-                  }
-
-                </View>
-
-                <TouchableOpacity
-                  onPress={() => this.onPressDeleteNote(note.id)}
-                  style={{ height: 40, width: 40, borderRadius: 20, ...c.center }}>
-                  <MCIcons
-                    name='delete-forever'
-                    size={30}
-                    color={'red'} />
-                </TouchableOpacity>
+                )}
               </View>
 
-              <View style={[styles.row, { justifyContent: 'center' }]}>
+              <TouchableOpacity
+                onPress={() => this.onPressDeleteNote(note.id)}
+                style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
+                <MCIcons name="delete-forever" size={30} color={'red'} />
+              </TouchableOpacity>
+            </View>
 
-                <View style={[styles.textInput, { minHeight: 40, paddingVertical: 5, borderBottomWidth: 0 }]}>
-                  <Text style={[{ fontSize: 16, color: c.themes[theme].text }]}>
-                    {note.body}
-                  </Text>
-                </View>
+            <View style={[styles.row, {justifyContent: 'center'}]}>
+              <View
+                style={[
+                  styles.textInput,
+                  {minHeight: 40, paddingVertical: 5, borderBottomWidth: 0},
+                ]}>
+                <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
+                  {note.body}
+                </Text>
               </View>
+            </View>
           </View>
-        ))
+        ));
       }
-    }
+    };
 
     return (
       <>
@@ -485,109 +636,189 @@ class ViewClient extends Component {
           <Notes />
         </ScrollView>
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('addNote', { edit: 'notes', client })}
-          style={[styles.addButton, { borderColor: c.themes[theme].border, backgroundColor: c.themes[theme].accent }]}>
+          onPress={() =>
+            this.props.navigation.navigate('addNote', {edit: 'notes', client})
+          }
+          style={[
+            styles.addButton,
+            {
+              borderColor: c.themes[theme].border,
+              backgroundColor: c.themes[theme].accent,
+            },
+          ]}>
           <MCIcons
-            name='note-plus-outline'
+            name="note-plus-outline"
             size={30}
-            color={c.themes[theme].lightText} />
+            color={c.themes[theme].lightText}
+          />
         </TouchableOpacity>
       </>
     );
   }
-
+  /***
+  Client should appear static, but on press of info a change event happens.
+  If the stringified body of the client data changes, a save button sould appaer
+  user must press save button for data to be saved
+***/
   render() {
-    let { theme, route } = this.props;
+    let {theme, route} = this.props;
     // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
     // With the IF we use a copy of client created on mount
-    const reduxRefreshedClient = this.props.clients.find((cl, i) => (cl.id === route.params.client.id));
+    const reduxRefreshedClient = this.props.clients.find(
+      (cl, i) => cl.id === route.params.client.id,
+    );
     let client = undefined;
     if (!reduxRefreshedClient) {
       client = this.state.client;
-    } else { client = reduxRefreshedClient; }
-    const { first, last, preferred } = client.name;
-    const { street, city, province, country } = client.address
-    const { dob, edd, notes, rh, phones, gbs } = client;
+    } else {
+      client = reduxRefreshedClient;
+    }
+    const {first, last, preferred} = client.name;
+    const {street, city, province, country} = client.address;
+    const {dob, edd, notes, rh, phones, gbs} = client;
     // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
     let scrubbedGbs = gbs || 'unknown';
     // Formatting of the address string is done here to avoid blank spaces created from extra \n
     let adrStr = street ? `${street},` : '';
-    adrStr && city ? adrStr += `\n${city},` : adrStr += city;
-    adrStr && province ? adrStr += `\n${province},` : adrStr += province;
-    adrStr && country ? adrStr += `\n${country}` : adrStr += country;
+    adrStr && city ? (adrStr += `\n${city},`) : (adrStr += city);
+    adrStr && province ? (adrStr += `\n${province},`) : (adrStr += province);
+    adrStr && country ? (adrStr += `\n${country}`) : (adrStr += country);
 
     return (
-      <View style={[styles.container, { backgroundColor: c.themes[theme].background, borderColor: c.themes[theme].border }]}>
-        <View style={[styles.header, { backgroundColor: c.themes[theme].accent }]}>
-          <View style={{ flex: 2, width: '90%', justifyContent: 'center', paddingLeft: 0, borderBottomWidth: 0.5, borderColor: c.themes[theme].border }}>
-            <Text style={[{ color: c.themes[theme].lightText, fontSize: 25 }, c.titleFont]}>
-              {first}{last ? ` ${last}` : ''}
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: c.themes[theme].background,
+            borderColor: c.themes[theme].border,
+          },
+        ]}>
+        <View
+          style={[styles.header, {backgroundColor: c.themes[theme].accent}]}>
+          <View
+            style={{
+              flex: 2,
+              width: '90%',
+              justifyContent: 'center',
+              paddingLeft: 0,
+              borderBottomWidth: 0.5,
+              borderColor: c.themes[theme].border,
+            }}>
+            <Text
+              style={[
+                {color: c.themes[theme].lightText, fontSize: 25},
+                c.titleFont,
+              ]}>
+              {first}
+              {last ? ` ${last}` : ''}
             </Text>
-            <Text style={[{ color: c.themes[theme].lightText, fontSize: 16 }, c.titleFont]}>
+            <Text
+              style={[
+                {color: c.themes[theme].lightText, fontSize: 16},
+                c.titleFont,
+              ]}>
               {client.name.preferred}
             </Text>
             {/* NAME EDIT */}
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('editClient', { edit: 'name', client })}
-              style={{ position: 'absolute', right: 10, height: 40, width: 40, borderRadius: 20, ...c.center }}>
+              onPress={() =>
+                this.props.navigation.navigate('editClient', {
+                  edit: 'name',
+                  client,
+                })
+              }
+              style={{
+                position: 'absolute',
+                right: 10,
+                height: 40,
+                width: 40,
+                borderRadius: 20,
+                ...c.center,
+              }}>
               <FFIcons
-                name='edit'
+                name="edit"
                 size={20}
-                color={c.themes[theme].lightText} />
+                color={c.themes[theme].lightText}
+              />
             </TouchableOpacity>
-
           </View>
 
-          <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+          <View
+            style={{
+              flex: 1,
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              alignItems: 'center',
+            }}>
             <TouchableOpacity
-              onPress={() => this.pageScroll.scrollTo({ x: 0, y: 0, animated: true })}
-              style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={[styles.subHeaderText, { color: c.themes[theme].lightText }]}>
+              onPress={() =>
+                this.pageScroll.scrollTo({x: 0, y: 0, animated: true})
+              }
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text
+                style={[
+                  styles.subHeaderText,
+                  {color: c.themes[theme].lightText},
+                ]}>
                 Client Details
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.pageScroll.scrollTo({ x: c.device.width , y: 0, animated: true })}
-              style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={[styles.subHeaderText, { color: c.themes[theme].lightText }]}>
+              onPress={() =>
+                this.pageScroll.scrollTo({
+                  x: c.device.width,
+                  y: 0,
+                  animated: true,
+                })
+              }
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text
+                style={[
+                  styles.subHeaderText,
+                  {color: c.themes[theme].lightText},
+                ]}>
                 Notes
               </Text>
             </TouchableOpacity>
-            <Animated.View style={{
-              position: 'absolute',
-              width: '50%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: 4,
-              bottom: 2,
-              transform: this.scrollPosition.getTranslateTransform() }}>
-              <View
+            <Animated.View
               style={{
-                width: '80%',
-                height: 1.5,
-                backgroundColor: c.themes[theme].lightText }} />
+                position: 'absolute',
+                width: '50%',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 4,
+                bottom: 2,
+                transform: this.scrollPosition.getTranslateTransform(),
+              }}>
+              <View
+                style={{
+                  width: '80%',
+                  height: 1.5,
+                  backgroundColor: c.themes[theme].lightText,
+                }}
+              />
             </Animated.View>
           </View>
-
         </View>
         <ScrollView
-          ref={(sv) => this.pageScroll = sv}
+          ref={sv => (this.pageScroll = sv)}
           showsHorizontalScrollIndicator={false}
-          onScroll={(evt) => Animated.spring(this.scrollPosition, { toValue: { x: evt.nativeEvent.contentOffset.x / 2, y: 0 }, useNativeDriver: false }).start()}
+          onScroll={evt =>
+            Animated.spring(this.scrollPosition, {
+              toValue: {x: evt.nativeEvent.contentOffset.x / 2, y: 0},
+              useNativeDriver: false,
+            }).start()
+          }
           horizontal={true}
           pagingEnabled={true}>
-        <View style={styles.pageContainer}>
-          {this.renderDetails()}
-        </View>
-        <View style={styles.pageContainer}>
-          {this.renderNotes()}
-        </View>
+          <View style={styles.pageContainer}>{this.renderDetails()}</View>
+          <View style={styles.pageContainer}>{this.renderNotes()}</View>
         </ScrollView>
       </View>
     );
   }
 }
-
 
 const styles = {
   container: {
@@ -619,7 +850,7 @@ const styles = {
   body: {
     flex: 1,
     width: '98%',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   sectionContainer: {
     flex: 0,
@@ -645,13 +876,13 @@ const styles = {
   },
   subHeaderText: {
     fontSize: 20,
-    ...c.titleFont
+    ...c.titleFont,
   },
   textInput: {
     flex: 1,
     borderBottomWidth: 0.5,
     fontSize: 16,
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
   submit: {
     width: '95%',
@@ -661,7 +892,7 @@ const styles = {
     marginVertical: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   addButton: {
     height: 50,
@@ -673,9 +904,8 @@ const styles = {
     bottom: 10,
     right: 5,
     elevation: 5,
-    borderWidth: 1
+    borderWidth: 1,
   },
-}
-
+};
 
 export default ViewClient;
