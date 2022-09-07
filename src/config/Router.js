@@ -11,13 +11,13 @@ import BottomTabBar from './BottomTabBar';
 
 import Auth from '../screens/Auth/';
 import {
-  Client,
   AddBaby,
   AddClient,
   ViewClient,
   EditClient,
   AddNote,
 } from '../screens/Client/';
+import ClientList from '../screens/ClientList/';
 import Calculator from '../screens/Calculator/';
 import {Tutorial} from '../screens/Tutorial/';
 import Settings from '../screens/Settings/';
@@ -41,7 +41,7 @@ const ClientStack = () => {
       initialRouteName="clients">
       <Stack.Screen
         name="clients"
-        component={Client}
+        component={ClientList}
         options={{title: 'Clients'}}
       />
       <Stack.Screen name="addClient" component={AddClient} />
