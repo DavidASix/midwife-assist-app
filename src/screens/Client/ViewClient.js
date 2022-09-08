@@ -15,6 +15,7 @@ import {
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FFIcons from 'react-native-vector-icons/FontAwesome5';
 import AIcons from 'react-native-vector-icons/AntDesign';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import EIcons from 'react-native-vector-icons/Entypo';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
@@ -28,13 +29,18 @@ class ViewClient extends Component {
     this.scrollPosition = new Animated.ValueXY();
     this.addNoteModal = null;
     this.client = undefined;
+    this.state = {
+      showDobPicker: false,
+    };
   }
 
   componentDidMount() {
     this.setState({
       ...this.state,
       client: this.props.route.params.client,
+      showDobPicker: false,
     });
+    console.log(this.props.route.params.client);
   }
 
   //  ---  On Press Functions  ---  //
@@ -64,7 +70,7 @@ class ViewClient extends Component {
   onPressDeleteNote(noteId) {
     let {id} = this.state.client;
     Alert.alert(
-      `Delete Note?`,
+      'Delete Note?',
       'Are you sure you want to delete this note? You will not be able to recover the note.',
       [
         {
@@ -91,29 +97,39 @@ class ViewClient extends Component {
 
   //  ---  Render Functions  ---  //
 
-  renderPhoneNumbers(phones) {
+  renderPhoneNumbers() {
     let {theme} = this.props;
-    return phones.map((phone, i) => {
+    const sty = style(this.props.theme);
+    let phones = this.client.phones;
+    console.log(phones);
+    if (!phones.join(''))
       return (
-        <View style={[styles.row]}>
+        <TouchableOpacity
+          onLongPress={() => this.edit('phones')}
+          style={[styles.row]}>
           <MCIcons name="phone" size={25} color={c.themes[theme].accent} />
+          <View style={sty.clientInfo}>
+            <Text style={sty.infoText}>Hold to add phone</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    return phones.map((phone, i) =>
+      phone ? (
+        <View style={[styles.row]}>
+          <MCIcons
+            name={i === 2 ? 'phone-alert' : 'phone'}
+            size={25}
+            color={c.themes[theme].accent}
+          />
           <TouchableOpacity
-            style={[
-              styles.textInput,
-              {
-                height: 40,
-                justifyContent: 'center',
-                borderColor: c.themes[theme].border,
-              },
-            ]}
+            style={sty.clientInfo}
+            onLongPress={() => this.edit('phones')}
             onPress={() => Linking.openURL(`tel:${phone}`)}>
-            <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
-              {phone}
-            </Text>
+            <Text style={sty.infoText}>{phone}</Text>
           </TouchableOpacity>
         </View>
-      );
-    });
+      ) : null,
+    );
   }
 
   renderRhIcon(rh) {
@@ -179,118 +195,70 @@ class ViewClient extends Component {
   }
 
   renderDetails() {
-    let {theme, route} = this.props;
-    // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
-    // With the IF we use a copy of client created on mount
-    const reduxRefreshedClient = this.props.clients.find(
-      (cl, i) => cl.id === route.params.client.id,
-    );
-    let client;
-    if (!reduxRefreshedClient) {
-      client = this.state.client;
-    } else {
-      client = reduxRefreshedClient;
-    }
-    const {first, last, preferred} = client.name;
-    const {street, city, province, country} = client.address;
+    let {theme} = this.props;
+    const thm = c.themes[theme];
+    const sty = style(this.props.theme);
+    let {client} = this;
+    const {street, city} = client.address;
     const {dob, edd, rh, phones, gbs} = client;
     // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
     let scrubbedGbs = gbs || 'unknown';
-    // Formatting of the address string is done here to avoid blank spaces created from extra \n
-    let adrStr = street ? `${street},` : '';
-    adrStr && city ? (adrStr += `\n${city},`) : (adrStr += city);
-    adrStr && province ? (adrStr += `\n${province},`) : (adrStr += province);
-    adrStr && country ? (adrStr += `\n${country}`) : (adrStr += country);
-
+    let adrTxt = (street && `${street},`) + (city && `\n${city}`);
+    const adrUrl = `https://www.google.ca/maps/search/${adrTxt.replace(
+      /\s/g,
+      '+',
+    )}`;
     return (
       <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
-        <View
-          style={[
-            styles.sectionContainer,
-            {
-              backgroundColor: c.themes[theme].modal,
-              borderColor: c.themes[theme].border,
-            },
-          ]}>
+        <View style={sty.sectionContainer}>
           {/* Address */}
-          <View
-            style={[
-              styles.row,
-              styles.subHeaderRow,
-              {borderColor: c.themes[theme].border},
-            ]}>
-            <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-              Address
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('editClient', {
-                  edit: 'address',
-                  client,
-                })
-              }
-              style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
-              <FFIcons name="edit" size={20} color={c.themes[theme].text} />
-            </TouchableOpacity>
+          <View style={sty.subHeaderRow}>
+            <Text style={sty.subHeaderText}>Address</Text>
           </View>
           <TouchableOpacity
-            onPress={() =>
-              Linking.openURL(
-                `https://www.google.ca/maps/search/${adrStr.replace(
-                  /\s/g,
-                  '+',
-                )}`,
-              )
-            }
-            style={[styles.row, {justifyContent: 'center'}]}>
+            onPress={() => adrTxt && Linking.openURL(adrUrl)}
+            onLongPress={() => this.edit('address')}
+            style={[styles.row]}>
             <EIcons name="address" size={25} color={c.themes[theme].accent} />
-            <View
-              style={[
-                styles.textInput,
-                {
-                  minHeight: 40,
-                  justifyContent: 'center',
-                  borderColor: c.themes[theme].border,
-                },
-              ]}>
-              <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
-                {adrStr}
+            <View style={sty.clientInfo}>
+              <Text style={sty.infoText}>
+                {adrTxt || 'Hold to add address'}
               </Text>
             </View>
           </TouchableOpacity>
+
           {/* Phones */}
-          <View style={[styles.row, styles.subHeaderRow]}>
-            <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-              Phone Numbers
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('editClient', {
-                  edit: 'phones',
-                  client,
-                })
-              }
-              style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
-              <FFIcons name="edit" size={20} color={c.themes[theme].text} />
-            </TouchableOpacity>
+          <View style={sty.subHeaderRow}>
+            <Text style={sty.subHeaderText}>Phone Numbers</Text>
           </View>
           {this.renderPhoneNumbers(phones)}
+
           {/* DOB */}
-          <View style={[styles.row, styles.subHeaderRow]}>
-            <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-              Date of Birth
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('editClient', {
-                  edit: 'dob',
-                  client,
-                })
-              }
-              style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
-              <FFIcons name="edit" size={20} color={c.themes[theme].text} />
-            </TouchableOpacity>
+          <View style={sty.subHeaderRow}>
+            <Text style={sty.subHeaderText}>Date of Birth</Text>
           </View>
+          <TouchableOpacity
+            style={sty.rowButton}
+            onPress={() => this.setState({showDobPicker: true})}>
+            <Text style={{color: thm.text}}>
+              {new Date(client.dob).toDateString()}
+            </Text>
+          </TouchableOpacity>
+          {this.state.showDobPicker && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={new Date(client.dob)}
+              accentColor={thm.accent}
+              mode="date"
+              is24Hour={true}
+              onChange={(e, date) => {
+                this.setState({showDobPicker: false});
+                if (date.toDateString() !== client.dob.toDateString()) {
+                  this.props.updateClient({...client, dob: date});
+                }
+              }}
+            />
+          )}
           <View style={[styles.row, {justifyContent: 'center'}]}>
             <MCIcons
               name="calendar-star"
@@ -602,17 +570,13 @@ class ViewClient extends Component {
     } else {
       client = reduxRefreshedClient;
     }
-    switch (field) {
-      case 'name':
-        this.props.navigation.navigate('editClient', {
-          edit: 'name',
-          client,
-        });
-        break;
-      default:
-        console.log('def');
-    }
+
+    this.props.navigation.navigate('editClient', {
+      edit: field,
+      client,
+    });
   }
+
   holdToEditToast(pos = 'bottom') {
     Toast.show({
       type: 'info',
@@ -639,6 +603,7 @@ class ViewClient extends Component {
   render() {
     this.clientVariableSet();
     const sty = style(this.props.theme);
+    const thm = c.themes[this.props.theme];
     const scrollTo = this?.pageScroll?.scrollTo;
     const scrollTrans = this.scrollPosition.getTranslateTransform();
     const {first, last, preferred} = this.client.name;
@@ -653,19 +618,23 @@ class ViewClient extends Component {
               {first}
               {last ? ` ${last}` : ''}
             </Text>
-            <Text style={sty.title}>{preferred}</Text>
+            {preferred && <Text style={sty.title}>{preferred}</Text>}
           </TouchableOpacity>
 
           <View style={sty.headerButtonContainer}>
             <TouchableOpacity
               onPress={() => scrollTo({x: 0, animated: true})}
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={sty.subHeaderText}>Client Details</Text>
+              <Text style={[sty.subHeaderText, {color: thm.lightText}]}>
+                Client Details
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => scrollTo({x: c.device.width, animated: true})}
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={sty.subHeaderText}>Notes</Text>
+              <Text style={[sty.subHeaderText, {color: thm.lightText}]}>
+                Notes
+              </Text>
             </TouchableOpacity>
 
             <Animated.View style={[sty.indContainer, {transform: scrollTrans}]}>
@@ -771,6 +740,8 @@ const style = (theme = 'light') => ({
     borderWidth: 1,
     marginVertical: 5,
     paddingHorizontal: 10,
+    backgroundColor: c.themes[theme].modal,
+    borderColor: c.themes[theme].border,
   },
   row: {
     width: '100%',
@@ -785,8 +756,40 @@ const style = (theme = 'light') => ({
   },
   subHeaderText: {
     fontSize: 20,
-    color: c.themes[theme].lightText,
+    color: c.themes[theme].text,
     ...c.titleFont,
+  },
+  clientInfo: {
+    flex: 1,
+    borderBottomWidth: 0.5,
+    fontSize: 16,
+    marginHorizontal: 10,
+    minHeight: 40,
+    justifyContent: 'center',
+    borderColor: c.themes[theme].border,
+  },
+  infoText: {
+    fontSize: 16,
+    color: c.themes[theme].text,
+  },
+  rowButton: {
+    width: '95%',
+    minHeight: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderWidth: 0.5,
+    borderColor: c.themes[theme].border,
+    backgroundColor: c.themes[theme].modal,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
   },
   textInput: {
     flex: 1,
