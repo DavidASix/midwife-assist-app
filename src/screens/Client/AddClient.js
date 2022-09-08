@@ -25,10 +25,13 @@ class AddClient extends Component {
       province: '',
       country: '',
       phone1: '',
+      phone2: '',
+      phone3: '',
       rh: 'unknown',
       gbs: 'unknown',
       notes: '',
-      dob: new Date(Date.now() - 30 * c.t.year),
+      age: '',
+      dob: null, //new Date(Date.now() - 30 * c.t.year),
       edd: new Date(Date.now() + 280 * c.t.day),
       showEddPicker: false,
       showDobPicker: false,
@@ -45,13 +48,11 @@ class AddClient extends Component {
       rh,
       gbs,
       notes,
+      age,
       dob,
       edd,
     } = this.state;
-    let phones = [];
-    for (let i = 1; i <= 3; i++) {
-      if (this.state[`phone${i}`]) phones.push(this.state[`phone${i}`]);
-    }
+    let phones = [this.state.phone1, this.state.phone2, this.state.phone3];
     let newClient = {
       id: c.randomString(),
       name: {
@@ -63,7 +64,8 @@ class AddClient extends Component {
         street,
         city,
       },
-      dob: dob.getTime(),
+      dob: dob?.getTime() || dob,
+      age,
       edd: edd.getTime(),
       rh: rh,
       gbs: gbs,
@@ -125,7 +127,7 @@ class AddClient extends Component {
           <Text style={sty.subHeaderText}>Address</Text>
         </View>
         {types.map((type, i) => (
-          <View style={[sty.row]}>
+          <View style={[sty.row]} key={i}>
             <TextInput
               style={sty.textInput}
               onChangeText={text => this.setState({[type.var]: text})}
@@ -174,9 +176,34 @@ class AddClient extends Component {
     );
   }
 
+  renderAge() {
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
+    return (
+      <>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>Age</Text>
+        </View>
+        <View style={[sty.row]}>
+          <TextInput
+            style={sty.textInput}
+            onChangeText={text => this.setState({age: text, dob: null})}
+            value={this.state.age}
+            keyboardType="number-pad"
+            autoCorrect={false}
+            maxLength={3}
+            placeholder="32"
+            placeholderTextColor={thm.text + 60}
+          />
+        </View>
+      </>
+    );
+  }
+
   renderDob() {
     const thm = c.themes[this.props.theme];
     const sty = style(this.props.theme);
+    const {dob} = this.state;
     return (
       <>
         <View style={[sty.row, sty.subHeaderRow]}>
@@ -186,18 +213,22 @@ class AddClient extends Component {
         <TouchableOpacity
           style={sty.rowButton}
           onPress={() => this.setState({showDobPicker: true})}>
-          <Text style={{color: thm.text}}>{this.state.dob.toDateString()}</Text>
+          <Text style={{color: thm.text}}>
+            {dob ? dob.toDateString() : 'Select Date of Birth'}
+          </Text>
         </TouchableOpacity>
         {this.state.showDobPicker && (
           <DateTimePicker
             testID="dateTimePicker"
-            value={this.state.dob}
+            value={this.state.dob || new Date(Date.now() - 30 * c.t.year)}
             accentColor={thm.accent}
             mode="date"
             is24Hour={true}
-            onChange={(e, date) =>
-              this.setState({showDobPicker: false, dob: date})
-            }
+            onChange={(e, date) => {
+              let age = new Date(Date.now() - date.getTime());
+              age = Math.abs(age.getUTCFullYear() - 1970) + '';
+              this.setState({showDobPicker: false, dob: date, age});
+            }}
           />
         )}
       </>
@@ -323,6 +354,8 @@ class AddClient extends Component {
             {this.renderName()}
             {this.renderAddress()}
             {this.renderPhone()}
+            {this.renderAge()}
+            <Text style={sty.orText}>or</Text>
             {this.renderDob()}
             {this.renderEdd()}
             {this.renderRh()}
@@ -441,6 +474,12 @@ const style = (theme = 'light') => ({
     borderBottomWidth: 1,
     fontSize: 16,
     marginHorizontal: 10,
+  },
+  orText: {
+    alignSelf: 'center',
+    color: c.themes[theme].text + 60,
+    fontSize: 10,
+    marginTop: 10,
   },
   submit: {
     backgroundColor: c.themes[theme].accent,
