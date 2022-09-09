@@ -31,6 +31,7 @@ class ViewClient extends Component {
     this.client = undefined;
     this.state = {
       showDobPicker: false,
+      showEddPicker: false,
     };
   }
 
@@ -216,7 +217,7 @@ class ViewClient extends Component {
       '+',
     )}`;
     return (
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
+      <ScrollView showsVerticalScrollIndicator={false} style={sty.body}>
         <View style={sty.sectionContainer}>
           {/* Address */}
           <View style={sty.subHeaderRow}>
@@ -225,7 +226,7 @@ class ViewClient extends Component {
           <TouchableOpacity
             onPress={() => adrTxt && Linking.openURL(adrUrl)}
             onLongPress={() => this.edit('address')}
-            style={[styles.row]}>
+            style={[sty.row]}>
             <EIcons name="address" size={25} color={c.themes[theme].accent} />
             <View style={sty.clientInfo}>
               <Text style={sty.infoText}>
@@ -244,7 +245,7 @@ class ViewClient extends Component {
           <View style={sty.subHeaderRow}>
             <Text style={sty.subHeaderText}>Age</Text>
           </View>
-          <View style={[styles.row]}>
+          <View style={[sty.row]}>
             <MCIcons
               name="cake-variant-outline"
               size={25}
@@ -287,41 +288,34 @@ class ViewClient extends Component {
           )}
 
           {/* EDD */}
-          <View style={[styles.row, styles.subHeaderRow]}>
-            <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-              Estimated Delivery Date
+          <View style={sty.subHeaderRow}>
+            <Text style={sty.subHeaderText}>Estimated Delivery Date</Text>
+          </View>
+          <TouchableOpacity
+            style={sty.rowButton}
+            onPress={() => this.setState({showEddPicker: true})}>
+            <Text style={{color: thm.text}}>
+              {client.edd
+                ? new Date(client.edd).toDateString()
+                : 'Press to enter EDD'}
             </Text>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('editClient', {
-                  edit: 'edd',
-                  client,
-                })
-              }
-              style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
-              <FFIcons name="edit" size={20} color={c.themes[theme].text} />
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.row, {justifyContent: 'center'}]}>
-            <MCIcons
-              name="calendar-heart"
-              size={25}
-              color={c.themes[theme].accent}
+          </TouchableOpacity>
+          {this.state.showEddPicker && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={new Date(client.edd)}
+              accentColor={thm.accent}
+              mode="date"
+              is24Hour={true}
+              onChange={(e, date) => {
+                this.setState({showEddPicker: false});
+                if (date.toDateString() !== new Date(edd).toDateString()) {
+                  this.props.updateClient({...client, edd: date});
+                }
+              }}
             />
-            <View
-              style={[
-                styles.textInput,
-                {
-                  height: 40,
-                  justifyContent: 'center',
-                  borderColor: c.themes[theme].border,
-                },
-              ]}>
-              <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
-                {new Date(edd).toDateString()}
-              </Text>
-            </View>
-          </View>
+          )}
+
           {/* RH STATUS */}
           <>
             <View style={[styles.row, styles.subHeaderRow]}>
@@ -416,21 +410,16 @@ class ViewClient extends Component {
         </View>
 
         <TouchableOpacity
-          style={[
-            styles.sectionContainer,
-            {
-              backgroundColor: c.themes[theme].modal,
-              borderColor: c.themes[theme].border,
-            },
-          ]}
+          style={[sty.sectionContainer, {marginBottom: 15, paddingVertical: 5}]}
           onPress={this.onPressDeleteClient}>
-          <View style={[styles.row, {padding: 5, justifyContent: 'center'}]}>
+          <View style={[sty.row, {justifyContent: 'center'}]}>
             <MCIcons
-              style={{marginHorizontal: 10}}
               name="account-remove"
-              size={40}
-              color={c.themes[theme].text}
+              size={25}
+              color={thm.accent}
+              style={{position: 'absolute', left: 0}}
             />
+            <Text style={sty.subHeaderText}>Delete Client</Text>
           </View>
         </TouchableOpacity>
       </ScrollView>
@@ -438,7 +427,7 @@ class ViewClient extends Component {
   }
 
   renderNotes() {
-    let {theme, route} = this.props;
+    let {theme} = this.props;
     let {client} = this;
     // take the notes array from redux state and check if there is a legacy note from the previous schema available. if there is, add that to the array
     let formattedNoteArray = this.props.notes.filter(
@@ -661,8 +650,8 @@ class ViewClient extends Component {
           }
           horizontal={true}
           pagingEnabled={true}>
-          <View style={styles.pageContainer}>{this.renderDetails()}</View>
-          <View style={styles.pageContainer}>{this.renderNotes()}</View>
+          <View style={sty.pageContainer}>{this.renderDetails()}</View>
+          <View style={sty.pageContainer}>{this.renderNotes()}</View>
         </ScrollView>
       </View>
     );
