@@ -101,7 +101,6 @@ class ViewClient extends Component {
     let {theme} = this.props;
     const sty = style(this.props.theme);
     let phones = this.client.phones;
-    console.log(phones);
     if (!phones.join(''))
       return (
         <TouchableOpacity
@@ -201,6 +200,14 @@ class ViewClient extends Component {
     let {client} = this;
     const {street, city} = client.address;
     const {dob, edd, rh, phones, gbs} = client;
+    let age;
+    if (dob) {
+      age = new Date(dob);
+      age = new Date(Date.now() - age.getTime());
+      age = Math.abs(age.getUTCFullYear() - 1970) + '';
+    } else {
+      age = client?.age || 'Add age';
+    }
     // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
     let scrubbedGbs = gbs || 'unknown';
     let adrTxt = (street && `${street},`) + (city && `\n${city}`);
@@ -233,6 +240,23 @@ class ViewClient extends Component {
           </View>
           {this.renderPhoneNumbers(phones)}
 
+          {/* AGE */}
+          <View style={sty.subHeaderRow}>
+            <Text style={sty.subHeaderText}>Age</Text>
+          </View>
+          <View style={[styles.row]}>
+            <MCIcons
+              name="cake-variant-outline"
+              size={25}
+              color={c.themes[theme].accent}
+            />
+            <TouchableOpacity
+              style={sty.clientInfo}
+              onPress={() => this.edit('age')}>
+              <Text style={sty.infoText}>{age}</Text>
+            </TouchableOpacity>
+          </View>
+
           {/* DOB */}
           <View style={sty.subHeaderRow}>
             <Text style={sty.subHeaderText}>Date of Birth</Text>
@@ -241,7 +265,9 @@ class ViewClient extends Component {
             style={sty.rowButton}
             onPress={() => this.setState({showDobPicker: true})}>
             <Text style={{color: thm.text}}>
-              {new Date(client.dob).toDateString()}
+              {client.dob
+                ? new Date(client.dob).toDateString()
+                : 'Press to enter DoB'}
             </Text>
           </TouchableOpacity>
           {this.state.showDobPicker && (
@@ -253,32 +279,13 @@ class ViewClient extends Component {
               is24Hour={true}
               onChange={(e, date) => {
                 this.setState({showDobPicker: false});
-                if (date.toDateString() !== client.dob.toDateString()) {
+                if (date.toDateString() !== new Date(dob).toDateString()) {
                   this.props.updateClient({...client, dob: date});
                 }
               }}
             />
           )}
-          <View style={[styles.row, {justifyContent: 'center'}]}>
-            <MCIcons
-              name="calendar-star"
-              size={25}
-              color={c.themes[theme].accent}
-            />
-            <View
-              style={[
-                styles.textInput,
-                {
-                  height: 40,
-                  justifyContent: 'center',
-                  borderColor: c.themes[theme].border,
-                },
-              ]}>
-              <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
-                {new Date(dob).toDateString()}
-              </Text>
-            </View>
-          </View>
+
           {/* EDD */}
           <View style={[styles.row, styles.subHeaderRow]}>
             <Text style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
