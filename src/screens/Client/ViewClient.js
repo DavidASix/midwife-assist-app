@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FFIcons from 'react-native-vector-icons/FontAwesome5';
-import AIcons from 'react-native-vector-icons/AntDesign';
+import AIcon from 'react-native-vector-icons/AntDesign';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import EIcons from 'react-native-vector-icons/Entypo';
 import Toast from 'react-native-toast-message';
@@ -95,6 +95,10 @@ class ViewClient extends Component {
   }
 
   onPressNewNote = () => {};
+
+  onPressRH(status) {
+
+  }
 
   //  ---  Render Functions  ---  //
 
@@ -200,7 +204,7 @@ class ViewClient extends Component {
     const sty = style(this.props.theme);
     let {client} = this;
     const {street, city} = client.address;
-    const {dob, edd, rh, phones, gbs} = client;
+    const {dob, edd, phones} = client;
     let age;
     if (dob) {
       age = new Date(dob);
@@ -209,13 +213,21 @@ class ViewClient extends Component {
     } else {
       age = client?.age || 'Add age';
     }
-    // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
-    let scrubbedGbs = gbs || 'unknown';
     let adrTxt = (street && `${street},`) + (city && `\n${city}`);
     const adrUrl = `https://www.google.ca/maps/search/${adrTxt.replace(
       /\s/g,
       '+',
     )}`;
+
+    const activeRh = type => type === this.client.rh;
+    // As Gbs is being added in after the app was released, some clients may not have a GBS value. For those clients, the value is 'unkown'
+    const activeGbs = type => type === (this.client.gbs || 'unknown');
+    // Status types for RH and GBS
+    const statusTypes = [
+      {name: 'positive', icon: 'plus'},
+      {name: 'negative', icon: 'minus'},
+      {name: 'unknown', icon: 'question'},
+    ];
     return (
       <ScrollView showsVerticalScrollIndicator={false} style={sty.body}>
         <View style={sty.sectionContainer}>
@@ -317,96 +329,54 @@ class ViewClient extends Component {
           )}
 
           {/* RH STATUS */}
-          <>
-            <View style={[styles.row, styles.subHeaderRow]}>
-              <Text
-                style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-                Rh Status
-              </Text>
-
+          <View style={sty.subHeaderRow}>
+            <Text style={sty.subHeaderText}>Rh Status</Text>
+          </View>
+          <View style={[sty.row]}>
+            {statusTypes.map((t, i) => (
               <TouchableOpacity
-                onPress={() =>
-                  this.props.navigation.navigate('editClient', {
-                    edit: 'rh',
-                    client,
-                  })
+                key={i}
+                onPress={this.holdToEditToast}
+                onLongPress={() =>
+                  this.props.updateClient({...client, rh: t.name})
                 }
-                style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
-                <FFIcons name="edit" size={20} color={c.themes[theme].text} />
-              </TouchableOpacity>
-            </View>
-            <View style={[styles.row, {justifyContent: 'center'}]}>
-              <View
-                style={{
-                  height: 20,
-                  width: 20,
-                  borderRadius: 20 / 2,
-                  backgroundColor: c.themes[theme].accent,
-                  ...c.center,
-                }}>
-                {this.renderRhIcon(rh)}
-              </View>
-              <View
                 style={[
-                  styles.textInput,
-                  {
-                    height: 40,
-                    justifyContent: 'center',
-                    borderColor: c.themes[theme].border,
-                  },
+                  sty.iconButton,
+                  activeRh(t.name) && {backgroundColor: thm.accent},
                 ]}>
-                <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
-                  {rh.charAt(0).toUpperCase() + rh.substr(1)}
-                </Text>
-              </View>
-            </View>
-          </>
+                <AIcon
+                  name={t.icon}
+                  size={15}
+                  color={activeRh(t.name) ? thm.modal : thm.text}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
 
           {/* GBS STATUS */}
-          <>
-            <View style={[styles.row, styles.subHeaderRow]}>
-              <Text
-                style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-                GBS Status
-              </Text>
-
+          <View style={sty.subHeaderRow}>
+            <Text style={sty.subHeaderText}>GBS Status</Text>
+          </View>
+          <View style={[sty.row, {marginBottom: 10}]}>
+            {statusTypes.map((t, i) => (
               <TouchableOpacity
-                onPress={() =>
-                  this.props.navigation.navigate('editClient', {
-                    edit: 'gbs',
-                    client,
-                  })
+                key={i}
+                onPress={this.holdToEditToast}
+                onLongPress={() =>
+                  this.props.updateClient({...client, gbs: t.name})
                 }
-                style={{height: 40, width: 40, borderRadius: 20, ...c.center}}>
-                <FFIcons name="edit" size={20} color={c.themes[theme].text} />
-              </TouchableOpacity>
-            </View>
-            <View style={[styles.row, {justifyContent: 'center'}]}>
-              <View
-                style={{
-                  height: 20,
-                  width: 20,
-                  borderRadius: 20 / 2,
-                  backgroundColor: c.themes[theme].accent,
-                  ...c.center,
-                }}>
-                {this.renderGbsIcon(scrubbedGbs)}
-              </View>
-              <View
                 style={[
-                  styles.textInput,
-                  {
-                    height: 40,
-                    justifyContent: 'center',
-                    borderColor: c.themes[theme].border,
-                  },
+                  sty.iconButton,
+                  activeGbs(t.name) && {backgroundColor: thm.accent},
                 ]}>
-                <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
-                  {scrubbedGbs.charAt(0).toUpperCase() + scrubbedGbs.substr(1)}
-                </Text>
-              </View>
-            </View>
-          </>
+                <AIcon
+                  name={t.icon}
+                  size={15}
+                  color={activeGbs(t.name) ? thm.modal : thm.text}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
 
         <TouchableOpacity
@@ -743,7 +713,7 @@ const style = (theme = 'light') => ({
     width: '100%',
     flex: 0,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   subHeaderRow: {
@@ -792,6 +762,24 @@ const style = (theme = 'light') => ({
     borderBottomWidth: 0.5,
     fontSize: 16,
     marginHorizontal: 10,
+  },
+  iconButton: {
+    height: 30,
+    width: 30,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.5,
+    borderColor: c.themes[theme].border,
+    backgroundColor: c.themes[theme].modal,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
   },
   submit: {
     width: '95%',
