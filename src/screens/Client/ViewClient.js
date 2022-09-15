@@ -13,6 +13,8 @@ import AIcon from 'react-native-vector-icons/AntDesign';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import EIcons from 'react-native-vector-icons/Entypo';
 import Toast from 'react-native-toast-message';
+import SlideUpModal from '../../components/SlideUpModal/';
+import EditClientItem from './EditClientItem';
 
 const c = require('../../assets/constants');
 
@@ -23,9 +25,17 @@ class ViewClient extends Component {
     this.scrollPosition = new Animated.ValueXY();
     this.addNoteModal = null;
     this.client = undefined;
+    this.editModal = undefined;
+    /* Edit Types are used in the EditClientItem Modal to provide basic metadata */
+    this.editTypes = {
+      address: {title: 'Address'},
+      phones: {title: 'Phone Numbers'},
+      age: {title: 'Client Age'},
+    };
     this.state = {
       showDobPicker: false,
       showEddPicker: false,
+      selectedEdit: 'address',
     };
   }
 
@@ -90,22 +100,9 @@ class ViewClient extends Component {
   onPressNewNote = () => {};
 
   edit(field) {
-    // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
-    // With the IF we use a copy of client created on mount
-    const reduxRefreshedClient = this.props.clients.find(
-      (cl, i) => cl.id === this.props.route.params.client.id,
-    );
-    let client;
-    if (!reduxRefreshedClient) {
-      client = this.state.client;
-    } else {
-      client = reduxRefreshedClient;
-    }
-
-    this.props.navigation.navigate('editClient', {
-      edit: field,
-      client,
-    });
+    console.log(field);
+    this.setState({selectedEdit: field});
+    this.editModal.changeVisibility();
   }
 
   holdToEditToast(pos = 'bottom') {
@@ -220,7 +217,7 @@ class ViewClient extends Component {
             />
             <TouchableOpacity
               style={sty.clientInfo}
-              onPress={() => this.edit('age')}>
+              onLongPress={() => this.edit('age')}>
               <Text style={sty.infoText}>{age}</Text>
             </TouchableOpacity>
           </View>
@@ -490,6 +487,7 @@ class ViewClient extends Component {
   }
 
   render() {
+    console.log(this.state.selectedEdit);
     this.clientVariableSet();
     const sty = style(this.props.theme);
     const thm = c.themes[this.props.theme];
@@ -546,6 +544,17 @@ class ViewClient extends Component {
           <View style={sty.pageContainer}>{this.renderDetails()}</View>
           <View style={sty.pageContainer}>{this.renderNotes()}</View>
         </ScrollView>
+        <SlideUpModal
+          ref={ref => (this.editModal = ref)}
+          style={sty.editModal}
+          peek={0}>
+          <EditClientItem
+            title={this.editTypes[this.state.selectedEdit].title}
+            itemType={this.state.selectedEdit}
+            theme={this.props.theme}
+            onPressSubmit={body => console.log(body)}
+          />
+        </SlideUpModal>
       </View>
     );
   }
@@ -725,6 +734,18 @@ const style = (theme = 'light') => ({
     right: 5,
     elevation: 5,
     borderWidth: 1,
+  },
+  editModal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '93%',
+    flex: 0,
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    elevation: 4,
+    backgroundColor: c.themes[theme].modal,
+    borderColor: c.themes[theme].border,
   },
 });
 
