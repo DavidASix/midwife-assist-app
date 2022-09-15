@@ -1,24 +1,18 @@
 import React, {Component} from 'react';
 import {
-  SafeAreaView,
   View,
   Text,
   Alert,
-  ActivityIndicator,
   TouchableOpacity,
   ScrollView,
-  Image,
-  TextInput,
   Linking,
   Animated,
 } from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FFIcons from 'react-native-vector-icons/FontAwesome5';
 import AIcon from 'react-native-vector-icons/AntDesign';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import EIcons from 'react-native-vector-icons/Entypo';
 import Toast from 'react-native-toast-message';
-import axios from 'axios';
 
 const c = require('../../assets/constants');
 
@@ -69,7 +63,6 @@ class ViewClient extends Component {
   };
 
   onPressDeleteNote(noteId) {
-    let {id} = this.state.client;
     Alert.alert(
       'Delete Note?',
       'Are you sure you want to delete this note? You will not be able to recover the note.',
@@ -96,8 +89,32 @@ class ViewClient extends Component {
 
   onPressNewNote = () => {};
 
-  onPressRH(status) {
+  edit(field) {
+    // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
+    // With the IF we use a copy of client created on mount
+    const reduxRefreshedClient = this.props.clients.find(
+      (cl, i) => cl.id === this.props.route.params.client.id,
+    );
+    let client;
+    if (!reduxRefreshedClient) {
+      client = this.state.client;
+    } else {
+      client = reduxRefreshedClient;
+    }
 
+    this.props.navigation.navigate('editClient', {
+      edit: field,
+      client,
+    });
+  }
+
+  holdToEditToast(pos = 'bottom') {
+    Toast.show({
+      type: 'info',
+      visibilityTime: 1500,
+      position: 'bottom',
+      text1: 'Hold to edit',
+    });
   }
 
   //  ---  Render Functions  ---  //
@@ -134,68 +151,6 @@ class ViewClient extends Component {
         </View>
       ) : null,
     );
-  }
-
-  renderRhIcon(rh) {
-    let {theme} = this.props;
-    const size = 31;
-    switch (rh) {
-      case 'positive':
-        return (
-          <MCIcons
-            name="plus"
-            size={20 / 2}
-            color={c.themes[theme].lightText}
-          />
-        );
-      case 'negative':
-        return (
-          <MCIcons
-            name="minus"
-            size={20 / 2}
-            color={c.themes[theme].lightText}
-          />
-        );
-      default:
-        return (
-          <FFIcons
-            name="question"
-            size={20 / 2}
-            color={c.themes[theme].lightText}
-          />
-        );
-    }
-  }
-
-  renderGbsIcon(gbs) {
-    let {theme} = this.props;
-    const size = 31;
-    switch (gbs) {
-      case 'positive':
-        return (
-          <MCIcons
-            name="plus"
-            size={20 / 2}
-            color={c.themes[theme].lightText}
-          />
-        );
-      case 'negative':
-        return (
-          <MCIcons
-            name="minus"
-            size={20 / 2}
-            color={c.themes[theme].lightText}
-          />
-        );
-      default:
-        return (
-          <FFIcons
-            name="question"
-            size={20 / 2}
-            color={c.themes[theme].lightText}
-          />
-        );
-    }
   }
 
   renderDetails() {
@@ -524,38 +479,6 @@ class ViewClient extends Component {
     );
   }
 
-  edit(field) {
-    // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
-    // With the IF we use a copy of client created on mount
-    const reduxRefreshedClient = this.props.clients.find(
-      (cl, i) => cl.id === this.props.route.params.client.id,
-    );
-    let client;
-    if (!reduxRefreshedClient) {
-      client = this.state.client;
-    } else {
-      client = reduxRefreshedClient;
-    }
-
-    this.props.navigation.navigate('editClient', {
-      edit: field,
-      client,
-    });
-  }
-
-  holdToEditToast(pos = 'bottom') {
-    Toast.show({
-      type: 'info',
-      visibilityTime: 1500,
-      position: 'bottom',
-      text1: 'Hold to edit',
-    });
-  }
-  /***
-  Client should appear static, but on press of info a change event happens.
-  If the stringified body of the client data changes, a save button sould appaer
-  user must press save button for data to be saved
-***/
   clientVariableSet() {
     // Client is defined via an IF because if the client is deleted, then while the modal is being dismissed reduxRefreshedClient will be null, breaking the component
     // With the IF we use a copy of client created on mount
