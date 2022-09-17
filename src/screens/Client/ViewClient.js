@@ -550,7 +550,7 @@ class ViewClient extends Component {
           peek={0}>
           <EditClientItem
             title={this.editTypes[this.state.selectedEdit].title}
-            itemType={this.state.selectedEdit}
+            selectedEdit={this.state.selectedEdit}
             theme={this.props.theme}
             onPressSubmit={body => console.log(body)}
           />
@@ -740,7 +740,7 @@ const style = (theme = 'light') => ({
     alignItems: 'center',
     width: '93%',
     flex: 0,
-    padding: 15,
+    padding: 5,
     borderRadius: 10,
     borderWidth: 0.5,
     elevation: 4,
