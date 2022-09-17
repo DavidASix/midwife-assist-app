@@ -7,6 +7,7 @@ import {
   ScrollView,
   Linking,
   Animated,
+  Keyboard,
 } from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AIcon from 'react-native-vector-icons/AntDesign';
@@ -36,6 +37,7 @@ class ViewClient extends Component {
       showDobPicker: false,
       showEddPicker: false,
       selectedEdit: 'address',
+      editKey: 'randomkey',
     };
   }
 
@@ -100,8 +102,17 @@ class ViewClient extends Component {
   onPressNewNote = () => {};
 
   edit(field) {
-    console.log(field);
-    this.setState({selectedEdit: field});
+    // A random key is set for the edit component as this forces the current component to unmount
+    // and remount, which will refresh the edit components internal state based on the new props provided
+    // Essentially destroying, then creating a new editmodal child each time the modal is shown.
+    this.setState({editKey: Math.random() + '', selectedEdit: field});
+    this.editModal.changeVisibility();
+  }
+
+  onSubmitEdit(newDataObject) {
+    console.log(newDataObject);
+    Keyboard.dismiss();
+    this.props.updateClient({...this.client, ...newDataObject});
     this.editModal.changeVisibility();
   }
 
@@ -245,7 +256,7 @@ class ViewClient extends Component {
               onChange={(e, date) => {
                 this.setState({showDobPicker: false});
                 if (date.toDateString() !== new Date(dob).toDateString()) {
-                  this.props.updateClient({...client, dob: date});
+                  this.props.updateClient({...client, dob: date, age: ''});
                 }
               }}
             />
@@ -487,7 +498,6 @@ class ViewClient extends Component {
   }
 
   render() {
-    console.log(this.state.selectedEdit);
     this.clientVariableSet();
     const sty = style(this.props.theme);
     const thm = c.themes[this.props.theme];
@@ -549,10 +559,12 @@ class ViewClient extends Component {
           style={sty.editModal}
           peek={0}>
           <EditClientItem
+            key={this.state.editKey || '1'}
+            client={this.client}
             title={this.editTypes[this.state.selectedEdit].title}
             selectedEdit={this.state.selectedEdit}
             theme={this.props.theme}
-            onPressSubmit={body => console.log(body)}
+            onPressSubmit={newDataObject => this.onSubmitEdit(newDataObject)}
           />
         </SlideUpModal>
       </View>
