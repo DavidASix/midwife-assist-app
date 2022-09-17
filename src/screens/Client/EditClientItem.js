@@ -6,9 +6,32 @@ const c = require('../../assets/constants');
 class EditClientItem extends Component {
   constructor(props) {
     super(props);
-    this.initialState = {};
-    this.state = this.initialState;
+    this.state = {stateRefreshed: false};
+    this.resetState();
   }
+
+  resetState() {
+    let {client} = this.props;
+    this.initialState = {
+      street: client.address.street || '',
+      city: client.address.city || '',
+      phone0: client.phones[0] || '',
+      phone1: client.phones[1] || '',
+      phone2: client.phones[2] || '',
+      age: client.age || '',
+    };
+    this.state = {...this.state, ...this.initialState};
+  }
+
+  onSubmit = () => {
+    let editData = {
+      address: {city: this.state.city, street: this.state.street},
+      phones: [this.state.phone0, this.state.phone1, this.state.phone2],
+      age: this.state.age,
+      dob: this.state.age ? null : this.props.client.dob,
+    };
+    this.props.onPressSubmit(editData);
+  };
 
   renderEditType() {
     const thm = c.themes[this.props.theme];
@@ -41,8 +64,8 @@ class EditClientItem extends Component {
           <View style={[sty.row]} key={i}>
             <TextInput
               style={sty.textInput}
-              onChangeText={text => this.setState({[`phone${i + 1}`]: text})}
-              value={this.state[`phone${i + 1}`]}
+              onChangeText={text => this.setState({[`phone${i}`]: text})}
+              value={this.state[`phone${i}`]}
               keyboardType="phone-pad"
               autoCapitalize="words"
               autoCorrect={false}
@@ -63,7 +86,7 @@ class EditClientItem extends Component {
               keyboardType="number-pad"
               autoCorrect={false}
               maxLength={3}
-              placeholder="32"
+              placeholder={'32'}
               placeholderTextColor={thm.text + 60}
             />
           </View>
@@ -77,13 +100,12 @@ class EditClientItem extends Component {
     const thm = c.themes[this.props.theme];
     const sty = style(this.props.theme);
     /* Receives the following props:
+      key={this.state.editKey || '1'}
+      client={this.client}
       title={this.editTypes[this.state.selectedEdit].title}
-      itemType={this.state.selectedEdit}
+      selectedEdit={this.state.selectedEdit}
       theme={this.props.theme}
-      onPressSubmit={body => console.log(body)}
-    */
-    /*
-    Will send back just the edited data into onPressSubmit, which will be added to the current client obj and submitted to the db
+      onPressSubmit={newDataObject => this.onSubmitEdit(newDataObject)}
     */
     return (
       <>
@@ -91,7 +113,7 @@ class EditClientItem extends Component {
           <Text style={sty.subHeaderText}>{this.props.title}</Text>
         </View>
         {this.renderEditType()}
-        <TouchableOpacity style={sty.submit} onPress={this.onPressSubmit}>
+        <TouchableOpacity style={sty.submit} onPress={this.onSubmit}>
           <Text style={[{color: thm.lightText}]}>Submit</Text>
         </TouchableOpacity>
       </>
