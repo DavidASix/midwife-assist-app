@@ -18,6 +18,9 @@ class EditClientItem extends Component {
       theme={this.props.theme}
       onPressSubmit={body => console.log(body)}
     */
+    /*
+    Will send back just the edited data into onPressSubmit, which will be added to the current client obj and submitted to the db
+    */
     return (
       <>
         <View style={sty.subHeaderRow}>
