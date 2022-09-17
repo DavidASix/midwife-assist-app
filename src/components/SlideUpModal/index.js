@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Text, Dimensions, Animated, PanResponder} from 'react-native';
+import {Text, Dimensions, Animated, PanResponder, Keyboard} from 'react-native';
 
 let {height} = Dimensions.get('window');
 
 class SlideUpModal extends Component {
   constructor(props) {
     super(props);
+    this.state = {keyboardShown: null};
     this.newAnimatedPosition = 0;
     this.animatedView = null;
     this.position = new Animated.ValueXY();
@@ -41,6 +42,36 @@ class SlideUpModal extends Component {
         }).start();
       },
     });
+  }
+
+  componentDidMount() {
+    this.keyboardDidShowSubscription = Keyboard.addListener(
+      'keyboardDidShow',
+      frames => this.keyboard(frames),
+    );
+    this.keyboardDidHideSubscription = Keyboard.addListener(
+      'keyboardDidHide',
+      frames => this.keyboard(frames),
+    );
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowSubscription.remove();
+    this.keyboardDidHideSubscription.remove();
+  }
+
+  keyboard(frames) {
+    // Recenter the modal once the keyboard changes visibility
+    // frames is an object containing some information about how the keyboard will appear onto the screen
+    // frames.endCoordinates.height equals the location of the top of the keyboard, eg the height.
+    if (this.newAnimatedPosition === 0) return null;
+    let endHeight = frames?.endCoordinates?.height || 0;
+    this.newAnimatedPosition =
+      (height + endHeight + this.animatedView.height) / -2 + this.props.peek;
+    Animated.spring(this.position, {
+      toValue: {x: 0, y: this.newAnimatedPosition},
+      useNativeDriver: false,
+    }).start();
   }
 
   changeVisibility(direction) {
