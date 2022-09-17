@@ -36,6 +36,11 @@ class SlideUpModal extends Component {
           this.newAnimatedPosition =
             gestureState.dy < 0 ? topOfAnimatedViewForCenter : 0;
         }
+
+        // If modal is going down, hide the keyboard
+        if (this.newAnimatedPosition === 0) {
+          Keyboard.dismiss();
+        }
         Animated.spring(this.position, {
           toValue: {x: 0, y: this.newAnimatedPosition},
           useNativeDriver: false,
@@ -87,6 +92,10 @@ class SlideUpModal extends Component {
     } else {
       this.newAnimatedPosition =
         this.newAnimatedPosition === 0 ? topOfAnimatedViewForCenter : 0;
+    }
+    // If modal is going down, hide the keyboard
+    if (this.newAnimatedPosition === 0) {
+      Keyboard.dismiss();
     }
     Animated.spring(this.position, {
       toValue: {x: 0, y: this.newAnimatedPosition},
