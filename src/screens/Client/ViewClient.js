@@ -47,7 +47,6 @@ class ViewClient extends Component {
       client: this.props.route.params.client,
       showDobPicker: false,
     });
-    console.log(this.props.route.params.client);
   }
 
   //  ---  On Press Functions  ---  //
@@ -99,8 +98,6 @@ class ViewClient extends Component {
     );
   }
 
-  onPressNewNote = () => {};
-
   edit(field) {
     // A random key is set for the edit component as this forces the current component to unmount
     // and remount, which will refresh the edit components internal state based on the new props provided
@@ -110,7 +107,6 @@ class ViewClient extends Component {
   }
 
   onSubmitEdit(newDataObject) {
-    console.log(newDataObject);
     Keyboard.dismiss();
     this.props.updateClient({...this.client, ...newDataObject});
     this.editModal.changeVisibility();
@@ -135,7 +131,7 @@ class ViewClient extends Component {
       return (
         <TouchableOpacity
           onLongPress={() => this.edit('phones')}
-          style={[styles.row]}>
+          style={sty.row}>
           <MCIcons name="phone" size={25} color={c.themes[theme].accent} />
           <View style={sty.clientInfo}>
             <Text style={sty.infoText}>Hold to add phone</Text>
@@ -144,7 +140,7 @@ class ViewClient extends Component {
       );
     return phones.map((phone, i) =>
       phone ? (
-        <View style={[styles.row]}>
+        <View style={sty.row}>
           <MCIcons
             name={i === 2 ? 'phone-alert' : 'phone'}
             size={25}
@@ -360,7 +356,8 @@ class ViewClient extends Component {
   }
 
   renderNotes() {
-    let {theme} = this.props;
+    const sty = style(this.props.theme);
+    const thm = c.themes[this.props.theme];
     let {client} = this;
     // take the notes array from redux state and check if there is a legacy note from the previous schema available. if there is, add that to the array
     let formattedNoteArray = this.props.notes.filter(
@@ -383,30 +380,16 @@ class ViewClient extends Component {
     const Notes = () => {
       if (!formattedNoteArray.length) {
         return (
-          <View
-            style={[
-              styles.sectionContainer,
-              {
-                backgroundColor: c.themes[theme].modal,
-                borderColor: c.themes[theme].border,
-              },
-            ]}>
-            <View style={[styles.row]}>
+          <View style={sty.sectionContainer}>
+            <View style={sty.row}>
               <View style={{marginTop: 10}}>
-                <Text
-                  style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-                  Client notes go here!
-                </Text>
+                <Text style={sty.subHeaderText}>Client notes go here!</Text>
               </View>
             </View>
 
-            <View style={[styles.row, {justifyContent: 'center'}]}>
-              <View
-                style={[
-                  styles.textInput,
-                  {minHeight: 40, paddingVertical: 5, borderBottomWidth: 0},
-                ]}>
-                <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
+            <View style={sty.row}>
+              <View style={[sty.textInput, {padding: 5, borderBottomWidth: 0}]}>
+                <Text style={[{fontSize: 16, color: thm.text}]}>
                   Click the button below to add this clients first note.
                 </Text>
               </View>
@@ -415,24 +398,12 @@ class ViewClient extends Component {
         );
       } else {
         return formattedNoteArray.map((note, i) => (
-          <View
-            style={[
-              styles.sectionContainer,
-              {
-                backgroundColor: c.themes[theme].modal,
-                borderColor: c.themes[theme].border,
-              },
-            ]}
-            key={note.id}>
-            <View style={[styles.row]}>
+          <View style={sty.sectionContainer} key={note.id}>
+            <View style={sty.row}>
               <View style={{marginTop: 10}}>
-                <Text
-                  style={[styles.subHeaderText, {color: c.themes[theme].text}]}>
-                  {note.title}
-                </Text>
-
+                <Text style={sty.subHeaderText}>{note.title}</Text>
                 {note.time !== 0 && (
-                  <Text style={{color: c.themes[theme].text, fontSize: 14}}>
+                  <Text style={{color: thm.text, fontSize: 14}}>
                     {new Date(note.time).toString().slice(4, 21)}
                   </Text>
                 )}
@@ -445,13 +416,9 @@ class ViewClient extends Component {
               </TouchableOpacity>
             </View>
 
-            <View style={[styles.row, {justifyContent: 'center'}]}>
-              <View
-                style={[
-                  styles.textInput,
-                  {minHeight: 40, paddingVertical: 5, borderBottomWidth: 0},
-                ]}>
-                <Text style={[{fontSize: 16, color: c.themes[theme].text}]}>
+            <View style={sty.row}>
+              <View style={[sty.textInput, {padding: 5, borderBottomWidth: 0}]}>
+                <Text style={[{fontSize: 16, color: thm.text}]}>
                   {note.body}
                 </Text>
               </View>
@@ -463,25 +430,15 @@ class ViewClient extends Component {
 
     return (
       <>
-        <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
+        <ScrollView showsVerticalScrollIndicator={false} style={sty.body}>
           <Notes />
         </ScrollView>
         <TouchableOpacity
           onPress={() =>
             this.props.navigation.navigate('addNote', {edit: 'notes', client})
           }
-          style={[
-            styles.addButton,
-            {
-              borderColor: c.themes[theme].border,
-              backgroundColor: c.themes[theme].accent,
-            },
-          ]}>
-          <MCIcons
-            name="note-plus-outline"
-            size={30}
-            color={c.themes[theme].lightText}
-          />
+          style={sty.addButton}>
+          <MCIcons name="note-plus-outline" size={30} color={thm.lightText} />
         </TouchableOpacity>
       </>
     );
@@ -725,16 +682,6 @@ const style = (theme = 'light') => ({
     shadowRadius: 2.22,
     elevation: 3,
   },
-  submit: {
-    width: '95%',
-    height: 50,
-    borderRadius: 10,
-    elevation: 2,
-    marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
   addButton: {
     height: 50,
     width: 50,
@@ -746,6 +693,8 @@ const style = (theme = 'light') => ({
     right: 5,
     elevation: 5,
     borderWidth: 1,
+    borderColor: c.themes[theme].border,
+    backgroundColor: c.themes[theme].accent,
   },
   editModal: {
     justifyContent: 'center',
@@ -760,93 +709,5 @@ const style = (theme = 'light') => ({
     borderColor: c.themes[theme].border,
   },
 });
-
-const styles = {
-  container: {
-    height: '98%',
-    width: '98%',
-    overflow: 'hidden',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-    borderLeftWidth: 1,
-    elevation: 5,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    position: 'absolute',
-    alignSelf: 'center',
-    bottom: 0,
-  },
-  header: {
-    height: 100,
-    width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  pageContainer: {
-    flex: 1,
-    width: c.device.width * 0.9725,
-  },
-  body: {
-    flex: 1,
-    width: '98%',
-    alignSelf: 'center',
-  },
-  sectionContainer: {
-    flex: 0,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    alignSelf: 'center',
-    borderRadius: 10,
-    borderWidth: 1,
-    marginVertical: 5,
-    paddingHorizontal: 10,
-  },
-  row: {
-    width: '100%',
-    flex: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  subHeaderRow: {
-    height: 40,
-    marginTop: 10,
-  },
-  subHeaderText: {
-    fontSize: 20,
-    ...c.titleFont,
-  },
-  textInput: {
-    flex: 1,
-    borderBottomWidth: 0.5,
-    fontSize: 16,
-    marginHorizontal: 10,
-  },
-  submit: {
-    width: '95%',
-    height: 50,
-    borderRadius: 10,
-    elevation: 2,
-    marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-  addButton: {
-    height: 50,
-    width: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 25,
-    position: 'absolute',
-    bottom: 10,
-    right: 5,
-    elevation: 5,
-    borderWidth: 1,
-  },
-};
 
 export default ViewClient;
