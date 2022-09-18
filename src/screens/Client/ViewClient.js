@@ -32,6 +32,7 @@ class ViewClient extends Component {
       address: {title: 'Address'},
       phones: {title: 'Phone Numbers'},
       age: {title: 'Client Age'},
+      name: {title: 'Name'},
     };
     this.state = {
       showDobPicker: false,
@@ -47,6 +48,7 @@ class ViewClient extends Component {
       client: this.props.route.params.client,
       showDobPicker: false,
     });
+    console.log(this.props.route.params.client);
   }
 
   //  ---  On Press Functions  ---  //

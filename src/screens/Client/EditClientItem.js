@@ -19,6 +19,9 @@ class EditClientItem extends Component {
       phone1: client.phones[1] || '',
       phone2: client.phones[2] || '',
       age: client.age || '',
+      first: client.name?.first || '',
+      last: client.name?.last || '',
+      preferred: client.name?.preferred || '',
     };
     this.state = {...this.state, ...this.initialState};
   }
@@ -29,6 +32,11 @@ class EditClientItem extends Component {
       phones: [this.state.phone0, this.state.phone1, this.state.phone2],
       age: this.state.age,
       dob: this.state.age ? null : this.props.client.dob,
+      name: {
+        first: this.state.first,
+        last: this.state.last,
+        preferred: this.state.preferred,
+      },
     };
     this.props.onPressSubmit(editData);
   };
@@ -41,6 +49,11 @@ class EditClientItem extends Component {
       {var: 'city', title: 'City', autoComplete: undefined},
     ];
     const numberTypes = ['Primary', 'Secondary', 'Emergency'];
+    const names = [
+      {var: 'first', title: 'First'},
+      {var: 'last', title: 'Last'},
+      {var: 'preferred', title: 'Preferred'},
+    ];
     switch (this.props.selectedEdit) {
       case 'address':
         return types.map((type, i) => (
@@ -91,6 +104,23 @@ class EditClientItem extends Component {
             />
           </View>
         );
+      case 'name':
+        return names.map((n, i) => (
+          <View style={sty.row} key={i}>
+            <TextInput
+              style={sty.textInput}
+              onChangeText={text => this.setState({[n.var]: text})}
+              value={this.state[n.var]}
+              placeholder={n.title}
+              keyboardType="default"
+              autoCapitalize="words"
+              autoCorrect={false}
+              autoCompleteType="name"
+              maxLength={41}
+              placeholderTextColor={thm.text + 60}
+            />
+          </View>
+        ));
       default:
         return <Text>Something went wrong, please select a field to edit</Text>;
     }
