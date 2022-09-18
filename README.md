@@ -14,8 +14,8 @@
 * Show clients GA (36W4D/ 36+4)
 * Each client card shows their name as already made, but also a "preview card"
 ### Client Details
-* Remove country in Address
-* Use age instead of dob
+~~* Remove country in Address~~
+~~* Use age instead of dob~~
 * Add G#P#
 * Add back button compatability
 ### Notes
