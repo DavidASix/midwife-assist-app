@@ -1,9 +1,7 @@
 import {connect} from 'react-redux';
 import * as actions from '../../actions';
 
-import ViewClientScreen from './ViewClient';
-import AddNoteScreen from './AddNote';
-import EditClientScreen from './EditClient';
+import ViewClient from './ViewClient';
 
 function mapStateToProps({settings, client, auth, notes}) {
   return {
@@ -17,6 +15,4 @@ function mapStateToProps({settings, client, auth, notes}) {
   };
 }
 
-export const ViewClient = connect(mapStateToProps, actions)(ViewClientScreen);
-export const AddNote = connect(mapStateToProps, actions)(AddNoteScreen);
-export const EditClient = connect(mapStateToProps, actions)(EditClientScreen);
+export default connect(mapStateToProps, actions)(ViewClient);
