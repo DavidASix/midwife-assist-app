@@ -8,7 +8,7 @@
 * ~~Change Color~~
 ### Calculator
 * ~~Change method of Calendar TextInput~~
-* ~~Under GA, kayboard covers words and squishes theme~~
+* ~~Under GA, keyboard covers words and squishes theme~~
 ### Client List
 * Client Cards in list should show more important information
 * Show clients GA (36W4D/ 36+4)
@@ -17,10 +17,10 @@
 ~~* Remove country in Address~~
 ~~* Use age instead of dob~~
 * Add G#P#
-* Add back button compatability
+* Add back button compatibility
 ### Notes
-* Ability to edit Notes
-* Ability to save without a title
+~~* Ability to edit Notes~~
+~~* Ability to save without a title~~
 
 ### Ideas
 * Better pregnant/birth icons
