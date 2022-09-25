@@ -41,7 +41,7 @@ class ViewClient extends Component {
       showEddPicker: false,
       selectedEdit: 'address',
       editKey: 'randomkey',
-      noteId: null,
+      editNote: null,
       noteModalKey: 'randomKey',
     };
   }
@@ -52,7 +52,6 @@ class ViewClient extends Component {
       client: this.props.route.params.client,
       showDobPicker: false,
     });
-    console.log(this.props.route.params.client);
   }
 
   //  ---  On Press Functions  ---  //
@@ -94,7 +93,7 @@ class ViewClient extends Component {
           onPress: () => {
             // if the note is a legacy note we overwrite the client object and remove the notes field
             if (noteId === 'legacy') {
-              this.props.updateClient({...this.state.client, notes: ''});
+              this.props.updateClient({...this.state.client, notes: undefined});
             } else {
               this.props.deleteNote(noteId);
             }
@@ -135,10 +134,29 @@ class ViewClient extends Component {
   }
 
   editNote(noteId) {
+    // Legacy notes cannot be edited
+    if (noteId === 'legacy') {
+      return Toast.show({
+        type: 'error',
+        visibilityTime: 1500,
+        position: 'bottom',
+        text1: 'Legacy notes cannot be edited',
+      });
+    }
+    let note = this.props.notes.filter(n => (n.id = noteId));
+    if (!note.length) {
+      return Toast.show({
+        type: 'error',
+        visibilityTime: 1500,
+        position: 'bottom',
+        text1: 'Note could not be edited',
+      });
+    }
+    note = note[0];
     // A random key is set for the edit component as this forces the current component to unmount
     // and remount, which will refresh the edit components internal state based on the new props provided
     // Essentially destroying, then creating a new editmodal child each time the modal is shown.
-    this.setState({noteModalKey: Math.random() + '', noteId});
+    this.setState({noteModalKey: Math.random() + '', editNote: note});
     this.noteModal.changeVisibility();
   }
 
@@ -383,43 +401,40 @@ class ViewClient extends Component {
     const sty = style(this.props.theme);
     const thm = c.themes[this.props.theme];
     let {client} = this;
-    // take the notes array from redux state and check if there is a legacy note from the previous schema available. if there is, add that to the array
-    let formattedNoteArray = this.props.notes.filter(
-      (note, i) => note.clientId === this.props.route.params.client.id,
-    );
-    formattedNoteArray = client.notes
-      ? [
-          ...formattedNoteArray,
-          {
-            id: 'legacy',
-            clientId: client.id,
-            title: 'Previous Notes',
-            body: client.notes,
-            time: 0,
-          },
-        ]
-      : formattedNoteArray;
+    // Filter the this.props.notes (which contains all client notes from all clients) and filter for the selected client
+    let notes = this.props.notes.filter(note => note.clientId === client.id);
+    // Check if legacy schema has a note (client.notes = text). If there is, add it to note list.
+    if (client.notes) {
+      notes = [
+        ...notes,
+        {
+          id: 'legacy',
+          clientId: client.id,
+          title: 'Past Notes',
+          body: client.notes,
+          time: 0,
+        },
+      ];
+    }
     // Sort notes chonologicaly
-    formattedNoteArray = formattedNoteArray.sort((a, b) => a.time < b.time);
+    notes = notes.sort((a, b) => a.time < b.time);
     const Notes = () => {
-      if (!formattedNoteArray.length) {
+      if (!notes.length) {
         return (
           <View style={sty.sectionContainer}>
             <View style={sty.row}>
               <Text style={sty.subHeaderText}>Client notes go here!</Text>
             </View>
 
-            <View style={sty.row}>
-              <View style={[sty.textInput, {padding: 5, borderBottomWidth: 0}]}>
-                <Text style={[{fontSize: 16, color: thm.text}]}>
-                  Click the button below to add this clients first note.
-                </Text>
-              </View>
+            <View style={[sty.textInput, {padding: 5, borderBottomWidth: 0}]}>
+              <Text style={[{fontSize: 16, color: thm.text}]}>
+                Click the button below to add this clients first note.
+              </Text>
             </View>
           </View>
         );
       } else {
-        return formattedNoteArray.map((note, i) => (
+        return notes.map(note => (
           <TouchableOpacity
             onLongPress={() => this.editNote(note.id)}
             style={sty.sectionContainer}
@@ -552,7 +567,7 @@ class ViewClient extends Component {
           peek={0}>
           <NoteModal
             key={this.state.noteModalKey || '1'}
-            noteId={this.state.noteId}
+            note={this.state.editNote}
             theme={this.props.theme}
             onPressSubmit={newDataObject => this.onSubmitNote(newDataObject)}
           />
