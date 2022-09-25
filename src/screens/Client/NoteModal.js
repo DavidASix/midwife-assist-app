@@ -11,13 +11,22 @@ class NoteModal extends Component {
   }
 
   resetState() {
-    this.initialState = {};
+    this.initialState = {
+      modalType: this.props.note === null ? 'new' : 'edit',
+      title: this.props.note?.title || '',
+      body: this.props.note?.body || '',
+    };
     this.state = {...this.state, ...this.initialState};
   }
 
   onSubmit = () => {
-    let editData = {};
-    this.props.onPressSubmit(editData);
+    let note = {
+      ...this.props.note,
+      title: this.state.title,
+      body: this.state.body,
+      editTime: Date.now(),
+    };
+    this.props.onPressSubmit(note);
   };
 
   render() {
@@ -27,6 +36,34 @@ class NoteModal extends Component {
       <>
         <View style={sty.subHeaderRow}>
           <Text style={sty.subHeaderText}>Notes</Text>
+        </View>
+        <View style={sty.row}>
+          <TextInput
+            style={[sty.textInput, {fontSize: 20}]}
+            onChangeText={title => this.setState({title})}
+            value={this.state.title}
+            keyboardType="default"
+            autoCapitalize="sentences"
+            autoCorrect={true}
+            maxLength={100}
+            multiline
+            placeholder="Note Title"
+            placeholderTextColor={thm.text + 60}
+          />
+        </View>
+        <View style={sty.row}>
+          <TextInput
+            style={sty.textInput}
+            onChangeText={body => this.setState({body})}
+            value={this.state.body}
+            keyboardType="default"
+            autoCapitalize="sentences"
+            autoCorrect={true}
+            maxLength={512}
+            multiline
+            placeholder="Client Notes"
+            placeholderTextColor={thm.text + 60}
+          />
         </View>
         <TouchableOpacity style={sty.submit} onPress={this.onSubmit}>
           <Text style={[{color: thm.lightText}]}>Submit</Text>

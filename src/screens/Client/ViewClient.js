@@ -127,10 +127,15 @@ class ViewClient extends Component {
   }
 
   onPressAddNote() {
-    this.props.navigation.navigate('addNote', {
-      edit: 'notes',
-      client: this.client,
-    });
+    let note = {
+      id: c.randomString(),
+      clientId: this.client.id,
+      title: '',
+      body: '',
+      time: Date.now(),
+    };
+    this.setState({noteModalKey: Math.random() + '', editNote: note});
+    this.noteModal.changeVisibility();
   }
 
   editNote(noteId) {
@@ -160,8 +165,8 @@ class ViewClient extends Component {
     this.noteModal.changeVisibility();
   }
 
-  onSubmitNote() {
-    console.log('note submit');
+  onSubmitNote(note) {
+    this.props.storeNewNote(note);
   }
   //  ---  Render Functions  ---  //
 
@@ -473,7 +478,9 @@ class ViewClient extends Component {
         <ScrollView showsVerticalScrollIndicator={false} style={sty.body}>
           <Notes />
         </ScrollView>
-        <TouchableOpacity onPress={this.onPressAddNote} style={sty.addButton}>
+        <TouchableOpacity
+          onPress={() => this.onPressAddNote()}
+          style={sty.addButton}>
           <MCIcons name="note-plus-outline" size={30} color={thm.lightText} />
         </TouchableOpacity>
       </>
