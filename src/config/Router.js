@@ -10,7 +10,8 @@ import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import BottomTabBar from './BottomTabBar';
 
 import Auth from '../screens/Auth/';
-import {AddClient, ViewClient, EditClient, AddNote} from '../screens/Client/';
+import {ViewClient, EditClient, AddNote} from '../screens/Client/';
+import AddClient from '../screens/AddClient/';
 import ClientList from '../screens/ClientList/';
 import Calculator from '../screens/Calculator/';
 import {Tutorial} from '../screens/Tutorial/';
