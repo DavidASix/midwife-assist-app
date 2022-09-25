@@ -43,7 +43,7 @@ class EditClient extends Component {
         body: this.state.body,
         time: Date.now()
       }
-      this.props.storeNewNote(note)
+      this.props.storeNote(note)
       this.props.navigation.pop();
     } else {
       ToastAndroid.showWithGravityAndOffset(

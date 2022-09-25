@@ -12,7 +12,7 @@ class NoteModal extends Component {
 
   resetState() {
     this.initialState = {
-      modalType: this.props.note === null ? 'new' : 'edit',
+      newNote: !this.props?.note?.id,
       title: this.props.note?.title || '',
       body: this.props.note?.body || '',
     };
@@ -20,12 +20,17 @@ class NoteModal extends Component {
   }
 
   onSubmit = () => {
+    let {newNote, title, body} = this.state;
     let note = {
       ...this.props.note,
-      title: this.state.title,
-      body: this.state.body,
+      title,
+      body,
       editTime: Date.now(),
     };
+    if (newNote) {
+      note.editTime = undefined;
+      note.id = c.randomString();
+    }
     this.props.onPressSubmit(note);
   };
 

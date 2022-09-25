@@ -9,10 +9,15 @@ const notes = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.REFRESH_STORE:
       return newState;
-    case types.STORE_NOTE:
+    case types.STORE_NOTE: {
+      console.log(action.payload);
       return Object.assign(newState, {
-        notes: [...newState.notes, action.payload],
+        notes: [
+          ...newState.notes.filter((note, i) => note.id !== action.payload.id),
+          action.payload,
+        ],
       });
+    }
     case types.DELETE_NOTE:
       return Object.assign(newState, {
         notes: newState.notes.filter((note, i) => note.id !== action.payload),

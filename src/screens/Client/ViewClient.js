@@ -128,7 +128,7 @@ class ViewClient extends Component {
 
   onPressAddNote() {
     let note = {
-      id: c.randomString(),
+      id: null,
       clientId: this.client.id,
       title: '',
       body: '',
@@ -148,7 +148,8 @@ class ViewClient extends Component {
         text1: 'Legacy notes cannot be edited',
       });
     }
-    let note = this.props.notes.filter(n => (n.id = noteId));
+    let note = this.props.notes;
+    note = note.filter(n => n.id === noteId);
     if (!note.length) {
       return Toast.show({
         type: 'error',
@@ -166,7 +167,8 @@ class ViewClient extends Component {
   }
 
   onSubmitNote(note) {
-    this.props.storeNewNote(note);
+    this.props.storeNote(note);
+    this.noteModal.changeVisibility();
   }
   //  ---  Render Functions  ---  //
 
@@ -407,7 +409,9 @@ class ViewClient extends Component {
     const thm = c.themes[this.props.theme];
     let {client} = this;
     // Filter the this.props.notes (which contains all client notes from all clients) and filter for the selected client
-    let notes = this.props.notes.filter(note => note.clientId === client.id);
+    let notes = this.props.notes;
+
+    notes = notes.filter(note => note.clientId === client.id);
     // Check if legacy schema has a note (client.notes = text). If there is, add it to note list.
     if (client.notes) {
       notes = [
@@ -421,8 +425,12 @@ class ViewClient extends Component {
         },
       ];
     }
-    // Sort notes chonologicaly
-    notes = notes.sort((a, b) => a.time < b.time);
+    // Sort notes chonologicaly, based on create time or edit time, whichever is bigger
+    notes = notes.sort(
+      (a, b) =>
+        Math.max(a.time || null, a.editTime || null) <
+        Math.max(b.time || null, b.editTime || null),
+    );
     const Notes = () => {
       if (!notes.length) {
         return (
@@ -443,15 +451,20 @@ class ViewClient extends Component {
           <TouchableOpacity
             onLongPress={() => this.editNote(note.id)}
             style={sty.sectionContainer}
-            key={note.id}>
+            key={note.id + Math.random()}>
             <View style={sty.row}>
               <View style={{flex: 1, margin: 5}}>
                 {note.title && (
                   <Text style={sty.subHeaderText}>{note.title}</Text>
                 )}
-                {note.time !== 0 && (
+                {note.time && (
                   <Text style={{color: thm.text, fontSize: 14}}>
-                    {new Date(note.time).toString().slice(4, 21)}
+                    Created: {new Date(note.time).toString().slice(4, 21)}
+                  </Text>
+                )}
+                {note.editTime && (
+                  <Text style={{color: thm.text, fontSize: 14}}>
+                    Edited: {new Date(note.editTime).toString().slice(4, 21)}
                   </Text>
                 )}
               </View>

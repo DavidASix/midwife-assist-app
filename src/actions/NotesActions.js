@@ -2,7 +2,7 @@ import * as types from './ActionTypes';
 
 // called to store a new note with the note schema as:
 // {}
-export const storeNewNote = note => dispatch =>
+export const storeNote = note => dispatch =>
   dispatch({type: types.STORE_NOTE, payload: note});
 
 // Delete Client is passed a client ID
