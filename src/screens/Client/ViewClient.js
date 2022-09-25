@@ -16,6 +16,7 @@ import EIcons from 'react-native-vector-icons/Entypo';
 import Toast from 'react-native-toast-message';
 import SlideUpModal from '../../components/SlideUpModal/';
 import EditClientItem from './EditClientItem';
+import NoteModal from './NoteModal';
 
 const c = require('../../assets/constants');
 
@@ -27,6 +28,7 @@ class ViewClient extends Component {
     this.addNoteModal = null;
     this.client = undefined;
     this.editModal = undefined;
+    this.noteModal = undefined;
     /* Edit Types are used in the EditClientItem Modal to provide basic metadata */
     this.editTypes = {
       address: {title: 'Address'},
@@ -39,6 +41,8 @@ class ViewClient extends Component {
       showEddPicker: false,
       selectedEdit: 'address',
       editKey: 'randomkey',
+      noteId: null,
+      noteModalKey: 'randomKey',
     };
   }
 
@@ -123,6 +127,24 @@ class ViewClient extends Component {
     });
   }
 
+  onPressAddNote() {
+    this.props.navigation.navigate('addNote', {
+      edit: 'notes',
+      client: this.client,
+    });
+  }
+
+  editNote(noteId) {
+    // A random key is set for the edit component as this forces the current component to unmount
+    // and remount, which will refresh the edit components internal state based on the new props provided
+    // Essentially destroying, then creating a new editmodal child each time the modal is shown.
+    this.setState({noteModalKey: Math.random() + '', noteId});
+    this.noteModal.changeVisibility();
+  }
+
+  onSubmitNote() {
+    console.log('note submit');
+  }
   //  ---  Render Functions  ---  //
 
   renderPhoneNumbers() {
@@ -384,9 +406,7 @@ class ViewClient extends Component {
         return (
           <View style={sty.sectionContainer}>
             <View style={sty.row}>
-              <View style={{marginTop: 10}}>
-                <Text style={sty.subHeaderText}>Client notes go here!</Text>
-              </View>
+              <Text style={sty.subHeaderText}>Client notes go here!</Text>
             </View>
 
             <View style={sty.row}>
@@ -400,10 +420,15 @@ class ViewClient extends Component {
         );
       } else {
         return formattedNoteArray.map((note, i) => (
-          <View style={sty.sectionContainer} key={note.id}>
+          <TouchableOpacity
+            onLongPress={() => this.editNote(note.id)}
+            style={sty.sectionContainer}
+            key={note.id}>
             <View style={sty.row}>
-              <View style={{marginTop: 10}}>
-                <Text style={sty.subHeaderText}>{note.title}</Text>
+              <View style={{flex: 1, margin: 5}}>
+                {note.title && (
+                  <Text style={sty.subHeaderText}>{note.title}</Text>
+                )}
                 {note.time !== 0 && (
                   <Text style={{color: thm.text, fontSize: 14}}>
                     {new Date(note.time).toString().slice(4, 21)}
@@ -418,14 +443,12 @@ class ViewClient extends Component {
               </TouchableOpacity>
             </View>
 
-            <View style={sty.row}>
-              <View style={[sty.textInput, {padding: 5, borderBottomWidth: 0}]}>
-                <Text style={[{fontSize: 16, color: thm.text}]}>
-                  {note.body}
-                </Text>
-              </View>
+            <View style={[sty.textInput, {padding: 5, borderBottomWidth: 0}]}>
+              <Text style={[{fontSize: 16, color: thm.text}]}>
+                {note.body || 'No body text'}
+              </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         ));
       }
     };
@@ -435,11 +458,7 @@ class ViewClient extends Component {
         <ScrollView showsVerticalScrollIndicator={false} style={sty.body}>
           <Notes />
         </ScrollView>
-        <TouchableOpacity
-          onPress={() =>
-            this.props.navigation.navigate('addNote', {edit: 'notes', client})
-          }
-          style={sty.addButton}>
+        <TouchableOpacity onPress={this.onPressAddNote} style={sty.addButton}>
           <MCIcons name="note-plus-outline" size={30} color={thm.lightText} />
         </TouchableOpacity>
       </>
@@ -515,7 +534,7 @@ class ViewClient extends Component {
         </ScrollView>
         <SlideUpModal
           ref={ref => (this.editModal = ref)}
-          style={sty.editModal}
+          style={sty.userInputModal}
           peek={0}>
           <EditClientItem
             key={this.state.editKey || '1'}
@@ -524,6 +543,18 @@ class ViewClient extends Component {
             selectedEdit={this.state.selectedEdit}
             theme={this.props.theme}
             onPressSubmit={newDataObject => this.onSubmitEdit(newDataObject)}
+          />
+        </SlideUpModal>
+
+        <SlideUpModal
+          ref={ref => (this.noteModal = ref)}
+          style={sty.userInputModal}
+          peek={0}>
+          <NoteModal
+            key={this.state.noteModalKey || '1'}
+            noteId={this.state.noteId}
+            theme={this.props.theme}
+            onPressSubmit={newDataObject => this.onSubmitNote(newDataObject)}
           />
         </SlideUpModal>
       </View>
@@ -698,7 +729,7 @@ const style = (theme = 'light') => ({
     borderColor: c.themes[theme].border,
     backgroundColor: c.themes[theme].accent,
   },
-  editModal: {
+  userInputModal: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '93%',
