@@ -15,7 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import EIcons from 'react-native-vector-icons/Entypo';
 import Toast from 'react-native-toast-message';
 import SlideUpModal from '../../components/SlideUpModal/';
-import EditClientItem from './EditClientItem';
+import EditClientModal from './EditClientModal';
 import NoteModal from './NoteModal';
 
 const c = require('../../assets/constants');
@@ -29,7 +29,7 @@ class ViewClient extends Component {
     this.client = undefined;
     this.editModal = undefined;
     this.noteModal = undefined;
-    /* Edit Types are used in the EditClientItem Modal to provide basic metadata */
+    /* Edit Types are used in the EditClientModal Modal to provide basic metadata */
     this.editTypes = {
       address: {title: 'Address'},
       phones: {title: 'Phone Numbers'},
@@ -571,7 +571,7 @@ class ViewClient extends Component {
           ref={ref => (this.editModal = ref)}
           style={sty.userInputModal}
           peek={0}>
-          <EditClientItem
+          <EditClientModal
             key={this.state.editKey || '1'}
             client={this.client}
             title={this.editTypes[this.state.selectedEdit].title}
