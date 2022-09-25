@@ -90,8 +90,8 @@ class Tutorial extends Component {
 
   onPressFinalPage = () => {
     if (this.props.firstLogin) {
-      this.props.markFirstLogin();
       this.props.navigation.navigate('auth');
+      this.props.markFirstLogin();
     } else {
       this.props.navigation.navigate('tabs');
     }
