@@ -391,7 +391,7 @@ class ViewClient extends Component {
           </View>
 
           {/* G's & P's STATUS */}
-          <View style={[sty.row, sty.subHeaderRow]}>
+          <View style={sty.subHeaderRow}>
             <Text style={sty.subHeaderText}>Gravidity & Parity</Text>
           </View>
           <View style={[sty.row, {marginBottom: 10}]}>
