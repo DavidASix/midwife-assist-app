@@ -7,6 +7,8 @@ import {
   SectionList,
   AppState,
 } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
+import SSIcon from 'react-native-vector-icons/SimpleLineIcons';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const c = require('../../assets/constants');
@@ -15,9 +17,9 @@ class ClientList extends Component {
   constructor(props) {
     super(props);
     this.sortingOptions = [
-      {value: 'Last Name', slug: 'lastAlpha'},
-      {value: 'EDD 👇', slug: 'eddAsc'},
-      {value: 'EDD ☝', slug: 'eddDsc'},
+      {label: 'Last Name', value: 'lastAlpha'},
+      {label: 'EDD 👇', value: 'eddAsc'},
+      {label: 'EDD ☝', value: 'eddDsc'},
     ];
     this.state = {
       showDropDown: false,
@@ -284,6 +286,7 @@ class ClientList extends Component {
 
   render() {
     let {theme} = this.props;
+    let {showDropDown} = this.state;
     return (
       <View
         style={[
@@ -292,7 +295,7 @@ class ClientList extends Component {
         ]}>
         <View
           style={[styles.header, {backgroundColor: c.themes[theme].accent}]}>
-          <View style={{flex: 2, width: '100%', justifyContent: 'center'}}>
+          <View style={{flex: 3, width: '100%', justifyContent: 'center'}}>
             <Text
               style={[
                 c.titleFont,
@@ -304,6 +307,32 @@ class ClientList extends Component {
               ]}>
               Clients
             </Text>
+          </View>
+          <View style={{flex: 2}}>
+            <DropDownPicker
+              open={showDropDown}
+              value={this.props.sortType}
+              items={this.sortingOptions}
+              setOpen={() => this.setState({showDropDown: !showDropDown})}
+              setValue={value => this.props.changeSortType(value())}
+              textStyle={{color: c.themes[theme].lightText}}
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdown}
+              ArrowUpIconComponent={() => (
+                <SSIcon
+                  name="arrow-up"
+                  size={15}
+                  color={c.themes[theme].lightText}
+                />
+              )}
+              ArrowDownIconComponent={() => (
+                <SSIcon
+                  name="arrow-down"
+                  size={15}
+                  color={c.themes[theme].lightText}
+                />
+              )}
+            />
           </View>
           {/*<Dropdown
             containerStyle={{ flex: 1 }}
@@ -411,6 +440,11 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+  dropdown: {
+    backgroundColor: '#e9b20e',
+    borderColor: '#fff',
+    color: '#fff',
   },
 };
 
