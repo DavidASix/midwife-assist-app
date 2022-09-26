@@ -35,6 +35,8 @@ class AddClient extends Component {
       edd: new Date(Date.now() + 280 * c.t.day),
       showEddPicker: false,
       showDobPicker: false,
+      gravidity: 0,
+      parity: 0,
     };
   }
 
@@ -51,6 +53,8 @@ class AddClient extends Component {
       age,
       dob,
       edd,
+      gravidity,
+      parity,
     } = this.state;
     let phones = [this.state.phone1, this.state.phone2, this.state.phone3];
     let newClient = {
@@ -72,6 +76,8 @@ class AddClient extends Component {
       delivered: false,
       phones,
       notes,
+      gravidity,
+      parity,
     };
     if (!newClient.name.first || !newClient.name.last) {
       return Alert.alert('Please enter your clients name');
@@ -337,6 +343,44 @@ class AddClient extends Component {
     );
   }
 
+  renderGP() {
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
+    const gp = [
+      {name: 'gravidity', letter: 'G'}, //total pregnancies
+      {name: 'parity', letter: 'P'}, //total pregnancies to viability (>=20weeks)
+    ];
+    return (
+      <>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>Gravidity & Parity</Text>
+        </View>
+
+        <View style={sty.row}>
+          {gp.map((type, i) => (
+            <>
+              <TouchableOpacity
+                onPress={() =>
+                  this.setState({[type.name]: this.state[type.name] - 1})
+                }
+                style={sty.iconButton}>
+                <AIcon name="minus" size={15} color={thm.text} />
+              </TouchableOpacity>
+              <Text>{type.letter + this.state[type.name]}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  this.setState({[type.name]: this.state[type.name] + 1})
+                }
+                style={sty.iconButton}>
+                <AIcon name="plus" size={15} color={thm.text} />
+              </TouchableOpacity>
+            </>
+          ))}
+        </View>
+      </>
+    );
+  }
+
   render() {
     const thm = c.themes[this.props.theme];
     const sty = style(this.props.theme);
@@ -360,6 +404,7 @@ class AddClient extends Component {
             {this.renderEdd()}
             {this.renderRh()}
             {this.renderGbs()}
+            {this.renderGP()}
             {/*** RENDER SUBMIT ***/}
             <TouchableOpacity style={sty.submit} onPress={this.onPressSubmit}>
               <Text style={[{color: thm.lightText}]}>Submit</Text>
