@@ -236,6 +236,10 @@ class ViewClient extends Component {
       {name: 'negative', icon: 'minus'},
       {name: 'unknown', icon: 'question'},
     ];
+    const gp = [
+      {name: 'gravidity', letter: 'G'}, //total pregnancies
+      {name: 'parity', letter: 'P'}, //total pregnancies to viability (>=20weeks)
+    ];
     return (
       <ScrollView showsVerticalScrollIndicator={false} style={sty.body}>
         <View style={sty.sectionContainer}>
@@ -365,7 +369,7 @@ class ViewClient extends Component {
           <View style={sty.subHeaderRow}>
             <Text style={sty.subHeaderText}>GBS Status</Text>
           </View>
-          <View style={[sty.row, {marginBottom: 10}]}>
+          <View style={sty.row}>
             {statusTypes.map((t, i) => (
               <TouchableOpacity
                 key={i}
@@ -383,6 +387,39 @@ class ViewClient extends Component {
                   color={activeGbs(t.name) ? thm.modal : thm.text}
                 />
               </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* G's & P's STATUS */}
+          <View style={[sty.row, sty.subHeaderRow]}>
+            <Text style={sty.subHeaderText}>Gravidity & Parity</Text>
+          </View>
+          <View style={[sty.row, {marginBottom: 10}]}>
+            {gp.map((type, i) => (
+              <>
+                <TouchableOpacity
+                  onPress={() =>
+                    client[type.name] > 0 &&
+                    this.props.updateClient({
+                      ...client,
+                      [type.name]: (client[type.name] || 0) - 1,
+                    })
+                  }
+                  style={sty.iconButton}>
+                  <AIcon name="minus" size={15} color={thm.text} />
+                </TouchableOpacity>
+                <Text>{type.letter + (client[type.name] || 0)}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.updateClient({
+                      ...client,
+                      [type.name]: (client[type.name] || 0) + 1,
+                    })
+                  }
+                  style={sty.iconButton}>
+                  <AIcon name="plus" size={15} color={thm.text} />
+                </TouchableOpacity>
+              </>
             ))}
           </View>
         </View>
@@ -508,6 +545,7 @@ class ViewClient extends Component {
       (cl, i) => cl.id === this.props.route.params.client.id,
     );
     this.client = reduxRefreshedClient || this.state.client;
+    console.log(this.client);
   }
 
   render() {
