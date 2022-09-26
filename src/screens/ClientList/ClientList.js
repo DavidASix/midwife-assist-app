@@ -21,6 +21,13 @@ class ClientList extends Component {
       {label: 'EDD 👇', value: 'eddAsc'},
       {label: 'EDD ☝', value: 'eddDsc'},
     ];
+    this.pregIcons = [
+      require('../../assets/images/pregnant_woman1.png'),
+      require('../../assets/images/pregnant_woman2.png'),
+      require('../../assets/images/pregnant_woman3.png'),
+      require('../../assets/images/pregnant_woman4.png'),
+      require('../../assets/images/pregnant_woman5.png'),
+    ];
     this.state = {
       showDropDown: false,
       sort: 'eddAsc',
@@ -47,10 +54,19 @@ class ClientList extends Component {
   };
 
   renderClient(i, client) {
+    const sty = style(this.props.theme);
+    const thm = c.themes[this.props.theme];
+    const pastEdd = client.edd < Date.now();
     let {theme} = this.props;
-    const icon = client.delivered
-      ? require('../../assets/images/unknown.png')
-      : require('../../assets/images/pregnant.png');
+    let iconNum =
+      client.id
+        .split('')
+        .map(j => j.charCodeAt())
+        .join('') % 5;
+    iconNum = iconNum + 1;
+    const icon = pastEdd
+      ? require('../../assets/images/newborn.png')
+      : this.pregIcons[iconNum];
     const row1 = client.delivered
       ? {
           label: "Baby's Date of Birth",
@@ -68,47 +84,24 @@ class ClientList extends Component {
     return (
       <TouchableOpacity
         onPress={() => this.props.navigation.navigate('viewClient', {client})}
-        style={[
-          styles.card,
-          {
-            backgroundColor: c.themes[theme].modal,
-            borderColor: c.themes[theme].border,
-            zIndex: 30,
-          },
-        ]}>
-        <View style={[styles.titleRow, {borderColor: c.themes[theme].border}]}>
-          <View
-            style={{
-              ...c.center,
-              height: 35,
-              width: 35,
-              borderRadius: 25,
-              borderWidth: 1,
-              borderColor: c.themes[theme].border,
-              backgroundColor: c.themes[theme].background,
-            }}>
-            <Text
-              style={[
-                {fontSize: 16, color: c.themes[theme].text},
-                c.titleFont,
-              ]}>
+        style={sty.card}>
+        <View style={sty.titleRow}>
+          <View style={sty.initialsContainer}>
+            <Text style={[{fontSize: 16, color: thm.text}, c.titleFont]}>
               {client.name.first.charAt(0).toUpperCase()}
               {client.name.last.charAt(0).toUpperCase() || ''}
             </Text>
           </View>
-          <Text
-            style={[
-              {fontSize: 20, color: c.themes[theme].text, marginHorizontal: 10},
-              c.titleFont,
-            ]}>
-            <Text style={[{color: c.themes[theme].accent}, c.titleFont]}>
+          <Text style={sty.clientName}>
+            <Text style={[{color: thm.accent}, c.titleFont]}>
               {client.name.last ? client.name.last + ', ' : ''}
             </Text>
             {client.name.first}
           </Text>
         </View>
-        <View style={styles.contentRow}>
-          <View style={{flex: 3, height: '100%', justifyContent: 'center'}}>
+
+        <View style={sty.contentRow}>
+          <View style={{flex: 4, height: '100%', justifyContent: 'center'}}>
             <View style={{marginVertical: 5}}>
               <Text style={{fontSize: 12, color: c.themes[theme].text}}>
                 {row1.label}
@@ -138,23 +131,9 @@ class ClientList extends Component {
               </Text>
             </View>
           </View>
+
           <View style={{flex: 1, ...c.center}}>
-            <View
-              style={{
-                ...c.center,
-                height: 60,
-                width: 60,
-                borderRadius: 30,
-                borderWidth: 1,
-                borderColor: c.themes[theme].border,
-                backgroundColor: c.themes[theme].background,
-              }}>
-              <Image
-                source={icon}
-                style={{height: 45, width: 60}}
-                resizeMode="contain"
-              />
-            </View>
+            <Image source={icon} style={{height: 75, aspectRatio: 1}} />
           </View>
         </View>
       </TouchableOpacity>
@@ -285,28 +264,14 @@ class ClientList extends Component {
   }
 
   render() {
-    let {theme} = this.props;
     let {showDropDown} = this.state;
+    const sty = style(this.props.theme);
+    const thm = c.themes[this.props.theme];
     return (
-      <View
-        style={[
-          styles.container,
-          {backgroundColor: c.themes[theme].background},
-        ]}>
-        <View
-          style={[styles.header, {backgroundColor: c.themes[theme].accent}]}>
+      <View style={sty.container}>
+        <View style={sty.header}>
           <View style={{flex: 3, width: '100%', justifyContent: 'center'}}>
-            <Text
-              style={[
-                c.titleFont,
-                {
-                  color: c.themes[theme].lightText,
-                  fontSize: 36,
-                  marginLeft: 20,
-                },
-              ]}>
-              Clients
-            </Text>
+            <Text style={[c.titleFont, sty.titleFont]}>Clients</Text>
           </View>
           <View style={{flex: 2}}>
             <DropDownPicker
@@ -315,37 +280,19 @@ class ClientList extends Component {
               items={this.sortingOptions}
               setOpen={() => this.setState({showDropDown: !showDropDown})}
               setValue={value => this.props.changeSortType(value())}
-              textStyle={{color: c.themes[theme].lightText}}
-              style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdown}
+              textStyle={{color: thm.lightText, fontSize: 16}}
+              style={sty.dropdown}
+              dropDownContainerStyle={sty.dropdown}
               ArrowUpIconComponent={() => (
-                <SSIcon
-                  name="arrow-up"
-                  size={15}
-                  color={c.themes[theme].lightText}
-                />
+                <SSIcon name="arrow-up" size={15} color={thm.lightText} />
               )}
               ArrowDownIconComponent={() => (
-                <SSIcon
-                  name="arrow-down"
-                  size={15}
-                  color={c.themes[theme].lightText}
-                />
+                <SSIcon name="arrow-down" size={15} color={thm.lightText} />
               )}
             />
           </View>
-          {/*<Dropdown
-            containerStyle={{ flex: 1 }}
-            textColor={c.themes[theme].lightText}
-            selectedItemColor={'#222222'}
-            itemColor={'#000000'}
-            label='Sort By'
-            dropdownPosition={0}
-            data={this.sortingOptions}
-            value={this.sortingOptions.find((option, i) => option.slug === this.props.sortType).value}
-            onChangeText={(value, index, data) => this.props.changeSortType(data[index].slug)}/>*/}
         </View>
-        <View style={styles.body}>
+        <View style={sty.body}>
           <SectionList
             renderItem={({index, item}) => this.renderClient(index, item)}
             renderSectionHeader={({section}) =>
@@ -362,18 +309,8 @@ class ClientList extends Component {
           />
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('addClient')}
-            style={[
-              styles.addButton,
-              {
-                borderColor: c.themes[theme].border,
-                backgroundColor: c.themes[theme].accent,
-              },
-            ]}>
-            <MCIcons
-              name="account-plus"
-              size={30}
-              color={c.themes[theme].lightText}
-            />
+            style={sty.addButton}>
+            <MCIcons name="account-plus" size={30} color={thm.lightText} />
           </TouchableOpacity>
         </View>
       </View>
@@ -381,12 +318,13 @@ class ClientList extends Component {
   }
 }
 
-const styles = {
+const style = (theme = 'light') => ({
   container: {
     flex: 1,
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    backgroundColor: c.themes[theme].background,
   },
   header: {
     height: 65,
@@ -396,6 +334,13 @@ const styles = {
     alignItems: 'center',
     zIndex: 99,
     elevation: 2,
+    paddingRight: 10,
+    backgroundColor: c.themes[theme].accent,
+  },
+  titleFont: {
+    color: c.themes[theme].lightText,
+    fontSize: 36,
+    marginLeft: 20,
   },
   body: {
     flex: 1,
@@ -414,6 +359,8 @@ const styles = {
     right: 5,
     elevation: 5,
     borderWidth: 1,
+    borderColor: c.themes[theme].border,
+    backgroundColor: c.themes[theme].accent,
   },
   card: {
     height: 200,
@@ -425,6 +372,9 @@ const styles = {
     borderWidth: 0.5,
     elevation: 1,
     alignSelf: 'center',
+    backgroundColor: c.themes[theme].modal,
+    borderColor: c.themes[theme].border,
+    zIndex: 30,
   },
   titleRow: {
     height: 60,
@@ -433,6 +383,22 @@ const styles = {
     justifyContent: 'flex-start',
     alignItems: 'center',
     borderBottomWidth: 1,
+    borderColor: c.themes[theme].border,
+  },
+  initialsContainer: {
+    ...c.center,
+    height: 35,
+    width: 35,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: c.themes[theme].border,
+    backgroundColor: c.themes[theme].background,
+  },
+  clientName: {
+    fontSize: 20,
+    color: c.themes[theme].text,
+    marginHorizontal: 10,
+    ...c.titleFont,
   },
   contentRow: {
     flex: 1,
@@ -442,10 +408,10 @@ const styles = {
     alignItems: 'center',
   },
   dropdown: {
-    backgroundColor: '#e9b20e',
-    borderColor: '#fff',
+    borderColor: c.themes[theme].border,
+    backgroundColor: c.themes[theme].accent,
     color: '#fff',
   },
-};
+});
 
 export default ClientList;
