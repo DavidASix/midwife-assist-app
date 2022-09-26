@@ -35,7 +35,7 @@ class AddClient extends Component {
       edd: new Date(Date.now() + 280 * c.t.day),
       showEddPicker: false,
       showDobPicker: false,
-      gravidity: 0,
+      gravida: 0,
       parity: 0,
     };
   }
@@ -53,7 +53,7 @@ class AddClient extends Component {
       age,
       dob,
       edd,
-      gravidity,
+      gravida,
       parity,
     } = this.state;
     let phones = [this.state.phone1, this.state.phone2, this.state.phone3];
@@ -76,7 +76,7 @@ class AddClient extends Component {
       delivered: false,
       phones,
       notes,
-      gravidity,
+      gravida,
       parity,
     };
     if (!newClient.name.first || !newClient.name.last) {
@@ -347,13 +347,13 @@ class AddClient extends Component {
     const thm = c.themes[this.props.theme];
     const sty = style(this.props.theme);
     const gp = [
-      {name: 'gravidity', letter: 'G'}, //total pregnancies
+      {name: 'gravida', letter: 'G'}, //total pregnancies
       {name: 'parity', letter: 'P'}, //total pregnancies to viability (>=20weeks)
     ];
     return (
       <>
         <View style={[sty.row, sty.subHeaderRow]}>
-          <Text style={sty.subHeaderText}>Gravidity & Parity</Text>
+          <Text style={sty.subHeaderText}>Gravida & Parity</Text>
         </View>
 
         <View style={sty.row}>

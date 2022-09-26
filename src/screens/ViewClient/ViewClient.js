@@ -237,7 +237,7 @@ class ViewClient extends Component {
       {name: 'unknown', icon: 'question'},
     ];
     const gp = [
-      {name: 'gravidity', letter: 'G'}, //total pregnancies
+      {name: 'gravida', letter: 'G'}, //total pregnancies
       {name: 'parity', letter: 'P'}, //total pregnancies to viability (>=20weeks)
     ];
     return (
@@ -392,7 +392,7 @@ class ViewClient extends Component {
 
           {/* G's & P's STATUS */}
           <View style={sty.subHeaderRow}>
-            <Text style={sty.subHeaderText}>Gravidity & Parity</Text>
+            <Text style={sty.subHeaderText}>Gravida & Parity</Text>
           </View>
           <View style={[sty.row, {marginBottom: 10}]}>
             {gp.map((type, i) => (
