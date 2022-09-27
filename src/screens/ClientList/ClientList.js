@@ -57,30 +57,25 @@ class ClientList extends Component {
     const sty = style(this.props.theme);
     const thm = c.themes[this.props.theme];
     const pastEdd = client.edd < Date.now();
-    let {theme} = this.props;
     let iconNum =
       client.id
         .split('')
         .map(j => j.charCodeAt())
         .join('') % 5;
-    iconNum = iconNum + 1;
+    iconNum = iconNum;
     const icon = pastEdd
-      ? require('../../assets/images/newborn.png')
+      ? require('../../assets/images/baby_bottle.png')
       : this.pregIcons[iconNum];
-    const row1 = client.delivered
-      ? {
-          label: "Baby's Date of Birth",
-          data: new Date(client.edd).toDateString(),
-        }
-      : {
-          label: 'Estimated Delivery Date',
-          data: new Date(client.edd).toDateString(),
-        };
-    const row2 = client.address.street
-      ? {label: 'Street Address', data: client.address.street}
-      : client.phones.length
-      ? {label: 'Phone Number', data: client.phones[0]}
-      : {label: '', data: ''};
+    let rows = [
+      {
+        label: 'Estimated Delivery Date',
+        data: new Date(client.edd).toDateString(),
+      },
+      {
+        label: 'Street Address',
+        data: client.address.street,
+      },
+    ];
     return (
       <TouchableOpacity
         onPress={() => this.props.navigation.navigate('viewClient', {client})}
@@ -92,6 +87,7 @@ class ClientList extends Component {
               {client.name.last.charAt(0).toUpperCase() || ''}
             </Text>
           </View>
+
           <Text style={sty.clientName}>
             <Text style={[{color: thm.accent}, c.titleFont]}>
               {client.name.last ? client.name.last + ', ' : ''}
@@ -102,38 +98,16 @@ class ClientList extends Component {
 
         <View style={sty.contentRow}>
           <View style={{flex: 4, height: '100%', justifyContent: 'center'}}>
-            <View style={{marginVertical: 5}}>
-              <Text style={{fontSize: 12, color: c.themes[theme].text}}>
-                {row1.label}
-              </Text>
-              <Text
-                style={{
-                  marginLeft: 5,
-                  fontSize: 16,
-                  color: c.themes[theme].text,
-                  textWrap: 'none',
-                }}>
-                {row1.data}
-              </Text>
-            </View>
-            <View style={{marginVertical: 5}}>
-              <Text style={{fontSize: 12, color: c.themes[theme].text}}>
-                {row2.label}
-              </Text>
-              <Text
-                style={{
-                  marginLeft: 5,
-                  fontSize: 16,
-                  color: c.themes[theme].text,
-                  textWrap: 'none',
-                }}>
-                {row2.data}
-              </Text>
-            </View>
+            {rows.map((row, j) => (
+              <View key={j}>
+                <Text style={sty.peekTextLabel}>{row.label}</Text>
+                <Text style={sty.peekTextValue}>{row.data}</Text>
+              </View>
+            ))}
           </View>
 
-          <View style={{flex: 1, ...c.center}}>
-            <Image source={icon} style={{height: 75, aspectRatio: 1}} />
+          <View style={{flex: 1, ...c.center, height: '100%'}}>
+            <Image source={icon} resizeMode="contain" style={sty.cardImage} />
           </View>
         </View>
       </TouchableOpacity>
@@ -283,6 +257,9 @@ class ClientList extends Component {
               textStyle={{color: thm.lightText, fontSize: 16}}
               style={sty.dropdown}
               dropDownContainerStyle={sty.dropdown}
+              TickIconComponent={() => (
+                <MCIcons name="check" size={20} color={thm.lightText} />
+              )}
               ArrowUpIconComponent={() => (
                 <SSIcon name="arrow-up" size={15} color={thm.lightText} />
               )}
@@ -363,7 +340,7 @@ const style = (theme = 'light') => ({
     backgroundColor: c.themes[theme].accent,
   },
   card: {
-    height: 200,
+    minHeight: 200,
     width: '95%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -375,6 +352,7 @@ const style = (theme = 'light') => ({
     backgroundColor: c.themes[theme].modal,
     borderColor: c.themes[theme].border,
     zIndex: 30,
+    overflow: 'hidden',
   },
   titleRow: {
     height: 60,
@@ -406,9 +384,24 @@ const style = (theme = 'light') => ({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    position: 'relative',
+  },
+  cardImage: {
+    width: '200%',
+    height: '150%',
+  },
+  peekTextLabel: {
+    fontSize: 12,
+    color: c.themes[theme].text,
+  },
+  peekTextValue: {
+    marginLeft: 5,
+    fontSize: 16,
+    color: c.themes[theme].text,
+    textWrap: 'none',
   },
   dropdown: {
-    borderColor: c.themes[theme].border,
+    borderColor: c.themes[theme].lightText,
     backgroundColor: c.themes[theme].accent,
     color: '#fff',
   },
