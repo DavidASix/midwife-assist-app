@@ -36,11 +36,14 @@ class ClientList extends Component {
   }
 
   componentDidMount() {
-    AppState.addEventListener('change', this.onAppStateChange);
+    this.appStateSub = AppState.addEventListener(
+      'change',
+      this.onAppStateChange,
+    );
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this.onAppStateChange);
+    this.appStateSub.remove();
   }
 
   onAppStateChange = newState => {
