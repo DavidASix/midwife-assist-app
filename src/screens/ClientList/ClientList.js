@@ -10,6 +10,7 @@ import {
 import DropDownPicker from 'react-native-dropdown-picker';
 import SSIcon from 'react-native-vector-icons/SimpleLineIcons';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import SVGIcon from '../../components/SVGIcon/';
 
 const c = require('../../assets/constants');
 
@@ -56,7 +57,7 @@ class ClientList extends Component {
   renderClient(i, client) {
     const sty = style(this.props.theme);
     const thm = c.themes[this.props.theme];
-    const pastEdd = client.edd < Date.now();
+    const pastEdd = new Date(client.edd) < new Date(Date.now());
     let iconNum =
       client.id
         .split('')
@@ -66,6 +67,7 @@ class ClientList extends Component {
     const icon = pastEdd
       ? require('../../assets/images/baby_bottle.png')
       : this.pregIcons[iconNum];
+
     let rows = [
       {
         label: 'Estimated Delivery Date',
@@ -244,10 +246,16 @@ class ClientList extends Component {
     return (
       <View style={sty.container}>
         <View style={sty.header}>
+          <View style={sty.headerBg.solid} />
+          <SVGIcon
+            name="stackedWaves"
+            color={thm.accent}
+            style={sty.headerBg.svg}
+          />
           <View style={{flex: 3, width: '100%', justifyContent: 'center'}}>
             <Text style={[c.titleFont, sty.titleFont]}>Clients</Text>
           </View>
-          <View style={{flex: 2}}>
+          <View style={{flex: 2, paddingRight: 10}}>
             <DropDownPicker
               open={showDropDown}
               value={this.props.sortType}
@@ -279,7 +287,7 @@ class ClientList extends Component {
               <View style={{height: 2.5, width: '100%'}} />
             )}
             ListFooterComponent={() => (
-              <View style={{height: 2.5, width: '100%'}} />
+              <View style={{height: 25, width: '100%'}} />
             )}
             sections={this.getSections()}
             style={{width: '100%', flex: 1}}
@@ -311,8 +319,22 @@ const style = (theme = 'light') => ({
     alignItems: 'center',
     zIndex: 99,
     elevation: 2,
-    paddingRight: 10,
-    backgroundColor: c.themes[theme].accent,
+  },
+  headerBg: {
+    solid: {
+      position: 'absolute',
+      top: 0,
+      width: '100%',
+      height: '50%',
+      backgroundColor: c.themes[theme].accent,
+    },
+    svg: {
+      transform: [{rotate: '180deg'}],
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      top: '50%',
+    },
   },
   titleFont: {
     color: c.themes[theme].lightText,
