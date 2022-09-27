@@ -396,7 +396,7 @@ class ViewClient extends Component {
           </View>
           <View style={[sty.row, {marginBottom: 10}]}>
             {gp.map((type, i) => (
-              <>
+              <React.Fragment key={i}>
                 <TouchableOpacity
                   onPress={() =>
                     client[type.name] > 0 &&
@@ -419,7 +419,7 @@ class ViewClient extends Component {
                   style={sty.iconButton}>
                   <AIcon name="plus" size={15} color={thm.text} />
                 </TouchableOpacity>
-              </>
+              </React.Fragment>
             ))}
           </View>
         </View>
@@ -488,7 +488,7 @@ class ViewClient extends Component {
           <TouchableOpacity
             onLongPress={() => this.editNote(note.id)}
             style={sty.sectionContainer}
-            key={note.id + Math.random()}>
+            key={note.id}>
             <View style={sty.row}>
               <View style={{flex: 1, margin: 5}}>
                 {note.title && (
@@ -545,7 +545,6 @@ class ViewClient extends Component {
       (cl, i) => cl.id === this.props.route.params.client.id,
     );
     this.client = reduxRefreshedClient || this.state.client;
-    console.log(this.client);
   }
 
   render() {
