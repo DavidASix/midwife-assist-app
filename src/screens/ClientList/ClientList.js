@@ -57,82 +57,6 @@ class ClientList extends Component {
     }
   };
 
-  renderClient(i, client) {
-    const sty = style(this.props.theme);
-    const thm = c.themes[this.props.theme];
-    const pastEdd = new Date(client.edd) < new Date(Date.now());
-    let iconNum =
-      client.id
-        .split('')
-        .map(j => j.charCodeAt())
-        .join('') % 5;
-    iconNum = iconNum;
-    const icon = pastEdd
-      ? require('../../assets/images/baby_bottle.png')
-      : this.pregIcons[iconNum];
-
-    let rows = [
-      {
-        label: 'Estimated Delivery Date',
-        data: new Date(client.edd).toDateString(),
-      },
-      {
-        label: 'Street Address',
-        data: client.address.street,
-      },
-    ];
-    return (
-      <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('viewClient', {client})}
-        style={sty.card}>
-        <View style={sty.titleRow}>
-          <View style={sty.initialsContainer}>
-            <Text style={[{fontSize: 16, color: thm.text}, c.titleFont]}>
-              {client.name.first.charAt(0).toUpperCase()}
-              {client.name.last.charAt(0).toUpperCase() || ''}
-            </Text>
-          </View>
-
-          <Text style={sty.clientName}>
-            <Text style={[{color: thm.accent}, c.titleFont]}>
-              {client.name.last ? client.name.last + ', ' : ''}
-            </Text>
-            {client.name.first}
-          </Text>
-        </View>
-
-        <View style={sty.contentRow}>
-          <View style={{flex: 4, height: '100%', justifyContent: 'center'}}>
-            {rows.map((row, j) => (
-              <View key={j}>
-                <Text style={sty.peekTextLabel}>{row.label}</Text>
-                <Text style={sty.peekTextValue}>{row.data}</Text>
-              </View>
-            ))}
-          </View>
-
-          <View style={{flex: 1, ...c.center, height: '100%'}}>
-            <Image source={icon} resizeMode="contain" style={sty.cardImage} />
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  renderSectionHeader(section) {
-    const sty = style(this.props.theme);
-    const thm = c.themes[this.props.theme];
-    return (
-      <View style={sty.sectionHeaderContainer}>
-        <View style={sty.sectionHeaderIcon}>
-          <Text style={[{color: thm.lightText}, c.titleFont]}>
-            {section.title}
-          </Text>
-        </View>
-      </View>
-    );
-  }
-
   getSections() {
     let {clients, sortType} = this.props;
     let sections = {};
@@ -223,6 +147,82 @@ class ClientList extends Component {
         return sections;
       }
     }
+  }
+
+  renderClient(i, client) {
+    const sty = style(this.props.theme);
+    const thm = c.themes[this.props.theme];
+    const pastEdd = new Date(client.edd) < new Date(Date.now());
+    let iconNum =
+      client.id
+        .split('')
+        .map(j => j.charCodeAt())
+        .join('') % 5;
+    iconNum = iconNum;
+    const icon = pastEdd
+      ? require('../../assets/images/baby_bottle.png')
+      : this.pregIcons[iconNum];
+
+    let rows = [
+      {
+        label: 'Estimated Delivery Date',
+        data: new Date(client.edd).toDateString(),
+      },
+      {
+        label: 'Street Address',
+        data: client.address.street,
+      },
+    ];
+    return (
+      <TouchableOpacity
+        onPress={() => this.props.navigation.navigate('viewClient', {client})}
+        style={sty.card}>
+        <View style={sty.titleRow}>
+          <View style={sty.initialsContainer}>
+            <Text style={[{fontSize: 16, color: thm.text}, c.titleFont]}>
+              {client.name.first.charAt(0).toUpperCase()}
+              {client.name.last.charAt(0).toUpperCase() || ''}
+            </Text>
+          </View>
+
+          <Text style={sty.clientName}>
+            <Text style={[{color: thm.accent}, c.titleFont]}>
+              {client.name.last ? client.name.last + ', ' : ''}
+            </Text>
+            {client.name.first}
+          </Text>
+        </View>
+
+        <View style={sty.contentRow}>
+          <View style={{flex: 4, height: '100%', justifyContent: 'center'}}>
+            {rows.map((row, j) => (
+              <View key={j}>
+                <Text style={sty.peekTextLabel}>{row.label}</Text>
+                <Text style={sty.peekTextValue}>{row.data}</Text>
+              </View>
+            ))}
+          </View>
+
+          <View style={{flex: 1, ...c.center, height: '100%'}}>
+            <Image source={icon} resizeMode="contain" style={sty.cardImage} />
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
+  renderSectionHeader(section) {
+    const sty = style(this.props.theme);
+    const thm = c.themes[this.props.theme];
+    return (
+      <View style={sty.sectionHeaderContainer}>
+        <View style={sty.sectionHeaderIcon}>
+          <Text style={[{color: thm.lightText}, c.titleFont]}>
+            {section.title}
+          </Text>
+        </View>
+      </View>
+    );
   }
 
   render() {
