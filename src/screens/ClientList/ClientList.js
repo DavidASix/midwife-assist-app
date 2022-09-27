@@ -120,29 +120,12 @@ class ClientList extends Component {
   }
 
   renderSectionHeader(section) {
-    let {theme} = this.props;
+    const sty = style(this.props.theme);
+    const thm = c.themes[this.props.theme];
     return (
-      <View
-        style={{
-          alignItems: 'center',
-          alignSelf: 'center',
-          flexDirection: 'row',
-          height: 40,
-          marginVertical: 2.5,
-          width: '95%',
-        }}>
-        <View
-          style={{
-            ...c.center,
-            elevation: 3,
-            borderRadius: 20,
-            height: 40,
-            paddingHorizontal: 15,
-            minWidth: 40,
-            flex: 0,
-            backgroundColor: c.themes[theme].accent,
-          }}>
-          <Text style={[{color: c.themes[theme].lightText}, c.titleFont]}>
+      <View style={sty.sectionHeaderContainer}>
+        <View style={sty.sectionHeaderIcon}>
+          <Text style={[{color: thm.lightText}, c.titleFont]}>
             {section.title}
           </Text>
         </View>
@@ -349,6 +332,24 @@ const style = (theme = 'light') => ({
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+  sectionHeaderContainer: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    height: 40,
+    marginVertical: 2.5,
+    width: '95%',
+  },
+  sectionHeaderIcon: {
+    ...c.center,
+    elevation: 3,
+    borderRadius: 20,
+    height: 40,
+    paddingHorizontal: 15,
+    minWidth: 40,
+    flex: 0,
+    backgroundColor: c.themes[theme].accent,
   },
   addButton: {
     height: 50,

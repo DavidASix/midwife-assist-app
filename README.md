@@ -16,13 +16,13 @@
 ### Client Details
 * ~~Remove country in Address~~
 * ~~Use age instead of dob~~
-* Add G#P#
+* ~~Add G#P#~~
 * Add back button compatibility
 ### Notes
 * ~~Ability to edit Notes~~
 * ~~Ability to save without a title~~
 
 ### Ideas
-* Better pregnant/birth icons
+* ~~Better pregnant/birth icons~~
 * indicators showing people past their edd that have not been followed up on
 * home VS hospital birth indicators
