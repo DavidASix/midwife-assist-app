@@ -149,6 +149,53 @@ class ClientList extends Component {
     }
   }
 
+  rowData(client) {
+    // Calculate GA from EDD
+    //date is EDD expressed in MS at UTC 00:00 for that day
+    let date = new Date(client.edd);
+    date = Math.floor(date.getTime() / c.t.day) * c.t.day;
+    // gams is today at UTC 00:00, minus the EDD date at UTC 00:00 less 280 days, all in the end expressed in MS
+    let gams =
+      (Math.floor(Date.now() / c.t.day) - (date / c.t.day - 280)) * c.t.day;
+    let weeks = Math.floor(gams / (c.t.day * 7));
+    let days = Math.round((gams % (c.t.day * 7)) / c.t.day);
+    let edd = {
+      label: 'Estimated Delivery Date',
+      value: new Date(client.edd).toDateString(),
+      showLabel: true,
+    };
+    let ga = {
+      label: 'Gestational Age',
+      value: `${weeks}W+${days}D`,
+      showLabel: false,
+      icon: 'heart',
+    };
+    let gp = !!client?.gravida && {
+      label: 'Gravida & Parity',
+      value: `G${client.gravida || 0}P${client.parity || 0}`,
+      showLabel: false,
+      icon: 'user-female',
+    };
+    let blood = {
+      label: 'Blood Type',
+      value: `AB+`,
+      showLabel: false,
+      icon: 'drop',
+    };
+    let gbs = client.gbs !== 'unknown' && {
+      label: 'GBS',
+      value: client.gbs,
+      showLabel: true,
+    };
+    let rh = client.rh !== 'unknown' && {
+      label: 'RH',
+      value: client.rh,
+      showLabel: true,
+    };
+    console.log({gp});
+    return [edd, gp, gbs, ga, blood];
+  }
+
   renderClient(i, client) {
     const sty = style(this.props.theme);
     const thm = c.themes[this.props.theme];
@@ -162,17 +209,9 @@ class ClientList extends Component {
     const icon = pastEdd
       ? require('../../assets/images/baby_bottle.png')
       : this.pregIcons[iconNum];
-
-    let rows = [
-      {
-        label: 'Estimated Delivery Date',
-        data: new Date(client.edd).toDateString(),
-      },
-      {
-        label: 'Street Address',
-        data: client.address.street,
-      },
-    ];
+    let rows = this.rowData(client);
+    let labeled = rows.filter(r => r.showLabel && r);
+    let unlabeled = rows.filter(r => !r.showLabel && r);
     return (
       <TouchableOpacity
         onPress={() => this.props.navigation.navigate('viewClient', {client})}
@@ -195,12 +234,24 @@ class ClientList extends Component {
 
         <View style={sty.contentRow}>
           <View style={{flex: 4, height: '100%', justifyContent: 'center'}}>
-            {rows.map((row, j) => (
+            {labeled.map((row, j) => (
               <View key={j}>
-                <Text style={sty.peekTextLabel}>{row.label}</Text>
-                <Text style={sty.peekTextValue}>{row.data}</Text>
+                {row.showLabel && (
+                  <Text style={sty.peekTextLabel}>{row.label}</Text>
+                )}
+                <Text style={sty.peekTextValue}>{row.value}</Text>
               </View>
             ))}
+            <View style={[sty.contentRow, {flex: 0}]}>
+              {unlabeled.map((row, j) => (
+                <>
+                  <SSIcon name={row.icon} size={15} />
+                  <Text style={sty.peekTextValue}>
+                    {row.value + (j + 1 !== unlabeled.length ? ', ' : '')}
+                  </Text>
+                </>
+              ))}
+            </View>
           </View>
 
           <View style={{flex: 1, ...c.center, height: '100%'}}>
