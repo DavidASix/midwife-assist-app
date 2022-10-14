@@ -9,6 +9,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {Picker} from '@react-native-picker/picker';
 import AIcon from 'react-native-vector-icons/AntDesign';
 
 const c = require('../../assets/constants');
@@ -37,6 +38,7 @@ class AddClient extends Component {
       showDobPicker: false,
       gravida: 0,
       parity: 0,
+      bloodType: null,
     };
   }
 
@@ -271,6 +273,41 @@ class AddClient extends Component {
     );
   }
 
+  renderBlood() {
+    //const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
+    let bt = [{l: 'Please Select', v: null}];
+    let b = {types: ['A', 'B', 'AB', 'O'], charges: ['+', '-']};
+    b.types.forEach(
+      t =>
+        (bt = [
+          ...bt,
+          ...b.charges.map(ch => ({
+            l: t + ch,
+            v: t + ch,
+          })),
+        ]),
+    );
+    return (
+      <>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>Blood Type</Text>
+        </View>
+
+        <View style={[sty.rowButton, {flex: 1}]}>
+          <Picker
+            style={{flex: 1, width: '100%'}}
+            selectedValue={this.state.bloodType}
+            onValueChange={bloodType => this.setState({bloodType})}>
+            {bt.map(t => (
+              <Picker.Item label={t.l} value={t.v} />
+            ))}
+          </Picker>
+        </View>
+      </>
+    );
+  }
+
   renderRh() {
     const thm = c.themes[this.props.theme];
     const sty = style(this.props.theme);
@@ -402,6 +439,7 @@ class AddClient extends Component {
             <Text style={sty.orText}>or</Text>
             {this.renderDob()}
             {this.renderEdd()}
+            {this.renderBlood()}
             {this.renderRh()}
             {this.renderGbs()}
             {this.renderGP()}
