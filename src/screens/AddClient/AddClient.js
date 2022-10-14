@@ -296,7 +296,7 @@ class AddClient extends Component {
           <Text style={sty.subHeaderText}>Blood Type</Text>
         </View>
 
-        <View style={[sty.rowButton, {flex: 1}]}>
+        <View style={sty.rowButton}>
           <Picker
             style={{flex: 1, width: '100%'}}
             selectedValue={this.state.bloodType}
