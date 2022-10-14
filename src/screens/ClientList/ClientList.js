@@ -184,7 +184,7 @@ class ClientList extends Component {
     };
     let gbs = client?.gbs !== 'unknown' && {
       label: 'GBS',
-      value: client.gbs,
+      value: client?.gbs?.charAt(0)?.toUpperCase() + client?.gbs?.slice(1),
       showLabel: true,
     };
     /*
