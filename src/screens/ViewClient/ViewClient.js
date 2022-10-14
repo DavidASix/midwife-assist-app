@@ -12,6 +12,7 @@ import {
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AIcon from 'react-native-vector-icons/AntDesign';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {Picker} from '@react-native-picker/picker';
 import EIcons from 'react-native-vector-icons/Entypo';
 import Toast from 'react-native-toast-message';
 import SlideUpModal from '../../components/SlideUpModal/';
@@ -240,6 +241,20 @@ class ViewClient extends Component {
       {name: 'gravida', letter: 'G'}, //total pregnancies
       {name: 'parity', letter: 'P'}, //total pregnancies to viability (>=20weeks)
     ];
+    // Blood Type information
+    let bt = [{l: 'Please Select', v: null}];
+    let b = {types: ['A', 'B', 'AB', 'O'], charges: ['+', '-']};
+    b.types.forEach(
+      t =>
+        (bt = [
+          ...bt,
+          ...b.charges.map(ch => ({
+            l: t + ch,
+            v: t + ch,
+          })),
+        ]),
+    );
+
     return (
       <ScrollView showsVerticalScrollIndicator={false} style={sty.body}>
         <View style={sty.sectionContainer}>
@@ -339,6 +354,24 @@ class ViewClient extends Component {
               }}
             />
           )}
+
+          {/* BLOOD TYPE */}
+          <View style={sty.subHeaderRow}>
+            <Text style={sty.subHeaderText}>Blood Type</Text>
+          </View>
+
+          <View style={sty.rowButton}>
+            <Picker
+              style={{flex: 1, width: '100%'}}
+              selectedValue={client.bloodType}
+              onValueChange={bloodType =>
+                this.props.updateClient({...client, bloodType})
+              }>
+              {bt.map(t => (
+                <Picker.Item label={t.l} value={t.v} />
+              ))}
+            </Picker>
+          </View>
 
           {/* RH STATUS */}
           <View style={sty.subHeaderRow}>
