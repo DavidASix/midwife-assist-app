@@ -57,6 +57,7 @@ class AddClient extends Component {
       edd,
       gravida,
       parity,
+      bloodType,
     } = this.state;
     let phones = [this.state.phone1, this.state.phone2, this.state.phone3];
     let newClient = {
@@ -80,6 +81,7 @@ class AddClient extends Component {
       notes,
       gravida,
       parity,
+      bloodType,
     };
     if (!newClient.name.first || !newClient.name.last) {
       return Alert.alert('Please enter your clients name');

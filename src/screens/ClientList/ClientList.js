@@ -176,23 +176,24 @@ class ClientList extends Component {
       showLabel: false,
       icon: 'user-female',
     };
-    let blood = {
+    let blood = client?.bloodType && {
       label: 'Blood Type',
-      value: `AB+`,
+      value: client.bloodType,
       showLabel: false,
       icon: 'drop',
     };
-    let gbs = client.gbs !== 'unknown' && {
+    let gbs = client?.gbs !== 'unknown' && {
       label: 'GBS',
       value: client.gbs,
       showLabel: true,
     };
-    let rh = client.rh !== 'unknown' && {
+    /*
+    let rh = client?.rh !== 'unknown' && {
       label: 'RH',
       value: client.rh,
       showLabel: true,
     };
-    console.log({gp});
+    */
     return [edd, gp, gbs, ga, blood];
   }
 
@@ -210,8 +211,8 @@ class ClientList extends Component {
       ? require('../../assets/images/baby_bottle.png')
       : this.pregIcons[iconNum];
     let rows = this.rowData(client);
-    let labeled = rows.filter(r => r.showLabel && r);
-    let unlabeled = rows.filter(r => !r.showLabel && r);
+    let labeled = rows.filter(r => r && r.showLabel);
+    let unlabeled = rows.filter(r => r && !r.showLabel);
     return (
       <TouchableOpacity
         onPress={() => this.props.navigation.navigate('viewClient', {client})}
