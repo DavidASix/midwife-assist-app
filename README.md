@@ -11,8 +11,11 @@
 * ~~Under GA, keyboard covers words and squishes theme~~
 ### Client List
 * Client Cards in list should show more important information
+* Change GBS to icon on card
+* Change GBS edits to single not long press
+* Age on card
 * ~~Show clients GA (36W4D/ 36+4)~~
-* Each client card shows their name as already made, but also a "preview card"
+* ~~Each client card shows their name as already made, but also a "preview card"~~
 * ~~Add blood type to card~~
 * ~~add GBS to card~~
 * ~~don't need labels on card data~~
@@ -22,6 +25,7 @@
 * ~~Use age instead of dob~~
 * ~~Add G#P#~~
 * Add back button compatibility
+* Add delivery date
 ### Notes
 * ~~Ability to edit Notes~~
 * ~~Ability to save without a title~~
