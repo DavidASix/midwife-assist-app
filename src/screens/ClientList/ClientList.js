@@ -10,6 +10,7 @@ import {
 import DropDownPicker from 'react-native-dropdown-picker';
 import SSIcon from 'react-native-vector-icons/SimpleLineIcons';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AIcon from 'react-native-vector-icons/AntDesign';
 import SVGIcon from '../../components/SVGIcon/';
 
 const c = require('../../assets/constants');
@@ -159,42 +160,54 @@ class ClientList extends Component {
       (Math.floor(Date.now() / c.t.day) - (date / c.t.day - 280)) * c.t.day;
     let weeks = Math.floor(gams / (c.t.day * 7));
     let days = Math.round((gams % (c.t.day * 7)) / c.t.day);
+    const gbsTypes = {
+      positive: 'plus',
+      negative: 'minus',
+      unknown: 'question',
+    };
     let edd = {
       label: 'Estimated Delivery Date',
       value: new Date(client.edd).toDateString(),
-      showLabel: true,
+      labelType: 'longLabel',
+    };
+    let gbs = client?.gbs && {
+      label: 'GBS',
+      labelType: 'shortLabel',
+      value: client?.gbs && gbsTypes[client.gbs],
+      valueDisplay: 'icon',
+    };
+    let age = client?.age && {
+      label: 'Age',
+      labelType: 'shortLabel',
+      value: client.age,
+      valueDisplay: 'text',
     };
     let ga = {
       label: 'Gestational Age',
       value: `${weeks}W+${days}D`,
-      showLabel: false,
+      labelType: 'iconLabel',
       icon: 'heart',
     };
     let gp = !!client?.gravida && {
       label: 'Gravida & Parity',
       value: `G${client.gravida || 0}P${client.parity || 0}`,
-      showLabel: false,
+      labelType: 'iconLabel',
       icon: 'user-female',
     };
     let blood = client?.bloodType && {
       label: 'Blood Type',
       value: client.bloodType,
-      showLabel: false,
+      labelType: 'iconLabel',
       icon: 'drop',
-    };
-    let gbs = client?.gbs !== 'unknown' && {
-      label: 'GBS',
-      value: client?.gbs?.charAt(0)?.toUpperCase() + client?.gbs?.slice(1),
-      showLabel: true,
     };
     /*
     let rh = client?.rh !== 'unknown' && {
       label: 'RH',
       value: client.rh,
-      showLabel: true,
+      labelType: 'longLabel',
     };
     */
-    return [edd, gp, gbs, ga, blood];
+    return [edd, gp, gbs, ga, blood, age];
   }
 
   renderClient(i, client) {
@@ -211,8 +224,10 @@ class ClientList extends Component {
       ? require('../../assets/images/baby_bottle.png')
       : this.pregIcons[iconNum];
     let rows = this.rowData(client);
-    let labeled = rows.filter(r => r && r.showLabel);
-    let unlabeled = rows.filter(r => r && !r.showLabel);
+    let longLabel = rows.filter(r => r && r.labelType === 'longLabel');
+    let shortLabel = rows.filter(r => r && r.labelType === 'shortLabel');
+    let iconLabels = rows.filter(r => r && r.labelType === 'iconLabel');
+    console.log(iconLabels);
     return (
       <TouchableOpacity
         onPress={() => this.props.navigation.navigate('viewClient', {client})}
@@ -235,20 +250,36 @@ class ClientList extends Component {
 
         <View style={sty.contentRow}>
           <View style={{flex: 4, height: '100%', justifyContent: 'center'}}>
-            {labeled.map((row, j) => (
+            {longLabel.map((row, j) => (
               <View key={j}>
-                {row.showLabel && (
-                  <Text style={sty.peekTextLabel}>{row.label}</Text>
-                )}
+                {<Text style={sty.peekTextLabel}>{row.label}</Text>}
                 <Text style={sty.peekTextValue}>{row.value}</Text>
               </View>
             ))}
             <View style={[sty.contentRow, {flex: 0}]}>
-              {unlabeled.map((row, j) => (
+              {shortLabel.map((row, j) => (
+                <>
+                  <Text style={sty.peekTextLabel}>{row.label}</Text>
+                  {row.valueDisplay === 'text' && (
+                    <Text style={sty.peekTextValue}>{row.value}</Text>
+                  )}
+                  {row.valueDisplay === 'icon' && (
+                    <AIcon
+                      style={sty.peekTextValue}
+                      name={row.value}
+                      size={10}
+                      color={thm.text}
+                    />
+                  )}
+                </>
+              ))}
+            </View>
+            <View style={[sty.contentRow, {flex: 0}]}>
+              {iconLabels.map((row, j) => (
                 <>
                   <SSIcon name={row.icon} size={15} />
                   <Text style={sty.peekTextValue}>
-                    {row.value + (j + 1 !== unlabeled.length ? ', ' : '')}
+                    {row.value + (j + 1 !== iconLabels.length ? ', ' : '')}
                   </Text>
                 </>
               ))}
@@ -473,7 +504,7 @@ const style = (theme = 'light') => ({
     color: c.themes[theme].text,
   },
   peekTextValue: {
-    marginLeft: 5,
+    marginHorizontal: 5,
     fontSize: 16,
     color: c.themes[theme].text,
     textWrap: 'none',
