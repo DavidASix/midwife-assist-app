@@ -381,10 +381,7 @@ class ViewClient extends Component {
             {statusTypes.map((t, i) => (
               <TouchableOpacity
                 key={i}
-                onPress={this.holdToEditToast}
-                onLongPress={() =>
-                  this.props.updateClient({...client, rh: t.name})
-                }
+                onPress={() => this.props.updateClient({...client, rh: t.name})}
                 style={[
                   sty.iconButton,
                   activeRh(t.name) && {backgroundColor: thm.accent},
@@ -406,8 +403,7 @@ class ViewClient extends Component {
             {statusTypes.map((t, i) => (
               <TouchableOpacity
                 key={i}
-                onPress={this.holdToEditToast}
-                onLongPress={() =>
+                onPress={() =>
                   this.props.updateClient({...client, gbs: t.name})
                 }
                 style={[
