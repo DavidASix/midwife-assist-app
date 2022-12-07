@@ -167,9 +167,11 @@ class Settings extends Component {
           </TouchableOpacity>
         </View>
 
+        {/**
         <View style={sty.statsContainer}>
           <Text style={{fontSize: 32, color: thm.accent}}>Stats</Text>
         </View>
+        **/}
 
         <View style={[sty.linkBar, {backgroundColor: thm.modal}]}>
           <SVGIcon
