@@ -191,7 +191,7 @@ class ViewClient extends Component {
       );
     return phones.map((phone, i) =>
       phone ? (
-        <View style={sty.row}>
+        <View style={sty.row} key={i}>
           <MCIcons
             name={i === 2 ? 'phone-alert' : 'phone'}
             size={25}
@@ -405,7 +405,7 @@ class ViewClient extends Component {
                 this.props.updateClient({...client, bloodType})
               }>
               {bt.map(t => (
-                <Picker.Item label={t.l} value={t.v} />
+                <Picker.Item label={t.l} value={t.v} key={t.v}/>
               ))}
             </Picker>
           </View>

@@ -340,7 +340,7 @@ class AddClient extends Component {
             selectedValue={this.state.bloodType}
             onValueChange={bloodType => this.setState({bloodType})}>
             {bt.map(t => (
-              <Picker.Item label={t.l} value={t.v} />
+              <Picker.Item label={t.l} value={t.v} key={t.v} />
             ))}
           </Picker>
         </View>
@@ -435,7 +435,7 @@ class AddClient extends Component {
 
         <View style={sty.row}>
           {gp.map((type, i) => (
-            <>
+            <React.Fragment key={i}>
               <TouchableOpacity
                 onPress={() =>
                   this.setState({[type.name]: this.state[type.name] - 1})
@@ -451,7 +451,7 @@ class AddClient extends Component {
                 style={sty.iconButton}>
                 <AIcon name="plus" size={15} color={thm.text} />
               </TouchableOpacity>
-            </>
+            </React.Fragment>
           ))}
         </View>
       </>
