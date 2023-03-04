@@ -40,6 +40,7 @@ class ViewClient extends Component {
     this.state = {
       showDobPicker: false,
       showEddPicker: false,
+      showAddPicker: false,
       selectedEdit: 'address',
       editKey: 'randomkey',
       editNote: null,
@@ -213,7 +214,7 @@ class ViewClient extends Component {
     const sty = style(this.props.theme);
     let {client} = this;
     const {street, city} = client.address;
-    const {dob, edd, phones} = client;
+    const {dob, edd, add, phones} = client;
     let age;
     if (dob) {
       age = new Date(dob);
@@ -350,6 +351,42 @@ class ViewClient extends Component {
                 this.setState({showEddPicker: false});
                 if (date.toDateString() !== new Date(edd).toDateString()) {
                   this.props.updateClient({...client, edd: date});
+                }
+              }}
+            />
+          )}
+
+          {/* ADD */}
+          <View style={sty.subHeaderRow}>
+            <Text style={sty.subHeaderText}>Actual Delivery Date</Text>
+          </View>
+          <View style={sty.rowContentContainer}>
+            <TouchableOpacity
+              style={[sty.rowButton, { width: '85%'}]}
+              onPress={() => this.setState({showAddPicker: true})}>
+              <Text style={{color: thm.text}}>
+                {client.add
+                  ? new Date(client.add).toDateString()
+                  : 'Press to enter ADD'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.updateClient({...client, add: null})}
+              style={[sty.iconButton, { width: '10%', aspectRatio: 1, borderRadius: 10, }]}>
+              <MCIcons name="trash-can-outline" size={15} color={c.themes[theme].accent} />
+            </TouchableOpacity>
+          </View>
+          {this.state.showAddPicker && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={new Date(client.add || Date.now())}
+              accentColor={thm.accent}
+              mode="date"
+              is24Hour={true}
+              onChange={(e, date) => {
+                this.setState({showAddPicker: false});
+                if (date.toDateString() !== new Date(add).toDateString()) {
+                  this.props.updateClient({...client, add: date});
                 }
               }}
             />
@@ -791,6 +828,13 @@ const style = (theme = 'light') => ({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
+  },
+  rowContentContainer: {
+    flexDirection: 'row',
+    width: '95%',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    alignSelf: 'center'
   },
   textInput: {
     flex: 1,

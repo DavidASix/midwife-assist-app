@@ -34,7 +34,9 @@ class AddClient extends Component {
       age: '',
       dob: null, //new Date(Date.now() - 30 * c.t.year),
       edd: new Date(Date.now() + 280 * c.t.day),
+      add: null, // Actual Delivery Date
       showEddPicker: false,
+      showAddPicker: false,
       showDobPicker: false,
       gravida: 0,
       parity: 0,
@@ -55,6 +57,7 @@ class AddClient extends Component {
       age,
       dob,
       edd,
+      add,
       gravida,
       parity,
       bloodType,
@@ -74,6 +77,7 @@ class AddClient extends Component {
       dob: dob?.getTime() || dob,
       age,
       edd: edd.getTime(),
+      add: add?.getTime() || add,
       rh: rh,
       gbs: gbs,
       delivered: false,
@@ -275,6 +279,40 @@ class AddClient extends Component {
     );
   }
 
+  renderAdd() {
+    const thm = c.themes[this.props.theme];
+    const sty = style(this.props.theme);
+    const {add} = this.state;
+    return (
+      <>
+        <View style={[sty.row, sty.subHeaderRow]}>
+          <Text style={sty.subHeaderText}>Actual Delivery Date</Text>
+        </View>
+
+        <TouchableOpacity
+          style={sty.rowButton}
+          onPress={() => this.setState({showAddPicker: true})}
+          onLongPress={() => this.setState({add: null})}>
+          <Text style={{color: thm.text}}>
+            {add ? add.toDateString() : 'Enter Delivery Date'}
+          </Text>
+        </TouchableOpacity>
+        {this.state.showAddPicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={add || new Date(Date.now())}
+            accentColor={thm.accent}
+            mode="date"
+            is24Hour={true}
+            onChange={(e, date) =>
+              this.setState({showAddPicker: false, add: date})
+            }
+          />
+        )}
+      </>
+    );
+  }
+
   renderBlood() {
     //const thm = c.themes[this.props.theme];
     const sty = style(this.props.theme);
@@ -441,6 +479,7 @@ class AddClient extends Component {
             <Text style={sty.orText}>or</Text>
             {this.renderDob()}
             {this.renderEdd()}
+            {this.renderAdd()}
             {this.renderBlood()}
             {this.renderRh()}
             {this.renderGbs()}
