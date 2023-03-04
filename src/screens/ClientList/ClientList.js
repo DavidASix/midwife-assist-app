@@ -182,7 +182,7 @@ class ClientList extends Component {
       value: client.age,
       valueDisplay: 'text',
     };
-    let ga = {
+    let ga = (!client?.add && weeks < 44) && {
       label: 'Gestational Age',
       value: `${weeks}W+${days}D`,
       labelType: 'iconLabel',
@@ -227,9 +227,9 @@ class ClientList extends Component {
     let longLabel = rows.filter(r => r && r.labelType === 'longLabel');
     let shortLabel = rows.filter(r => r && r.labelType === 'shortLabel');
     let iconLabels = rows.filter(r => r && r.labelType === 'iconLabel');
-    console.log(iconLabels);
     return (
       <TouchableOpacity
+        key={client.id}
         onPress={() => this.props.navigation.navigate('viewClient', {client})}
         style={sty.card}>
         <View style={sty.titleRow}>
@@ -258,7 +258,7 @@ class ClientList extends Component {
             ))}
             <View style={[sty.contentRow, {flex: 0}]}>
               {shortLabel.map((row, j) => (
-                <>
+              <React.Fragment key={j}>
                   <Text style={sty.peekTextLabel}>{row.label}</Text>
                   {row.valueDisplay === 'text' && (
                     <Text style={sty.peekTextValue}>{row.value}</Text>
@@ -271,17 +271,17 @@ class ClientList extends Component {
                       color={thm.text}
                     />
                   )}
-                </>
+                </React.Fragment>
               ))}
             </View>
             <View style={[sty.contentRow, {flex: 0}]}>
               {iconLabels.map((row, j) => (
-                <>
+               <React.Fragment key={j}>
                   <SSIcon name={row.icon} size={15} />
                   <Text style={sty.peekTextValue}>
                     {row.value + (j + 1 !== iconLabels.length ? ', ' : '')}
                   </Text>
-                </>
+                </React.Fragment>
               ))}
             </View>
           </View>
@@ -298,7 +298,7 @@ class ClientList extends Component {
     const sty = style(this.props.theme);
     const thm = c.themes[this.props.theme];
     return (
-      <View style={sty.sectionHeaderContainer}>
+      <View style={sty.sectionHeaderContainer} key={section.title}>
         <View style={sty.sectionHeaderIcon}>
           <Text style={[{color: thm.lightText}, c.titleFont]}>
             {section.title}
@@ -329,6 +329,7 @@ class ClientList extends Component {
               open={showDropDown}
               value={this.props.sortType}
               items={this.sortingOptions}
+              itemKey='value'
               setOpen={() => this.setState({showDropDown: !showDropDown})}
               setValue={value => this.props.changeSortType(value())}
               textStyle={{color: thm.lightText, fontSize: 16}}
