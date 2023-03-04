@@ -25,7 +25,7 @@
 * ~~Use age instead of dob~~
 * ~~Add G#P#~~
 * Add back button compatibility
-* Add delivery date
+* ~~Add delivery date~~
 ### Notes
 * ~~Ability to edit Notes~~
 * ~~Ability to save without a title~~
