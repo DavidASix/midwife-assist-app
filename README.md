@@ -24,7 +24,7 @@
 * ~~Remove country in Address~~
 * ~~Use age instead of dob~~
 * ~~Add G#P#~~
-* Add back button compatibility
+* ~~Add back button compatibility~~
 * ~~Add delivery date~~
 ### Notes
 * ~~Ability to edit Notes~~
