@@ -48,6 +48,17 @@ class Auth extends Component {
   }
 
   async componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      console.log('screen focues');
+      this.state.backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => this.onPressBack(),
+      );
+    });
+    this.blurListener = this.props.navigation.addListener('blur', () => {
+      this.state.backHandler.remove();
+    });
+
     if (this.props.authType === 'none') {
       this.props.navigation.navigate('tabs');
     } else {
@@ -60,16 +71,6 @@ class Auth extends Component {
         this.setState({bio: false});
       }
     }
-
-    this.focusListener = this.props.navigation.addListener('focus', () => {
-      this.state.backHandler = BackHandler.addEventListener(
-        'hardwareBackPress',
-        () => this.onPressBack(),
-      );
-    });
-    this.blurListener = this.props.navigation.addListener('blur', () => {
-      this.state.backHandler.remove();
-    });
   }
 
   componentWillUnmount() {
@@ -78,6 +79,10 @@ class Auth extends Component {
   }
 
   onPressBack() {
+    console.log(this.pinModal.visible());
+    if (this.pinModal.visible()) {
+      this.pinModal.changeVisibility();
+    }
     return true;
   }
 

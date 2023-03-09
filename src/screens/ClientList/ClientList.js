@@ -67,7 +67,7 @@ class ClientList extends Component {
   onAppStateChange = newState => {
     let {authType, lastLogTime, navigation} = this.props;
     if (newState === 'active') {
-      if (lastLogTime < Date.now() - 60000 * 10 && authType !== 'none') {
+      if (lastLogTime < (Date.now() - (10 * 60 * 1000)) && authType !== 'none') {
         navigation.navigate('auth');
       }
     } else {
