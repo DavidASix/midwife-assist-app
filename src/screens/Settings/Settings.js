@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, Alert, Linking} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Linking,
+  BackHandler,
+} from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 const c = require('../../assets/constants');
@@ -23,6 +30,30 @@ class Settings extends Component {
       starSelected: 0,
       complaint: '',
     };
+  }
+
+  componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.state.backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => this.onPressBack(),
+      );
+    });
+    this.blurListener = this.props.navigation.addListener('blur', () => {
+      this.state.backHandler.remove();
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener();
+    this.blurListener();
+  }
+
+  onPressBack() {
+    if (this.rating.visible()) {
+      this.rating.changeVisibility();
+    }
+    return true;
   }
 
   onPressChangeAuth = () => {

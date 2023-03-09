@@ -6,6 +6,7 @@ import {
   TextInput,
   Animated,
   ScrollView,
+  BackHandler,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -31,6 +32,27 @@ class Calculator extends Component {
     this.pageScroll = null;
     this.scrollPosition = new Animated.ValueXY();
     this.fromTypes = ['EDD', 'GA', 'LMP'];
+  }
+
+  componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.state.backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => this.onPressBack(),
+      );
+    });
+    this.blurListener = this.props.navigation.addListener('blur', () => {
+      this.state.backHandler.remove();
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener();
+    this.blurListener();
+  }
+
+  onPressBack() {
+    return true;
   }
 
   // LMP = now - GA

@@ -56,11 +56,13 @@ class ViewClient extends Component {
       showDobPicker: false,
     });
     this.focusListener = this.props.navigation.addListener('focus', () => {
-      this.state.backHandler = BackHandler.addEventListener('hardwareBackPress', () => this.onPressBack());
-    })
+      this.state.backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => this.onPressBack(),
+      );
+    });
     this.blurListener = this.props.navigation.addListener('blur', () => {
-      console.log('remove listener');
-      this.state.backHandler.remove()
+      this.state.backHandler.remove();
     });
   }
 
@@ -68,20 +70,18 @@ class ViewClient extends Component {
     this.focusListener();
     this.blurListener();
   }
-  
-onPressBack() {
-  console.log('back press handled');
-  //this.editModal.changeVisibility()
-  if (this.editModal.visible()) {
-    this.editModal.changeVisibility();
-    return true;
+
+  onPressBack() {
+    if (this.editModal.visible()) {
+      this.editModal.changeVisibility();
+      return true;
+    }
+    if (this.noteModal.visible()) {
+      this.noteModal.changeVisibility();
+      return true;
+    }
+    return false;
   }
-  if (this.noteModal.visible()) {
-    this.noteModal.changeVisibility();
-    return true;
-  }
-  return false;
-}
   //  ---  On Press Functions  ---  //
 
   onPressDeleteClient = () => {
@@ -388,7 +388,7 @@ onPressBack() {
           </View>
           <View style={sty.rowContentContainer}>
             <TouchableOpacity
-              style={[sty.rowButton, { width: '85%'}]}
+              style={[sty.rowButton, {width: '85%'}]}
               onPress={() => this.setState({showAddPicker: true})}>
               <Text style={{color: thm.text}}>
                 {client.add
@@ -398,8 +398,15 @@ onPressBack() {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.props.updateClient({...client, add: null})}
-              style={[sty.iconButton, { width: '10%', aspectRatio: 1, borderRadius: 10, }]}>
-              <MCIcons name="trash-can-outline" size={15} color={c.themes[theme].accent} />
+              style={[
+                sty.iconButton,
+                {width: '10%', aspectRatio: 1, borderRadius: 10},
+              ]}>
+              <MCIcons
+                name="trash-can-outline"
+                size={15}
+                color={c.themes[theme].accent}
+              />
             </TouchableOpacity>
           </View>
           {this.state.showAddPicker && (
@@ -431,7 +438,7 @@ onPressBack() {
                 this.props.updateClient({...client, bloodType})
               }>
               {bt.map(t => (
-                <Picker.Item label={t.l} value={t.v} key={t.v}/>
+                <Picker.Item label={t.l} value={t.v} key={t.v} />
               ))}
             </Picker>
           </View>
@@ -860,7 +867,7 @@ const style = (theme = 'light') => ({
     width: '95%',
     justifyContent: 'space-around',
     alignItems: 'center',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   textInput: {
     flex: 1,

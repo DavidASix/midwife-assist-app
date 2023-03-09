@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Alert,
+  BackHandler,
 } from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
@@ -59,6 +60,25 @@ class Auth extends Component {
         this.setState({bio: false});
       }
     }
+
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.state.backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => this.onPressBack(),
+      );
+    });
+    this.blurListener = this.props.navigation.addListener('blur', () => {
+      this.state.backHandler.remove();
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener();
+    this.blurListener();
+  }
+
+  onPressBack() {
+    return true;
   }
 
   onPressNewAuthType(type) {

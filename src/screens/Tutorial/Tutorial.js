@@ -7,6 +7,7 @@ import {
   Image,
   FlatList,
   Animated,
+  BackHandler,
 } from 'react-native';
 import FIcon from 'react-native-vector-icons/Feather';
 
@@ -65,17 +66,31 @@ class Tutorial extends Component {
       this.setState({loading: false});
     }
 
-    this.focusListener = this.props.navigation.addListener('focus', () =>
-      this.onFocusChange(),
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+        this.onFocusChange();
+        this.state.backHandler = BackHandler.addEventListener(
+          'hardwareBackPress',
+          () => this.onPressBack(),
+        );
+      }
     );
-    this.blurListener = this.props.navigation.addListener('blur', () =>
-      this.onFocusChange(),
+    this.blurListener = this.props.navigation.addListener('blur', () =>{
+        this.onFocusChange();
+        this.state.backHandler.remove();
+      }
     );
   }
 
   componentWillUnmount() {
     this.focusListener();
     this.blurListener();
+  }
+
+  onPressBack() {
+    if (this.state.page > 0) {
+      this.flatList.scrollToIndex({index: this.state.page - 1})
+    }
+    return true;
   }
 
   onFocusChange() {

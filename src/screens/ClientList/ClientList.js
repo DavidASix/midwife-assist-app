@@ -6,7 +6,7 @@ import {
   Image,
   SectionList,
   AppState,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import SSIcon from 'react-native-vector-icons/SimpleLineIcons';
@@ -44,13 +44,16 @@ class ClientList extends Component {
     );
 
     this.focusListener = this.props.navigation.addListener('focus', () => {
-      this.state.backHandler = BackHandler.addEventListener('hardwareBackPress', () => this.onPressBack());
-    })
+      this.state.backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => this.onPressBack(),
+      );
+    });
     this.blurListener = this.props.navigation.addListener('blur', () => {
-      this.state.backHandler.remove()
+      this.state.backHandler.remove();
     });
   }
-  
+
   componentWillUnmount() {
     this.appStateSub.remove();
     this.focusListener();
@@ -58,7 +61,7 @@ class ClientList extends Component {
   }
 
   onPressBack() {
-    return false;
+    return true;
   }
 
   onAppStateChange = newState => {
@@ -196,12 +199,13 @@ class ClientList extends Component {
       value: client.age,
       valueDisplay: 'text',
     };
-    let ga = (!client?.add && weeks < 44) && {
-      label: 'Gestational Age',
-      value: `${weeks}W+${days}D`,
-      labelType: 'iconLabel',
-      icon: 'heart',
-    };
+    let ga = !client?.add &&
+      weeks < 44 && {
+        label: 'Gestational Age',
+        value: `${weeks}W+${days}D`,
+        labelType: 'iconLabel',
+        icon: 'heart',
+      };
     let gp = !!client?.gravida && {
       label: 'Gravida & Parity',
       value: `G${client.gravida || 0}P${client.parity || 0}`,
@@ -272,7 +276,7 @@ class ClientList extends Component {
             ))}
             <View style={[sty.contentRow, {flex: 0}]}>
               {shortLabel.map((row, j) => (
-              <React.Fragment key={j}>
+                <React.Fragment key={j}>
                   <Text style={sty.peekTextLabel}>{row.label}</Text>
                   {row.valueDisplay === 'text' && (
                     <Text style={sty.peekTextValue}>{row.value}</Text>
@@ -290,7 +294,7 @@ class ClientList extends Component {
             </View>
             <View style={[sty.contentRow, {flex: 0}]}>
               {iconLabels.map((row, j) => (
-               <React.Fragment key={j}>
+                <React.Fragment key={j}>
                   <SSIcon name={row.icon} size={15} />
                   <Text style={sty.peekTextValue}>
                     {row.value + (j + 1 !== iconLabels.length ? ', ' : '')}
@@ -343,7 +347,7 @@ class ClientList extends Component {
               open={showDropDown}
               value={this.props.sortType}
               items={this.sortingOptions}
-              itemKey='value'
+              itemKey="value"
               setOpen={() => this.setState({showDropDown: !showDropDown})}
               setValue={value => this.props.changeSortType(value())}
               textStyle={{color: thm.lightText, fontSize: 16}}
