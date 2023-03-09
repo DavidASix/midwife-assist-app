@@ -65,6 +65,7 @@ class ClientList extends Component {
   }
 
   onAppStateChange = newState => {
+    // This should maybe be moved to router as a hook in tabs nav
     let {authType, lastLogTime, navigation} = this.props;
     if (newState === 'active') {
       if (lastLogTime < (Date.now() - (10 * 60 * 1000)) && authType !== 'none') {

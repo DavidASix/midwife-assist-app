@@ -10,7 +10,6 @@ const notes = (state = INITIAL_STATE, action) => {
     case types.REFRESH_STORE:
       return newState;
     case types.STORE_NOTE: {
-      console.log(action.payload);
       return Object.assign(newState, {
         notes: [
           ...newState.notes.filter((note, i) => note.id !== action.payload.id),

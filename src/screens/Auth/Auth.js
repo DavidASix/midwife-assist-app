@@ -49,7 +49,6 @@ class Auth extends Component {
 
   async componentDidMount() {
     this.focusListener = this.props.navigation.addListener('focus', () => {
-      console.log('screen focues');
       this.state.backHandler = BackHandler.addEventListener(
         'hardwareBackPress',
         () => this.onPressBack(),
@@ -79,7 +78,6 @@ class Auth extends Component {
   }
 
   onPressBack() {
-    console.log(this.pinModal.visible());
     if (this.pinModal.visible()) {
       this.pinModal.changeVisibility();
     }
