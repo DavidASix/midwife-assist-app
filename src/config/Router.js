@@ -46,16 +46,7 @@ const ClientStack = () => {
 };
 
 const TabStateless = props => {
-  React.useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => {
-        return true;
-      },
-    );
-    return () => backHandler.remove();
-  }, []);
-  return (
+   return (
     <Tab.Navigator
       initialRouteName="clientStack"
       tabBar={navProps => <BottomTabBar {...props} {...navProps} />}

@@ -103,6 +103,11 @@ class SlideUpModal extends Component {
     }).start();
   }
 
+  visible() {
+    if (this.newAnimatedPosition === 0) return false;
+    return true
+  }
+
   render() {
     return (
       <>

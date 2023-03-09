@@ -6,6 +6,7 @@ import {
   Image,
   SectionList,
   AppState,
+  BackHandler
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import SSIcon from 'react-native-vector-icons/SimpleLineIcons';
@@ -41,10 +42,23 @@ class ClientList extends Component {
       'change',
       this.onAppStateChange,
     );
-  }
 
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.state.backHandler = BackHandler.addEventListener('hardwareBackPress', () => this.onPressBack());
+    })
+    this.blurListener = this.props.navigation.addListener('blur', () => {
+      this.state.backHandler.remove()
+    });
+  }
+  
   componentWillUnmount() {
     this.appStateSub.remove();
+    this.focusListener();
+    this.blurListener();
+  }
+
+  onPressBack() {
+    return false;
   }
 
   onAppStateChange = newState => {

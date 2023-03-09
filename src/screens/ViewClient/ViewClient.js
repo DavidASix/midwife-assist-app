@@ -8,6 +8,7 @@ import {
   Linking,
   Animated,
   Keyboard,
+  BackHandler,
 } from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AIcon from 'react-native-vector-icons/AntDesign';
@@ -54,8 +55,33 @@ class ViewClient extends Component {
       client: this.props.route.params.client,
       showDobPicker: false,
     });
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.state.backHandler = BackHandler.addEventListener('hardwareBackPress', () => this.onPressBack());
+    })
+    this.blurListener = this.props.navigation.addListener('blur', () => {
+      console.log('remove listener');
+      this.state.backHandler.remove()
+    });
   }
 
+  componentWillUnmount() {
+    this.focusListener();
+    this.blurListener();
+  }
+  
+onPressBack() {
+  console.log('back press handled');
+  //this.editModal.changeVisibility()
+  if (this.editModal.visible()) {
+    this.editModal.changeVisibility();
+    return true;
+  }
+  if (this.noteModal.visible()) {
+    this.noteModal.changeVisibility();
+    return true;
+  }
+  return false;
+}
   //  ---  On Press Functions  ---  //
 
   onPressDeleteClient = () => {
