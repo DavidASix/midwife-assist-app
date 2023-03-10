@@ -299,7 +299,7 @@ class ClientList extends Component {
             <View style={[sty.contentRow, {flex: 0}]}>
               {iconLabels.map((row, j) => (
                 <React.Fragment key={j}>
-                  <SSIcon name={row.icon} size={15} />
+                  <SSIcon name={row.icon} size={15} color={thm.text}/>
                   <Text style={sty.peekTextValue}>
                     {row.value + (j + 1 !== iconLabels.length ? ', ' : '')}
                   </Text>
@@ -502,7 +502,7 @@ const style = (theme = 'light') => ({
     borderRadius: 25,
     borderWidth: 1,
     borderColor: c.themes[theme].border,
-    backgroundColor: c.themes[theme].background,
+    backgroundColor: c.themes[theme].modalForeground,
   },
   clientName: {
     fontSize: 20,

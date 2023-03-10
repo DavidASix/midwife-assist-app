@@ -432,7 +432,8 @@ class ViewClient extends Component {
 
           <View style={sty.rowButton}>
             <Picker
-              style={{flex: 1, width: '100%'}}
+              style={{flex: 1, width: '100%', color: thm.text}}
+              dropdownIconColor={thm.text}
               selectedValue={client.bloodType}
               onValueChange={bloodType =>
                 this.props.updateClient({...client, bloodType})
@@ -507,7 +508,9 @@ class ViewClient extends Component {
                   style={sty.iconButton}>
                   <AIcon name="minus" size={15} color={thm.text} />
                 </TouchableOpacity>
-                <Text>{type.letter + (client[type.name] || 0)}</Text>
+                <Text style={{color: thm.text}}>
+                  {type.letter + (client[type.name] || 0)}
+                </Text>
                 <TouchableOpacity
                   onPress={() =>
                     this.props.updateClient({
@@ -852,7 +855,7 @@ const style = (theme = 'light') => ({
     alignSelf: 'center',
     borderWidth: 0.5,
     borderColor: c.themes[theme].border,
-    backgroundColor: c.themes[theme].modal,
+    backgroundColor: c.themes[theme].modalForeground,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -883,7 +886,7 @@ const style = (theme = 'light') => ({
     alignItems: 'center',
     borderWidth: 0.5,
     borderColor: c.themes[theme].border,
-    backgroundColor: c.themes[theme].modal,
+    backgroundColor: c.themes[theme].modalForeground,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

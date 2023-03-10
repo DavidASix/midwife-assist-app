@@ -180,7 +180,7 @@ class Tutorial extends Component {
     let {page} = this.state;
     const size = 25;
     const indicatorColor = j =>
-      j === page ? c.themes[theme].lightText : c.themes[theme].text;
+      j === page ? c.themes.light.background : c.themes.light.foreground;
     return this.slides.map((slide, i) => (
       <TouchableOpacity
         key={i}

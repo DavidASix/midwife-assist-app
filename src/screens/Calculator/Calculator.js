@@ -144,10 +144,11 @@ class Calculator extends Component {
   }
 
   render() {
+    const sty = style(this.props.theme);
     const thm = c.themes[this.props.theme];
     let calc = this.calc();
     return (
-      <View style={[sty.container, {backgroundColor: thm.background}]}>
+      <View style={sty.container}>
         <View style={sty.header}>
           {/** background start **/}
 
@@ -196,7 +197,6 @@ class Calculator extends Component {
             style={[
               sty.indicator,
               {
-                backgroundColor: thm.accent,
                 transform: this.scrollPosition.getTranslateTransform(),
               },
             ]}
@@ -227,14 +227,14 @@ class Calculator extends Component {
             pagingEnabled>
             {/** EDD Card Render **/}
             <View style={sty.cardContainer}>
-              <View style={[sty.card, {backgroundColor: thm.modal}]}>
-                <Text style={[sty.inputTitle, {color: thm.text}]}>
+              <View style={sty.card}>
+                <Text style={sty.inputTitle}>
                   My client's estimated due date is...
                 </Text>
                 <TouchableOpacity
                   style={[sty.inputButton, {backgroundColor: thm.modal}]}
                   onPress={() => this.setState({showEddPicker: true})}>
-                  <Text style={{fontSize: 18}}>
+                  <Text style={{fontSize: 18, color: thm.text}}>
                     {calc.edd.edd.toDateString()}
                   </Text>
                 </TouchableOpacity>
@@ -253,12 +253,12 @@ class Calculator extends Component {
                 <View style={[sty.spacer, {borderColor: thm.border}]} />
                 {/** Output Verbiage **/}
                 <Text style={sty.outputTitle}>Their gestational age is:</Text>
-                <Text style={{alignSelf: 'center'}}>{calc.edd.ga}</Text>
+                <Text style={sty.outputText}>{calc.edd.ga}</Text>
 
                 <Text style={sty.outputTitle}>
                   The client's last mensteral period started on
                 </Text>
-                <Text style={{alignSelf: 'center'}}>
+                <Text style={sty.outputText}>
                   {calc.edd.lmp.toDateString()}
                 </Text>
                 {/** Output Verbiage End **/}
@@ -268,14 +268,12 @@ class Calculator extends Component {
 
             {/** GA Card Render **/}
             <View style={sty.cardContainer}>
-              <View style={[sty.card, {backgroundColor: thm.modal}]}>
-                <Text style={[sty.inputTitle, {color: thm.text}]}>
-                  The gestational age is...
-                </Text>
+              <View style={sty.card}>
+                <Text style={sty.inputTitle}>The gestational age is...</Text>
                 {/** GA Input Row **/}
                 <View style={sty.row}>
                   <TextInput
-                    style={[sty.ti, {borderColor: thm.border, color: thm.text}]}
+                    style={sty.ti}
                     onChangeText={text => this.setState({weeks: text})}
                     value={this.state.weeks}
                     keyboardType="decimal-pad"
@@ -288,7 +286,7 @@ class Calculator extends Component {
                     Weeks
                   </Text>
                   <TextInput
-                    style={[sty.ti, {borderColor: thm.border, color: thm.text}]}
+                    style={sty.ti}
                     onChangeText={text => this.onEnterDay(text)}
                     value={this.state.days}
                     keyboardType="decimal-pad"
@@ -307,16 +305,12 @@ class Calculator extends Component {
                 <Text style={sty.outputTitle}>
                   The client's estimated due date is:
                 </Text>
-                <Text style={{alignSelf: 'center'}}>
-                  {calc.ga.edd.toDateString()}
-                </Text>
+                <Text style={sty.outputText}>{calc.ga.edd.toDateString()}</Text>
 
                 <Text style={sty.outputTitle}>
                   The client's last mensteral period started on
                 </Text>
-                <Text style={{alignSelf: 'center'}}>
-                  {calc.ga.lmp.toDateString()}
-                </Text>
+                <Text style={sty.outputText}>{calc.ga.lmp.toDateString()}</Text>
                 {/** Output Verbiage End **/}
               </View>
             </View>
@@ -331,7 +325,7 @@ class Calculator extends Component {
                 <TouchableOpacity
                   style={[sty.inputButton, {backgroundColor: thm.modal}]}
                   onPress={() => this.setState({showLmpPick: true})}>
-                  <Text style={{fontSize: 18}}>
+                  <Text style={{fontSize: 18, color: thm.text}}>
                     {calc.lmp.lmp.toDateString()}
                   </Text>
                 </TouchableOpacity>
@@ -350,12 +344,12 @@ class Calculator extends Component {
                 <View style={[sty.spacer, {borderColor: thm.border}]} />
                 {/** Output Verbiage **/}
                 <Text style={sty.outputTitle}>Their gestational age is:</Text>
-                <Text style={{alignSelf: 'center'}}>{calc.lmp.ga}</Text>
+                <Text style={sty.outputText}>{calc.lmp.ga}</Text>
 
                 <Text style={sty.outputTitle}>
                   The client's estimated due date is:
                 </Text>
-                <Text style={{alignSelf: 'center'}}>
+                <Text style={sty.outputText}>
                   {calc.lmp.edd.toDateString()}
                 </Text>
                 {/** Output Verbiage End **/}
@@ -383,12 +377,13 @@ class Calculator extends Component {
   }
 }
 
-const sty = {
+const style = (theme = 'light') => ({
   container: {
     flex: 1,
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    backgroundColor: c.themes[theme].background,
   },
   header: {
     height: 37,
@@ -419,6 +414,7 @@ const sty = {
   },
   indicator: {
     width: (c.device.width * indicatorWidth) / 3,
+    backgroundColor: c.themes[theme].accent,
     height: '100%',
     borderRadius: 50,
     position: 'absolute',
@@ -432,6 +428,7 @@ const sty = {
   },
   card: {
     justifyContent: 'space-around',
+    backgroundColor: c.themes[theme].modal,
     alignItems: 'flex-start',
     flex: 0,
     height: '100%',
@@ -476,14 +473,21 @@ const sty = {
     elevation: 3,
   },
   inputTitle: {
+    color: c.themes[theme].text,
     fontSize: 16,
     marginVertical: 5,
   },
   outputTitle: {
+    color: c.themes[theme].text,
     fontSize: 16,
     marginVertical: 5,
   },
+  outputText: {
+    color: c.themes[theme].text,
+    alignSelf: 'center',
+  },
   spacer: {
+    borderColor: c.themes[theme].border,
     borderTopWidth: 1,
     width: '80%',
     alignSelf: 'center',
@@ -495,10 +499,12 @@ const sty = {
   },
   ti: {
     flex: 1,
+    borderColor: c.themes[theme].border,
+    color: c.themes[theme].text,
     borderBottomWidth: 1,
     textAlign: 'center',
     fontSize: 20,
   },
-};
+});
 
 export default Calculator;

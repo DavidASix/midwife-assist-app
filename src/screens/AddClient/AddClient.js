@@ -314,7 +314,7 @@ class AddClient extends Component {
   }
 
   renderBlood() {
-    //const thm = c.themes[this.props.theme];
+    const thm = c.themes[this.props.theme];
     const sty = style(this.props.theme);
     let bt = [{l: 'Please Select', v: null}];
     let b = {types: ['A', 'B', 'AB', 'O'], charges: ['+', '-']};
@@ -336,8 +336,9 @@ class AddClient extends Component {
 
         <View style={sty.rowButton}>
           <Picker
-            style={{flex: 1, width: '100%'}}
+            style={{flex: 1, width: '100%', color: thm.text}}
             selectedValue={this.state.bloodType}
+            dropdownIconColor={thm.text}
             onValueChange={bloodType => this.setState({bloodType})}>
             {bt.map(t => (
               <Picker.Item label={t.l} value={t.v} key={t.v} />
@@ -443,7 +444,9 @@ class AddClient extends Component {
                 style={sty.iconButton}>
                 <AIcon name="minus" size={15} color={thm.text} />
               </TouchableOpacity>
-              <Text>{type.letter + this.state[type.name]}</Text>
+              <Text style={{color: thm.text}}>
+                {type.letter + this.state[type.name]}
+              </Text>
               <TouchableOpacity
                 onPress={() =>
                   this.setState({[type.name]: this.state[type.name] + 1})
@@ -499,7 +502,7 @@ class AddClient extends Component {
 const style = (theme = 'light') => ({
   container: {
     height: '98%',
-    width: '95%',
+    width: '98%',
     overflow: 'hidden',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
@@ -553,7 +556,7 @@ const style = (theme = 'light') => ({
     alignItems: 'center',
     borderWidth: 0.5,
     borderColor: c.themes[theme].border,
-    backgroundColor: c.themes[theme].modal,
+    backgroundColor: c.themes[theme].modalForeground,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -572,7 +575,7 @@ const style = (theme = 'light') => ({
     alignSelf: 'center',
     borderWidth: 0.5,
     borderColor: c.themes[theme].border,
-    backgroundColor: c.themes[theme].modal,
+    backgroundColor: c.themes[theme].modalForeground,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
