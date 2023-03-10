@@ -4,12 +4,12 @@ import {
   Text,
   Alert,
   TouchableOpacity,
-  ScrollView,
   Linking,
   Animated,
   Keyboard,
   BackHandler,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AIcon from 'react-native-vector-icons/AntDesign';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -62,7 +62,7 @@ class ViewClient extends Component {
       );
     });
     this.blurListener = this.props.navigation.addListener('blur', () => {
-      this.state.backHandler.remove();
+      if (!!this.state.backHandler) this.state.backHandler.remove();
     });
   }
 

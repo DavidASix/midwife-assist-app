@@ -4,10 +4,10 @@ import {
   Text,
   Alert,
   TouchableOpacity,
-  ScrollView,
   TextInput,
   ToastAndroid,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-picker/picker';
 import AIcon from 'react-native-vector-icons/AntDesign';

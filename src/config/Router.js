@@ -30,6 +30,8 @@ const ClientStack = () => {
       screenOptions={{
         headerShown: false,
         gestureEnabled: true,
+        gestureDirection: 'vertical',
+        gestureResponseDistance: 120,
         presentation: 'transparentModal',
         ...TransitionPresets.ModalSlideFromBottomIOS,
       }}
@@ -46,7 +48,7 @@ const ClientStack = () => {
 };
 
 const TabStateless = props => {
-   return (
+  return (
     <Tab.Navigator
       initialRouteName="clientStack"
       tabBar={navProps => <BottomTabBar {...props} {...navProps} />}
