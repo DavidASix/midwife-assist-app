@@ -55,7 +55,7 @@ class Auth extends Component {
       );
     });
     this.blurListener = this.props.navigation.addListener('blur', () => {
-      this.state.backHandler.remove();
+      if (!!this.state.backHandler) this.state.backHandler.remove();
     });
 
     if (this.props.authType === 'none') {
