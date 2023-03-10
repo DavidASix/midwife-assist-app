@@ -68,7 +68,7 @@ class ClientList extends Component {
     // This should maybe be moved to router as a hook in tabs nav
     let {authType, lastLogTime, navigation} = this.props;
     if (newState === 'active') {
-      if (lastLogTime < (Date.now() - (10 * 60 * 1000)) && authType !== 'none') {
+      if (lastLogTime < Date.now() - 10 * 60 * 1000 && authType !== 'none') {
         navigation.navigate('auth');
       }
     } else {
@@ -253,7 +253,10 @@ class ClientList extends Component {
         style={sty.card}>
         <View style={sty.titleRow}>
           <View style={sty.initialsContainer}>
-            <Text style={[{fontSize: 16, color: thm.text}, c.titleFont]}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="clip"
+              style={[{fontSize: 14, color: thm.text}, c.titleFont]}>
               {client.name.first.charAt(0).toUpperCase()}
               {client.name.last.charAt(0).toUpperCase() || ''}
             </Text>
