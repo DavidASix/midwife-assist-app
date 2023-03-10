@@ -36,7 +36,7 @@ class Auth extends Component {
         title: 'Biometric',
         icon: 'fingerprint',
         onPressVal: 'bio',
-        showButton: this.state.bio,
+        showButton: true,
       },
       {
         title: 'No security',
@@ -65,7 +65,7 @@ class Auth extends Component {
         // If implementing on iOS then need to update this to handle diff bios
         //https://github.com/SelfLender/react-native-biometrics
         let sensor = await rnBiometrics.isSensorAvailable();
-        this.setState({bio: sensor.biometryType});
+        this.setState({bio: sensor.available});
       } catch (err) {
         this.setState({bio: false});
       }
@@ -222,7 +222,7 @@ class Auth extends Component {
       default: // authType is null, return login form
         return this.authTypes.map(
           (type, i) =>
-            type.showButton && (
+            (type.onPressVal === 'bio' ? this.state.bio : true) && (
               <TouchableOpacity
                 key={i}
                 onPress={() => this.onPressNewAuthType(type.onPressVal)}
