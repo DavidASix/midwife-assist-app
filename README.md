@@ -5,15 +5,19 @@ Client tracking & Pregnancy calculation, all done offline
 ## Install
 
 #### Install from [Play Store](https://play.google.com/store/apps/details?id=com.dave6.www.midwifeassist)
-
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
     alt="Get it on Play Store"
     height="80">](https://play.google.com/store/apps/details?id=com.dave6.www.midwifeassist)
 
 ## Feature Requests
-Do you have a great idea for a new feature? Reach out by clicking ["here"](mailto:developer@davidasix.com?subject=Midwife Assist) and tell me all about it!
+Do you have a great idea for a new feature? Reach out [by clicking here](mailto:developer@davidasix.com?subject=Midwife%%20Assist) and tell me all about it!
 
 Thanks for reading, keep up the great Midwifery!
+
+## Links
+[Privacy Policy](https://davidasix.com/privacy-policies/midwife-assist)
+
+## Like my work?
 
 [<img 
     height='50' 
