@@ -10,8 +10,12 @@
 - [ ] Add "inactive" setting so that older clients are pushed to bottom of list
 - [ ] Reorganize clients after actual delivery date is entered
 - [ ] Add profile picture option for clients
+- [ ] Display how postpartum a client is
+- [ ] Add options for what item to display for born kids, instead of bottles
+- [ ] Calendar View for clients, to see upcoming deliveries
 ### Developer Suggestion
 - [ ] Update contact email address for features
+- [ ] Release on iOS
 
 ## Version 3.0
 ### Overall
